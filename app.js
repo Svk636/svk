@@ -1,4 +1,4 @@
-const DB_KEY = 'svk_blueprint_15year';
+const DB_KEY = 'svkBlueprint';
 const SCHEMA = {
     blueprintMeta: null,
     allCycles: [],
