@@ -1,6 +1,6 @@
 {
-  "name": "SVK",
-  "short_name": "Svk",
+  "name": "SVK Blueprint - 15 Year Vision Execution System",
+  "short_name": "SVK Blueprint",
   "description": "Zen-inspired 15-year vision execution system with 90-day cycle methodology. Bridge long-term aspirations with daily action through focused execution.",
   "start_url": "./index.html",
   "display": "standalone",
@@ -37,8 +37,8 @@
       "purpose": "any"
     },
     {
-      "src": "./icons/icon-180.png",
-      "sizes": "180x180",
+      "src": "./icons/icon-152.png",
+      "sizes": "152x152",
       "type": "image/png",
       "purpose": "any"
     },
