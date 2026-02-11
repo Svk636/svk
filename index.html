@@ -2263,6 +2263,30 @@ const App = {
                     console.log('Service Worker registration failed:', err);
                 });
         }
+        
+        // PWA: Install prompt handler
+        window.deferredInstallPrompt = null;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            
+            // Stash the event so it can be triggered later
+            window.deferredInstallPrompt = e;
+            
+            console.log('✓ PWA install prompt ready');
+            
+            // Show install button in UI
+            this.showInstallButton();
+        });
+        
+        // Handle successful installation
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('✓ SVK Blueprint PWA installed successfully');
+            window.deferredInstallPrompt = null;
+            this.hideInstallButton();
+            this.toast('✓ App installed successfully!');
+        });
         } catch (initError) {
             // CRITICAL ERROR HANDLER
             console.error('Critical initialization error:', initError);
@@ -2522,6 +2546,92 @@ const App = {
         t.textContent = msg;
         t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 2200);
+    },
+    
+    // PWA Install Button Methods
+    showInstallButton() {
+        // Check if install button already exists
+        if (document.getElementById('pwa-install-btn')) return;
+        
+        // Create floating install button
+        const installBtn = document.createElement('button');
+        installBtn.id = 'pwa-install-btn';
+        installBtn.innerHTML = '📱 Install App';
+        installBtn.style.cssText = `
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            z-index: 9999;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        `;
+        
+        installBtn.onclick = () => this.installPWA();
+        
+        // Add pulsing animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+            }
+            #pwa-install-btn:hover {
+                transform: scale(1.1) !important;
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6) !important;
+            }
+        `;
+        document.head.appendChild(style);
+        document.body.appendChild(installBtn);
+    },
+    
+    hideInstallButton() {
+        const btn = document.getElementById('pwa-install-btn');
+        if (btn) {
+            btn.style.animation = 'none';
+            btn.style.opacity = '0';
+            setTimeout(() => btn.remove(), 300);
+        }
+    },
+    
+    async installPWA() {
+        const btn = document.getElementById('pwa-install-btn');
+        if (!window.deferredInstallPrompt) {
+            this.toast('⚠️ Install prompt not available');
+            return;
+        }
+        
+        try {
+            // Show the install prompt
+            await window.deferredInstallPrompt.prompt();
+            
+            // Wait for the user's response
+            const { outcome } = await window.deferredInstallPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('✓ User accepted PWA install');
+                this.toast('✓ Installing app...');
+            } else {
+                console.log('✗ User dismissed PWA install');
+                this.toast('Install cancelled');
+            }
+            
+            // Clear the deferred prompt
+            window.deferredInstallPrompt = null;
+            this.hideInstallButton();
+            
+        } catch (err) {
+            console.error('Install error:', err);
+            this.toast('⚠️ Installation failed');
+        }
     },
 
     celebrate(emoji, title, sub) {
@@ -3081,9 +3191,12 @@ const App = {
             <button class="segment-btn ${sub === 'journal' ? 'active' : ''}" onclick="App.sub.system='journal';App.render()">Journal</button>
             <button class="segment-btn ${sub === 'reviews' ? 'active' : ''}" onclick="App.sub.system='reviews';App.render()">Reviews</button>
             <button class="segment-btn ${sub === 'custom' ? 'active' : ''}" onclick="App.sub.system='custom';App.render()">Custom Blueprint</button>
+            <button class="segment-btn ${sub === 'settings' ? 'active' : ''}" onclick="App.sub.system='settings';App.render()">⚙️ App</button>
         </div>`;
         
-        if (sub === 'habits') {
+        if (sub === 'settings') {
+            html += this.viewSystemSettings();
+        } else if (sub === 'habits') {
             const habits = this.data.system.habits || [];
             html += `<div class="section-header">
                 <span>📋 Daily Habits</span>
@@ -3278,6 +3391,114 @@ const App = {
                 </div>
             `;
         }
+        
+        return html;
+    },
+    
+    // VIEW: SYSTEM SETTINGS
+    viewSystemSettings() {
+        const isPWAInstalled = window.matchMedia('(display-mode: standalone)').matches || 
+                               window.navigator.standalone || 
+                               document.referrer.includes('android-app://');
+        
+        let html = `
+            <div class="section-header">
+                <span>⚙️ App Settings</span>
+            </div>
+            
+            <!-- PWA Installation Card -->
+            <div style="background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid var(--border);">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                    <div style="font-size:32px;">📱</div>
+                    <div style="flex:1;">
+                        <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Install as App</div>
+                        <div style="font-size:12px;color:var(--dim);">
+                            ${isPWAInstalled ? 
+                                '✓ App is already installed' : 
+                                'Install SVK Blueprint on your device for offline access and app-like experience'}
+                        </div>
+                    </div>
+                </div>
+                
+                ${!isPWAInstalled ? `
+                    <button class="btn-primary" onclick="App.installPWA()" 
+                            style="width:100%;padding:12px;font-size:14px;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        📱 Install App
+                    </button>
+                    <div style="margin-top:12px;font-size:11px;color:var(--dim);line-height:1.5;">
+                        <strong>Benefits:</strong><br>
+                        • Works offline<br>
+                        • Fast app-like performance<br>
+                        • Home screen icon<br>
+                        • No browser UI distractions<br>
+                        • Push notifications (coming soon)
+                    </div>
+                ` : `
+                    <div style="padding:12px;background:var(--sub);border-radius:8px;text-align:center;">
+                        <div style="font-size:32px;margin-bottom:8px;">✓</div>
+                        <div style="font-size:14px;color:var(--success);font-weight:600;">App Installed Successfully</div>
+                    </div>
+                `}
+            </div>
+            
+            <!-- Data Management Card -->
+            <div style="background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid var(--border);">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                    <div style="font-size:32px;">💾</div>
+                    <div style="flex:1;">
+                        <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Data Management</div>
+                        <div style="font-size:12px;color:var(--dim);">Export, import, and manage your data</div>
+                    </div>
+                </div>
+                
+                <div style="display:grid;gap:8px;">
+                    <button class="btn-sec" onclick="App.exportAllData()" style="padding:10px;">
+                        📤 Export All Data
+                    </button>
+                    <button class="btn-sec" onclick="App.importAllData()" style="padding:10px;">
+                        📥 Import Data
+                    </button>
+                    <button class="btn-sec" onclick="if(confirm('Clear all data? This cannot be undone!')) { localStorage.clear(); location.reload(); }" 
+                            style="padding:10px;background:var(--danger);opacity:0.8;">
+                        🗑️ Clear All Data
+                    </button>
+                </div>
+            </div>
+            
+            <!-- App Info Card -->
+            <div style="background:var(--card);border-radius:12px;padding:20px;border:1px solid var(--border);">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                    <div style="font-size:32px;">ℹ️</div>
+                    <div style="flex:1;">
+                        <div style="font-size:16px;font-weight:700;margin-bottom:4px;">App Information</div>
+                        <div style="font-size:12px;color:var(--dim);">Version and system details</div>
+                    </div>
+                </div>
+                
+                <div style="display:grid;gap:8px;font-size:12px;">
+                    <div style="display:flex;justify-content:space-between;padding:8px;background:var(--sub);border-radius:6px;">
+                        <span style="color:var(--dim);">Version</span>
+                        <span style="font-weight:600;">2.2.1</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:8px;background:var(--sub);border-radius:6px;">
+                        <span style="color:var(--dim);">Build Date</span>
+                        <span style="font-weight:600;">February 10, 2026</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:8px;background:var(--sub);border-radius:6px;">
+                        <span style="color:var(--dim);">PWA Status</span>
+                        <span style="font-weight:600;color:${isPWAInstalled ? 'var(--success)' : 'var(--warn)'};">
+                            ${isPWAInstalled ? '✓ Installed' : '○ Not Installed'}
+                        </span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:8px;background:var(--sub);border-radius:6px;">
+                        <span style="color:var(--dim);">Service Worker</span>
+                        <span style="font-weight:600;color:${navigator.serviceWorker?.controller ? 'var(--success)' : 'var(--warn)'};">
+                            ${navigator.serviceWorker?.controller ? '✓ Active' : '○ Inactive'}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
         
         return html;
     },
