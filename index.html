@@ -398,6 +398,22 @@ FIRST-TIME USER FLOW:
             border: none; border-radius: 6px; font-weight: 600; cursor: pointer;
         }
         
+        /* UPDATE BANNER */
+        .update-banner {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; padding: 12px 20px;
+            font-size: 13px; font-weight: 600;
+            z-index: 70; display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        .update-banner.show { display: flex; }
+        
         /* UNDO TOAST */
         .undo-toast {
             position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
@@ -1853,6 +1869,16 @@ FIRST-TIME USER FLOW:
     <button onclick="App.performUndo()">Undo</button>
 </div>
 
+<!-- NEW: Update Available Banner -->
+<div class="update-banner" id="update-banner" style="display:none;">
+    <div style="flex:1;">
+        <strong>🎉 New version available!</strong>
+        <div style="font-size:11px;margin-top:4px;" id="update-banner-text">Update to get the latest features and improvements</div>
+    </div>
+    <button onclick="App.showUpdateInstructions()" style="background:var(--accent);color:#000;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer;">Update</button>
+    <button onclick="App.dismissUpdateBanner()" style="background:transparent;color:var(--text);border:none;padding:8px;cursor:pointer;opacity:0.6;">✕</button>
+</div>
+
 <div class="celebrate-overlay" id="celebrate">
     <div class="celebrate-emoji" id="celebrate-emoji">🎉</div>
     <div class="celebrate-title" id="celebrate-title">Great Work!</div>
@@ -1862,6 +1888,7 @@ FIRST-TIME USER FLOW:
 
 <script>
 const DB_KEY = 'svk_blueprint_15year';
+const APP_VERSION = '2.2.2'; // Current app version - update this with each release
 const SCHEMA = {
     blueprintMeta: null,
     allCycles: [],
@@ -2208,6 +2235,9 @@ const App = {
         
         // PRODUCTION: Validate data integrity
         this.validateAndFixData();
+        
+        // VERSION CHECKING: Check for updates
+        this.checkForUpdates();
         
         // Load custom blueprint data
         try {
@@ -2821,6 +2851,145 @@ const App = {
         }
     },
 
+    // VERSION CHECKING: Check if new version available
+    checkForUpdates() {
+        const lastVersion = localStorage.getItem('svk_app_version');
+        const dismissedVersion = localStorage.getItem('svk_dismissed_update_version');
+        
+        // If this is first run, just store version
+        if (!lastVersion) {
+            localStorage.setItem('svk_app_version', APP_VERSION);
+            return;
+        }
+        
+        // Check if current version is newer than stored version
+        if (this.compareVersions(APP_VERSION, lastVersion) > 0) {
+            // New version detected!
+            
+            // Don't show if user dismissed this version
+            if (dismissedVersion === APP_VERSION) {
+                return;
+            }
+            
+            // Show update banner
+            setTimeout(() => {
+                this.showUpdateBanner(lastVersion, APP_VERSION);
+            }, 2000); // Delay to let app load first
+        }
+        
+        // Update stored version
+        localStorage.setItem('svk_app_version', APP_VERSION);
+    },
+
+    // Compare version strings (e.g., "2.2.2" vs "2.2.1")
+    compareVersions(v1, v2) {
+        const parts1 = v1.split('.').map(Number);
+        const parts2 = v2.split('.').map(Number);
+        
+        for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+            const p1 = parts1[i] || 0;
+            const p2 = parts2[i] || 0;
+            if (p1 > p2) return 1;
+            if (p1 < p2) return -1;
+        }
+        return 0;
+    },
+
+    // Show update banner
+    showUpdateBanner(oldVersion, newVersion) {
+        const banner = document.getElementById('update-banner');
+        const text = document.getElementById('update-banner-text');
+        
+        text.textContent = `v${oldVersion} → v${newVersion} - Click Update to learn what's new`;
+        banner.style.display = 'flex';
+        
+        // Auto-hide after 30 seconds
+        setTimeout(() => {
+            if (banner.style.display === 'flex') {
+                banner.style.display = 'none';
+            }
+        }, 30000);
+    },
+
+    // Dismiss update banner
+    dismissUpdateBanner() {
+        const banner = document.getElementById('update-banner');
+        banner.style.display = 'none';
+        
+        // Remember that user dismissed this version
+        localStorage.setItem('svk_dismissed_update_version', APP_VERSION);
+    },
+
+    // Show update instructions
+    showUpdateInstructions() {
+        const banner = document.getElementById('update-banner');
+        banner.style.display = 'none';
+        
+        document.getElementById('modal-body').innerHTML = `
+            <h3 style="margin-bottom:16px;color:var(--accent);">🎉 New Version Available: v${APP_VERSION}</h3>
+            
+            <div style="background:var(--sub);padding:16px;border-radius:12px;margin-bottom:16px;border-left:4px solid var(--accent);">
+                <div style="font-weight:700;margin-bottom:8px;color:var(--accent);">What's New in v${APP_VERSION}</div>
+                <ul style="margin:0;padding-left:20px;line-height:1.8;font-size:13px;color:var(--dim);">
+                    <li>🔄 Daily Reset - Clear today's habits with one button</li>
+                    <li>📊 CSV Export - Export all data to spreadsheets</li>
+                    <li>🔧 Bug Fixes - Improved stability and performance</li>
+                    <li>📱 Better PWA - Enhanced installation experience</li>
+                    <li>✅ Data Validation - Auto-repair on startup</li>
+                </ul>
+            </div>
+            
+            <div style="background:rgba(255,215,0,0.1);padding:16px;border-radius:12px;margin-bottom:20px;border:1px solid rgba(255,215,0,0.3);">
+                <div style="font-weight:700;margin-bottom:12px;">📥 How to Update</div>
+                
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:600;margin-bottom:8px;font-size:14px;">Option 1: Replace File (Recommended)</div>
+                    <ol style="margin:0;padding-left:20px;line-height:1.8;font-size:13px;color:var(--dim);">
+                        <li>Download new <code>index.html</code> file</li>
+                        <li><strong>Before replacing:</strong> Export your data (backup)</li>
+                        <li>Replace old file with new file</li>
+                        <li>Open the new file - your data is preserved!</li>
+                    </ol>
+                </div>
+                
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:600;margin-bottom:8px;font-size:14px;">Option 2: Hard Refresh (Quick)</div>
+                    <ul style="margin:0;padding-left:20px;line-height:1.8;font-size:13px;color:var(--dim);">
+                        <li><strong>Windows/Linux:</strong> Ctrl + Shift + R</li>
+                        <li><strong>Mac:</strong> Cmd + Shift + R</li>
+                        <li><strong>Mobile:</strong> Close tab, clear cache, reopen</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <div style="font-weight:600;margin-bottom:8px;font-size:14px;">Option 3: If Deployed (GitHub/Netlify)</div>
+                    <p style="margin:0;font-size:13px;color:var(--dim);line-height:1.6;">
+                        Push the new file to your repository. The update will deploy automatically.
+                    </p>
+                </div>
+            </div>
+            
+            <div style="background:rgba(255,100,100,0.1);padding:12px;border-radius:8px;margin-bottom:20px;border-left:3px solid #ff6464;">
+                <strong style="color:#ff6464;">⚠️ Important:</strong>
+                <div style="font-size:12px;margin-top:4px;line-height:1.6;color:var(--dim);">
+                    Your data is stored in browser localStorage and will persist through updates. 
+                    However, we recommend exporting a backup before updating (just to be safe).
+                </div>
+            </div>
+            
+            <div style="display:flex;gap:8px;">
+                <button class="btn" onclick="App.tab=1;App.sub.build='stats';App.render();App.closeModal();" style="flex:1;">
+                    📥 Export Backup First
+                </button>
+                <button class="btn-sec" onclick="App.closeModal()" style="flex:1;">
+                    Close
+                </button>
+            </div>
+        `;
+        
+        document.getElementById('modal').classList.add('open');
+    },
+
     navigate(i) {
         this.tab = i;
         document.querySelectorAll('.nav-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
@@ -2920,9 +3089,34 @@ const App = {
     },
     
     async installPWA() {
-        const btn = document.getElementById('pwa-install-btn');
+        // Check if already installed
+        const isPWAInstalled = window.matchMedia('(display-mode: standalone)').matches || 
+                               window.navigator.standalone;
+        
+        if (isPWAInstalled) {
+            this.toast('✓ App is already installed');
+            return;
+        }
+        
+        // Check if running from file:// protocol
+        if (window.location.protocol === 'file:') {
+            this.toast('⚠️ PWA install requires HTTPS hosting. Open from a web server or use browser "Add to Home Screen" manually.');
+            return;
+        }
+        
+        // Check if install prompt is available
         if (!window.deferredInstallPrompt) {
-            this.toast('⚠️ Install prompt not available');
+            // Provide helpful instructions based on browser
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            
+            if (isIOS) {
+                this.toast('📱 Safari: Tap Share → Add to Home Screen');
+            } else if (isAndroid) {
+                this.toast('📱 Chrome: Tap Menu (⋮) → Install app');
+            } else {
+                this.toast('⚠️ Install not available. Try: Chrome menu → Install app, or Safari Share → Add to Home Screen');
+            }
             return;
         }
         
@@ -2947,7 +3141,7 @@ const App = {
             
         } catch (err) {
             console.error('Install error:', err);
-            this.toast('⚠️ Installation failed');
+            this.toast('⚠️ Installation failed. Try browser menu → Install app');
         }
     },
 
@@ -3741,12 +3935,21 @@ const App = {
                         📱 Install App
                     </button>
                     <div style="margin-top:12px;font-size:11px;color:var(--dim);line-height:1.5;">
-                        <strong>Benefits:</strong><br>
-                        • Works offline<br>
-                        • Fast app-like performance<br>
-                        • Home screen icon<br>
-                        • No browser UI distractions<br>
-                        • Push notifications (coming soon)
+                        ${window.location.protocol === 'file:' ? `
+                            <strong style="color:var(--warn);">Note:</strong> PWA installation requires hosting on a web server (HTTPS).<br><br>
+                            <strong>For now, use browser's built-in "Add to Home Screen":</strong><br>
+                            • <strong>iOS Safari:</strong> Tap Share → Add to Home Screen<br>
+                            • <strong>Android Chrome:</strong> Menu (⋮) → Install app<br>
+                            • <strong>Desktop Chrome:</strong> Address bar install icon or Settings → Install<br><br>
+                            Or deploy to: GitHub Pages, Netlify, Vercel, or any HTTPS server
+                        ` : `
+                            <strong>Benefits:</strong><br>
+                            • Works offline<br>
+                            • Fast app-like performance<br>
+                            • Home screen icon<br>
+                            • No browser UI distractions<br><br>
+                            <em>Note: If button doesn't work, use browser menu → Install app or Add to Home Screen</em>
+                        `}
                     </div>
                 ` : `
                     <div style="padding:12px;background:var(--sub);border-radius:8px;text-align:center;">
@@ -3797,14 +4000,14 @@ const App = {
                     </div>
                 </div>
                 
-                <div style="display:grid;gap:8px;font-size:12px;">
+                <div style="display:grid;gap:8px;font-size:12px;margin-bottom:16px;">
                     <div style="display:flex;justify-content:space-between;padding:8px;background:var(--sub);border-radius:6px;">
                         <span style="color:var(--dim);">Version</span>
-                        <span style="font-weight:600;">2.2.1</span>
+                        <span style="font-weight:600;">v${APP_VERSION}</span>
                     </div>
                     <div style="display:flex;justify-content:space-between;padding:8px;background:var(--sub);border-radius:6px;">
                         <span style="color:var(--dim);">Build Date</span>
-                        <span style="font-weight:600;">February 10, 2026</span>
+                        <span style="font-weight:600;">February 14, 2026</span>
                     </div>
                     <div style="display:flex;justify-content:space-between;padding:8px;background:var(--sub);border-radius:6px;">
                         <span style="color:var(--dim);">PWA Status</span>
@@ -3819,6 +4022,11 @@ const App = {
                         </span>
                     </div>
                 </div>
+                
+                <button class="btn-sec" onclick="App.showUpdateInstructions()" 
+                        style="width:100%;padding:10px;font-size:13px;">
+                    🔄 Check for Updates
+                </button>
             </div>
         `;
         
