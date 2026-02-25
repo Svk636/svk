@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'svk-blueprint-v2.3';
+const CACHE_VERSION = 'svk-blueprint-v2.3.0';
 const CACHE_NAME = `${CACHE_VERSION}-static`;
 
 const STATIC_ASSETS = [
