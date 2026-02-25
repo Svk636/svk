@@ -2,328 +2,173 @@
 <html lang="en">
 <!--
 ================================================================================
-SVK BLUEPRINT - UNIFIED VERSION 2.2.3 (PRODUCTION READY)
+SVK BLUEPRINT - UNIFIED VERSION 2.3.0
 ================================================================================
-Build Date: February 14, 2026
-Status: ✅ PRODUCTION READY - Enhanced CSV Export + Daily Reset + Bug Fixes
-License: Personal Use
+Build Date: February 25, 2026
+Status: ✅ PRODUCTION READY - EARN Integrations + Bug Fixes
 
 SYSTEM OVERVIEW:
 Zen-inspired 15-year vision execution system with 90-day cycle methodology.
-Bridges long-term aspirations with daily action through focused execution.
+Bridges long-term aspirations with daily action through live EARN integrations.
 
-🎉 NEW IN v2.2.3 (PRODUCTION READY - February 14, 2026):
+🎉 NEW IN v2.3.0 (EARN INTEGRATIONS LIVE — February 25, 2026):
 ================================================================================
-PRODUCTION ENHANCEMENTS - ZERO FRICTION EXECUTION
+VAULT EARN IS NOW FULLY WIRED INTO THE REST OF THE APP
 ================================================================================
 
-✅ DAILY RESET FUNCTIONALITY:
-- 🔄 Reset Today button for habits and micro-steps
-- Clear daily progress while preserving history
-- Confirmation dialog prevents accidents
-- Smart feedback on reset actions
+🔗 5 LIVE INTEGRATIONS:
 
-📊 CSV EXPORT FEATURE:
-- Export all data to spreadsheet format
-- 8 different data sheets in one file
-- Habits, Goals, Journal, Tasks, Timeblocks, Vault items
-- Properly escaped CSV formatting
-- Excel/Google Sheets compatible
+1. STRATEGY TAB — Operating Rules Panel
+   - Your Vault EARN Strategy items now appear directly on the Strategy tab
+   - Rendered above cycle tasks as "Operating Rules" context panel
+   - Domain-aware: prioritizes items linked to the cycle's dominant focus domain
+   - Pin/unpin items directly from Strategy tab
+   - "All N strategy items →" link to Vault when overflow
 
-🔧 BUG FIXES & OPTIMIZATIONS:
-- Removed duplicate export buttons (SYSTEM tab)
-- Consolidated data management in BUILD → Stats
-- Enhanced data validation on startup
-- Auto-repair missing IDs and metadata
-- Added safety checks to all critical functions
+2. EXECUTE FULFILL → CYCLE TASK AUTO-COMPLETE
+   - Hitting "Fulfill" on a Vault EARN Execute item now checks if a matching
+     cycle task exists (matched by title substring or linkedGoal)
+   - If found and incomplete, auto-marks that cycle task as done simultaneously
+   - Dual celebration: "Executed + Cycle Task Done!"
+
+3. CONTACTS → DELEGATED TASKS (AUTOMATIC)
+   - Any EARN Contact with a follow-up date of today or earlier automatically
+     creates a Delegated task on the Execute screen
+   - Synced on every render via syncContactsToTasks()
+   - When follow-up is marked done (bumped +7 days), delegated task auto-removes
+   - No manual bridging needed
+
+4. LEVERAGE → GOALS (BUILD TAB)
+   - Expanding any goal card now shows a "🔗 Active Leverage" section
+   - Surfaces incomplete EARN Leverage items linked by linkedGoal title or
+     matching linkedDomain to the goal's domain
+   - Shows up to 3 leverage items with overflow link to Vault
+
+5. DOMAIN-AWARE INTELLIGENCE BRIEF
+   - Brief header now shows a colored pill for the cycle's dominant domain
+     (the goals_focus entry with the highest % allocation)
+   - Strategy item selection and Leverage spotlight both prioritize items
+     matching that dominant domain
+   - Replaced first-alphabetical fallback with highest-% domain selection
+
+🐛 BUG FIXES IN v2.3.0:
+- Fixed double semicolon (;;) in vaultDailyBrief() execLog declaration
+- Fixed undefined CSS variable --text-secondary → replaced with --dim
+- Fixed: activeDomain now uses highest goals_focus % instead of first key
+
+================================================================================
+🎉 v2.2.2 (PRODUCTION READY — February 14, 2026):
+- Daily Reset functionality for habits and micro-steps
+- CSV Export: 8-sheet export compatible with Excel/Google Sheets
+- Removed duplicate export buttons
+- Enhanced data validation on startup with auto-repair
 - Production error boundaries
 - Data integrity validation on load
 
-🎯 FRICTIONLESS EXECUTION IMPROVEMENTS:
-- Single source of truth for data management
-- Streamlined UI with no duplicate controls
-- Faster load times with validation
-- Better error recovery
-- Zero-friction daily workflow
+🎉 v2.2.0 (WORLD-CLASS VAULT — February 10, 2026):
+- Premium card-based Vault layout with animations
+- Comprehensive analytics dashboard
+- Real-time search + tag filtering
+- Full CRUD for all LEARN and EARN items
+- Importance levels, source attribution, starred status
+- LEARN → EARN promotion workflow
+
+v2.1.x series: System tab enhancements, critical domain fixes,
+intelligent task assignment, comprehensive blueprint validation.
 
 ================================================================================
-
-📋 STREAMLINED QUICK CAPTURE:
-- Reduced from 21 to 10 essential capture types
-- Prioritized short-lived, fleeting items that need immediate capture
-- Focus on high-frequency daily use cases
-- Cleaner, faster capture interface
-
-✨ 10 ESSENTIAL CAPTURE TYPES:
-1. 💡 Idea - Fleeting thoughts and insights
-2. ⚡ Quick Task - Immediate action items  
-3. 📝 Note - Quick information capture
-4. ✓ Cycle Task - 90-day cycle tasks
-5. 💬 Quote - Wisdom and inspiration
-6. 📅 Timeblock - Schedule focused work
-7. 🔄 Habit - Daily/recurring behaviors
-8. 📔 Journal - Daily reflections
-9. 🎯 Goal - Strategic objectives
-10. ✨ Affirmation - Mindset reinforcement
-
-🔍 ENHANCED UNIVERSAL SEARCH:
-- Added Affirmations to universal search
-- All 10 capture types fully searchable
-- Real-time search across ALL data types
-- Navigate directly to results from search
-
-📊 CAPTURE TYPE RATIONALE:
-REMOVED (accessible via dedicated tabs when needed):
-- Book summaries, Courses, Skills (BUILD tab)
-- Mentors, Contacts (VAULT tab)
-- Income Streams, Assets (BUILD tab)
-- Mindmaps, Bucket List (BUILD tab)
-- Goal Stages, Reflections (dedicated interfaces)
-
-WHY THESE 10?
-- Capture transient information (ideas, notes, quotes)
-- Support immediate action (quick tasks, timeblocks)
-- Track daily practices (habits, journal, affirmations)
-- Maintain strategic focus (cycle tasks, goals)
-
-🎉 NEW IN v2.2.0 (WORLD-CLASS VAULT UPGRADE - February 10, 2026):
-================================================================================
-VAULT TRANSFORMED INTO A PREMIUM KNOWLEDGE MANAGEMENT SYSTEM
-================================================================================
-
-🌟 ENHANCED UI/UX:
-- Premium card-based layout with smooth animations
-- Hover effects with gradient accents
-- Importance indicators (High/Medium/Low) with color coding
-- Starred items with visual badges
-- Animated slide-in transitions for items
-- Professional action buttons with hover states
-
-📊 COMPREHENSIVE ANALYTICS DASHBOARD:
-- Total items, weekly, monthly statistics
-- Promoted items tracking
-- Starred items count
-- Executed items metrics
-- Toggle analytics on/off per user preference
-
-🔍 ADVANCED SEARCH & FILTERING:
-- Real-time search across titles, content, and tags
-- Instant filtering as you type
-- Search results highlighting
-- Clear search functionality
-
-🏷️ TAGGING SYSTEM:
-- Add multiple tags to any item
-- Tag-based search and filtering
-- Visual tag chips with hover effects
-- Comma-separated tag input
-
-📝 FULL CRUD OPERATIONS:
-- ✏️ Edit any LEARN or EARN item
-- 🗑️ Delete with confirmation
-- ⭐ Star/unstar items
-- 📤 Export individual items as JSON
-- ✓ Mark EXEC items as completed
-
-🎯 ENHANCED METADATA:
-- Importance levels (High/Medium/Low)
-- Source attribution
-- Created & modified timestamps
-- Starred status
-- Linked items support (structure in place)
-- Promoted from tracking
-
-🔄 SORTING OPTIONS:
-- Recent first (default)
-- Oldest first
-- Title A-Z
-- Importance (High → Low)
-- Persistent sort preferences
-
-✨ SMART FEATURES:
-- Promoted items show origin badge
-- Completion status for EXEC items
-- Modified date tracking
-- Visual importance indicators
-- Empty state messaging
-- Responsive search bar with icon
-
-📱 PREMIUM DESIGN ELEMENTS:
-- Dark sophisticated color palette
-- Gradient analytics headers
-- Professional stat cards
-- Smooth hover transitions
-- Border accent animations
-- Mobile-optimized toolbar
-
-🚀 LEARN → EARN WORKFLOW:
-- Enhanced promotion system
-- Maintains all metadata on promotion
-- Visual promoted-from badges
-- Analytics tracking of promotions
-
-💾 DATA ENHANCEMENT:
-All Vault items now support:
-{
-  id, title, content, tags: [],
-  importance: 'low'|'medium'|'high',
-  starred: boolean,
-  source: string,
-  created: ISO date,
-  modified: ISO date | null,
-  linkedTo: [] // for future linking feature
-}
-
-🎨 UX IMPROVEMENTS:
-- Toolbar with search + sort + actions
-- Grid/card view modes (structure ready)
-- Analytics toggle per section
-- Professional color-coded importance
-- Contextual action buttons
-- Export capabilities
-
-BACKWARD COMPATIBILITY:
-- All existing data structures preserved
-- Legacy vault functions maintained
-- Smooth upgrade path from v2.1.x
-- No data migration required
-
-================================================================================
-🔴 FIXED: Hardcoded 'Personal' domain default - now uses first available domain
-🟡 FIXED: Week 13 missing from task creation dropdown
-🟡 FIXED: Tasks imported from blueprint now get domains assigned intelligently
-🟡 FIXED: Comprehensive blueprint validation with detailed error messages
-🟢 FIXED: Domain colors now consistent via hash function (not array index)
-🟢 FIXED: Domain filter dropdown now dynamic (no hardcoded domains)
-🟢 FIXED: Week validation ensures tasks are 1-13 only
-
-NEW IN v2.1.3 (PRODUCTION FIXES - February 9, 2026):
-- 🎯 INTELLIGENT DOMAIN ASSIGNMENT: Tasks imported from blueprints get domains
-  assigned proportionally based on goals_focus percentages
-- ✅ COMPREHENSIVE VALIDATION: Blueprint import validates all fields:
-  - Required fields present
-  - goals_focus percentages sum to 100%
-  - Domain names are valid strings
-  - Detailed error messages for users
-- 🌈 CONSISTENT COLORS: Domain colors hash-based, stay same across sessions
-- 📊 DYNAMIC FILTERS: All domain dropdowns use actual blueprint domains
-- 🔒 WEEK VALIDATION: Week numbers clamped to 1-13 range
-
 CORE FEATURES:
 ✅ 5-Tab Interface: EXECUTE | BUILD | STRATEGY | SYSTEM | VAULT
-✅ Welcome Modal: First-time user onboarding with guided setup flow
-✅ Custom Blueprint Generator: AI-powered 15-year blueprint creation
-  - 12-field guided data collection
-  - One-click prompt generation for ChatGPT/Claude
-  - Copy-paste workflow
-  - Zero coding required
-  - Complete 60-cycle blueprint in minutes
-✅ Quick Capture: 10 streamlined capture types for high-frequency items
-✅ Universal Search: Real-time search across 12 data types
-✅ 90-Day Cycles: Structured goal execution with milestones
-✅ Habit Tracking: Heatmap visualization with streak tracking
-✅ Knowledge Vault: Notes, quotes, books, ideas, contacts
-✅ Enhanced Pomodoro Timer: Custom duration & intention setting
-✅ Reflections: Morning & evening mindfulness practice
-✅ Import/Export: Full data portability via JSON
+✅ 15-Year Blueprint with 60 cycles (90 days each)
+✅ Custom Blueprint Generator (AI-assisted, 12-field form)
+✅ Quick Capture: 10 streamlined capture types
+✅ Universal Search: real-time across 12+ data types
+✅ 90-Day Cycles with 13-week task execution
+✅ Habit Tracking with heatmap visualization
+✅ Vault EARN: Strategy, Execute, Leverage, Contacts (all now integrated)
+✅ Vault LEARN: Notes, Quotes, Books, Ideas
+✅ Pomodoro Timer with Zen Mode
+✅ Morning/Evening Reflections
+✅ CSV + JSON Import/Export
+✅ PWA: installable, offline-capable
+✅ Undo/Redo system (20 steps)
+✅ Backup reminder (7-day interval)
+✅ Offline indicator
 
-NEW IN v2.1.2 (CRITICAL DOMAIN FIX - February 9, 2026):
-- 🎯 FIXED: Dynamic domain system now uses goals_focus from blueprint
-  - Eliminated hardcoded domains (Health, Wealth, Relationships, Personal)
-  - Supports ANY custom domains defined in blueprint
-  - Proper domain counting and percentage calculation
-- 📊 ENHANCED: Domain Focus display shows both planned AND actual percentages
-  - Planned percentages from blueprint's goals_focus
-  - Actual percentages calculated from task distribution
-  - Visual alignment indicators (✓ On target, ⚠ Close, ! Off target)
-  - Vertical line showing target percentage on progress bars
-- 🎨 IMPROVED: Task creation now includes domain selection
-  - Domain dropdown when adding tasks to weeks
-  - Domains populated from current cycle's goals_focus
-  - Ensures proper task categorization
-- 🌈 ADDED: Dynamic color assignment for unlimited domains
-  - 8-color palette cycles for any number of domains
-  - Consistent colors per domain throughout interface
-
-NEW IN v2.1 (SYSTEM TAB ENHANCEMENTS):
-- ✨ FULL CRUD OPERATIONS: Edit, update, delete for all SYSTEM items
-  - Reflections (morning & evening)
-  - Journal entries
-  - Weekly reviews
-- 📊 SORTING SYSTEM: 5 sort options (date, modified, length, tags)
-- 🏷️ TAG SYSTEM: Categorize and organize all SYSTEM items
-- 📦 BULK OPERATIONS: Select multiple items for batch actions
-- 📥 EXPORT SYSTEM: JSON export for single items or entire sections
-- 📋 TEMPLATES: Pre-built templates for quick content creation
-- 📈 ANALYTICS: Detailed stats for reflections, journal, reviews, and notes
-- 🎨 ENHANCED UI: Action buttons, modified timestamps, professional design
-
-NEW IN v2.1.1 (CRITICAL BUGFIXES - February 9, 2026):
-- 🔴 FIXED: Corrected this.esc() to esc() in 19 locations
-  - Prevents JavaScript errors when editing items with special characters
-  - Fixes display issues with HTML entities in content
-- 🛡️ ADDED: Error handling for all export functions
-  - Graceful failure with user notifications
-  - Console error logging for debugging
-- 🧹 ADDED: URL.revokeObjectURL() to prevent memory leaks
-  - Cleans up blob URLs after downloads
-  - Improves long-term performance
-- ⌨️ ADDED: ESC key to close modals
-  - Improved keyboard navigation
-  - Better user experience
-
-BUG FIXES FROM v2.0:
-- ✅ Fixed escapeHtml function reference in custom blueprint tab
-- ✅ Removed unnecessary view property assignments
-- ✅ Ensured proper navigation flow from welcome modal
-- ✅ Verified localStorage flag management for welcome modal
-- ✅ All debug statements removed
-- ✅ Production-ready code with no console.log or debugger statements
-
-TECHNICAL DETAILS:
-- Pure JavaScript (no dependencies)
+TECHNICAL:
+- Pure JavaScript (zero dependencies)
 - LocalStorage persistence
-- Mobile-responsive design
-- Dark theme optimized
-- Security: HTML escaping for all user input
-- Tested on Chrome 90+, Safari 14+, Firefox 88+
+- Mobile-responsive, dark-theme optimized
+- HTML-escaped all user input (XSS safe)
+- Inline PWA manifest (no external files required)
+- Tested: Chrome 90+, Safari 14+, Firefox 88+
 
-QUICK START:
-1. Open file in modern browser (Chrome 90+, Safari 14+, Firefox 88+)
-2. Welcome modal appears automatically for first-time users
-3. Choose "Create Custom Blueprint" (recommended) or "Import Existing"
-4. Follow the guided setup flow
-5. Start executing your 15-year vision!
-
-FIRST-TIME USER FLOW:
-1. Welcome modal appears on first load
-2. Option A: Click "Create Your Custom Blueprint"
-   → Navigates to SYSTEM → Custom Blueprint
-   → Fill 12 fields → Generate AI prompt → Get JSON → Import
-3. Option B: Click "Import Existing Blueprint"
-   → Navigates to BUILD → Stats
-   → Click Import Blueprint → Upload JSON file → Start executing
-
+FIRST-TIME SETUP:
+1. Open in browser → Welcome modal appears
+2. Option A: SYSTEM → Custom Blueprint → fill 12 fields → generate AI prompt
+   → paste into ChatGPT/Claude → import returned JSON
+3. Option B: BUILD → Stats → Import Blueprint → upload existing JSON
+4. STRATEGY → Activate First Cycle
+5. Execute daily from EXECUTE tab
 ================================================================================
--->
 -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SVK Blueprint v2.2.1 | 15-Year Vision Execution System</title>
+    <title>SVK Blueprint | 15-Year Vision Execution System</title>
     
-    <!-- PWA Configuration -->
-    <meta name="description" content="Zen-inspired 15-year vision execution system with 90-day cycle methodology. Transform long-term goals into daily action with frictionless execution.">
-    <meta name="theme-color" content="#8b5cf6">
+    <!-- PWA: Core meta -->
+    <meta name="description" content="Zen-inspired 15-year vision execution system. Transform long-term goals into daily action with frictionless execution.">
+    <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SVK Blueprint">
-    <link rel="manifest" href="./manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="SVK Blueprint">
+    <meta name="msapplication-TileColor" content="#000000">
     
-    <!-- iOS Splash Screens -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%238b5cf6'/%3E%3Ctext x='96' y='130' font-family='system-ui' font-size='80' font-weight='700' fill='white' text-anchor='middle'%3ESVK%3C/text%3E%3C/svg%3E">
+    <!-- PWA: Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%23000'/%3E%3Ctext x='90' y='112' font-family='system-ui,sans-serif' font-size='60' font-weight='900' fill='%23ffd700' text-anchor='middle'%3ESVK%3C/text%3E%3Ctext x='90' y='140' font-family='system-ui,sans-serif' font-size='16' font-weight='400' fill='%23666' text-anchor='middle' letter-spacing='4'%3EBLUEPRINT%3C/text%3E%3C/svg%3E">
     
+    <!-- PWA: Inline manifest (no external file needed) -->
+    <script>
+    (function() {
+        const manifest = {
+            name: "SVK Blueprint",
+            short_name: "SVK",
+            description: "Zen-inspired 15-year vision execution system",
+            start_url: "./",
+            display: "standalone",
+            background_color: "#000000",
+            theme_color: "#000000",
+            orientation: "portrait-primary",
+            categories: ["productivity", "lifestyle"],
+            icons: [
+                {
+                    src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23000'/%3E%3Ctext x='96' y='118' font-family='system-ui' font-size='72' font-weight='900' fill='%23ffd700' text-anchor='middle'%3ESVK%3C/text%3E%3C/svg%3E",
+                    sizes: "192x192",
+                    type: "image/svg+xml",
+                    purpose: "any maskable"
+                },
+                {
+                    src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23000'/%3E%3Ctext x='256' y='310' font-family='system-ui' font-size='192' font-weight='900' fill='%23ffd700' text-anchor='middle'%3ESVK%3C/text%3E%3C/svg%3E",
+                    sizes: "512x512",
+                    type: "image/svg+xml",
+                    purpose: "any maskable"
+                }
+            ]
+        };
+        const blob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = url;
+        document.head.appendChild(link);
+    })();
+    </script>
+
     <style>
+    
         :root {
             --void: #000000; --card: #1c1c1e; --sub: #2c2c2e; --text: #ffffff;
             --dim: #8e8e93; --accent: #ffd700; --border: #38383a;
@@ -765,7 +610,7 @@ FIRST-TIME USER FLOW:
             letter-spacing: 5px;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
         }
         .vault-main-btn:hover { color: rgba(245,240,232,0.6); }
         .vault-main-btn.active {
@@ -776,9 +621,9 @@ FIRST-TIME USER FLOW:
         /* Sub-category nav pills */
         .vault-sub-nav {
             display: flex;
-            gap: 6px;
-            padding: 20px 0 8px;
-            margin-bottom: 8px;
+            gap: 4px;
+            padding: 16px 0 4px;
+            margin-bottom: 0;
             overflow-x: auto;
             scrollbar-width: none;
         }
@@ -808,43 +653,45 @@ FIRST-TIME USER FLOW:
             background: var(--zen-mist);
         }
 
-        /* Vault section header */
+        /* Vault section header — compact, left-aligned, premium */
         .vault-section-header {
-            padding: 24px 0 20px;
-            text-align: center;
+            padding: 20px 0 4px;
         }
         .vault-section-kanji {
-            font-size: 10px;
+            font-size: 9px;
             letter-spacing: 5px;
             color: var(--zen-stone);
             text-transform: uppercase;
             font-family: var(--font);
-            opacity: 0.6;
-            margin-bottom: 6px;
-        }
-        .vault-section-title {
-            font-family: var(--zen-title-font);
-            font-size: 22px;
-            font-weight: 400;
-            color: rgba(245,240,232,0.85);
-            font-style: italic;
-            letter-spacing: 0.5px;
+            opacity: 0.55;
             margin-bottom: 4px;
         }
+        .vault-section-title {
+            font-size: 20px;
+            font-weight: 300;
+            color: rgba(245,240,232,0.88);
+            font-style: italic;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
         .vault-section-desc {
-            font-family: var(--zen-font);
-            font-size: 12px;
+            font-size: 11px;
             color: var(--zen-stone);
             font-style: italic;
-            opacity: 0.7;
+            opacity: 0.65;
+            margin-bottom: 0;
         }
 
-        /* Vault toolbar */
+        /* Vault toolbar — single lean row */
         .vault-toolbar {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 18px;
+            margin: 14px 0 18px;
+            padding: 10px 12px;
+            background: var(--zen-mist);
+            border: 1px solid var(--zen-border);
+            border-radius: 3px;
         }
         .vault-search-input {
             flex: 1;
@@ -2215,7 +2062,7 @@ FIRST-TIME USER FLOW:
 <div id="welcome-overlay" class="welcome-overlay" style="display: none;">
     <div class="welcome-modal">
         <div class="welcome-logo">SVK</div>
-        <div class="welcome-version">Blueprint v2.2.2</div>
+        <div class="welcome-version">Blueprint v2.3.0</div>
         <h1 class="welcome-title">Welcome to Your 15-Year Vision System</h1>
         <p class="welcome-subtitle">Transform your long-term goals into executable 90-day cycles with zero-friction execution. Let's get started!</p>
         
@@ -2236,7 +2083,7 @@ FIRST-TIME USER FLOW:
         
         <div style="margin-top: 24px; padding: 16px; background: rgba(139, 92, 246, 0.1); border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.2);">
             <div style="font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">✨ What's New in v2.2.1</div>
-            <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+            <div style="font-size: 13px; color: var(--dim); line-height: 1.6;">
                 <strong style="color: var(--text);">10 Streamlined Quick Capture Types</strong> - Focused on short-lived, high-frequency items: Ideas, Quick Tasks, Notes, Cycle Tasks, Quotes, Timeblocks, Habits, Journal, Goals & Affirmations.<br>
                 <strong style="color: var(--text);">Enhanced Universal Search</strong> - Search across all 15+ data types with instant results and navigation.
             </div>
@@ -2342,7 +2189,7 @@ FIRST-TIME USER FLOW:
 
 <script>
 const DB_KEY = 'svk_blueprint_15year';
-const APP_VERSION = '2.2.2'; // Current app version - update this with each release
+const APP_VERSION = '2.3.0'; // Current app version - update this with each release
 const SCHEMA = {
     blueprintMeta: null,
     allCycles: [],
@@ -2757,29 +2604,66 @@ const App = {
             }, 300);
         }
         
-        // PWA: Register service worker
+        // PWA: Register inline service worker (no external file needed)
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./service-worker.js')
+            const swCode = `
+const CACHE_NAME = 'svk-blueprint-v2-3-0';
+const STATIC_ASSETS = ['/'];
+
+self.addEventListener('install', (e) => {
+    e.waitUntil(
+        caches.open(CACHE_NAME).then(cache => {
+            return cache.addAll(STATIC_ASSETS).catch(() => {});
+        }).then(() => self.skipWaiting())
+    );
+});
+
+self.addEventListener('activate', (e) => {
+    e.waitUntil(
+        caches.keys().then(keys =>
+            Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+        ).then(() => self.clients.claim())
+    );
+});
+
+self.addEventListener('fetch', (e) => {
+    if (e.request.method !== 'GET') return;
+    e.respondWith(
+        caches.match(e.request).then(cached => {
+            if (cached) return cached;
+            return fetch(e.request).then(response => {
+                if (response && response.status === 200 && response.type === 'basic') {
+                    const clone = response.clone();
+                    caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+                }
+                return response;
+            }).catch(() => cached || new Response('Offline', {status: 503}));
+        })
+    );
+});
+
+self.addEventListener('message', (e) => {
+    if (e.data === 'skipWaiting') self.skipWaiting();
+});
+`;
+            const swBlob = new Blob([swCode], {type: 'application/javascript'});
+            const swUrl = URL.createObjectURL(swBlob);
+            
+            navigator.serviceWorker.register(swUrl, {scope: './'})
                 .then(registration => {
-                    console.log('SVK Blueprint: Service Worker registered', registration.scope);
-                    // Check for updates
+                    console.log('SVK: Service Worker registered');
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
                         if (newWorker) {
                             newWorker.addEventListener('statechange', () => {
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    // New version available
-                                    if (confirm('📱 New version available! Reload to update?')) {
-                                        window.location.reload();
-                                    }
+                                    this.showUpdateBanner();
                                 }
                             });
                         }
                     });
                 })
-                .catch(err => {
-                    console.log('Service Worker registration failed:', err);
-                });
+                .catch(err => console.log('SW registration failed (normal in dev):', err));
         }
         
         // PWA: Install prompt handler
@@ -3456,6 +3340,9 @@ const App = {
     },
 
     render() {
+        // ── INTEGRATION: Sync contact follow-ups → delegated tasks ──
+        if (this.syncContactsToTasks) this.syncContactsToTasks();
+
         // NEW: Lazy loading - only render if tab has been visited
         const views = [this.viewExecute, this.viewBuild, this.viewStrategy, this.viewSystem, this.viewVault];
         
@@ -3607,6 +3494,245 @@ const App = {
     },
     closeCelebrate() { document.getElementById('celebrate').classList.remove('show'); },
 
+    // ── INTELLIGENCE BRIEF ENGINE ──────────────────────────────────────
+    // Surfaces Vault EARN items contextually on the Execute screen.
+    // Called from viewExecute. Returns HTML string.
+    vaultDailyBrief() {
+        const earn = this.data.vaultEarn || {};
+        const strat    = earn.strat    || [];
+        const execLog  = earn.exec     || [];
+        const leverage = earn.leverage || [];
+        const contacts = earn.contacts || [];
+        const today    = new Date().toISOString().split('T')[0];
+
+        // ── INTEGRATION: Find the dominant domain for THIS WEEK ──
+        // Dominant = the goals_focus domain with highest % allocation
+        const goalsF = this.data.currentCycle?.goals_focus || {};
+        const activeDomain = Object.entries(goalsF)
+            .sort((a,b) => b[1] - a[1])
+            .map(e => e[0])[0] || '';
+
+        // ── 1. TODAY'S OPERATING RULE — domain-aware ──
+        // Priority: pinned → domain match high importance → any high → starred → newest
+        let todayRule = strat.find(s => s.pinnedToday) ||
+                        (activeDomain ? strat.filter(s => !s.pinnedToday && s.linkedDomain === activeDomain && s.importance === 'high').sort((a,b) => new Date(b.created)-new Date(a.created))[0] : null) ||
+                        (activeDomain ? strat.filter(s => !s.pinnedToday && s.linkedDomain === activeDomain).sort((a,b) => new Date(b.created)-new Date(a.created))[0] : null) ||
+                        strat.filter(s => s.importance === 'high').sort((a,b) => new Date(b.created)-new Date(a.created))[0] ||
+                        strat.filter(s => s.starred).sort((a,b) => new Date(b.created)-new Date(a.created))[0] ||
+                        strat.sort((a,b) => new Date(b.created)-new Date(a.created))[0] || null;
+
+        // ── 2. LEVERAGE SPOTLIGHT — domain-aware ──
+        let topLeverage = leverage.filter(l => !l.completed && l.importance === 'high')[0] ||
+                          (activeDomain ? leverage.filter(l => !l.completed && l.linkedDomain === activeDomain)[0] : null) ||
+                          leverage.filter(l => !l.completed && l.starred)[0] ||
+                          leverage.filter(l => !l.completed)[0] || null;
+
+        // ── 3. CONTACTS DUE FOR FOLLOW-UP ──
+        const dueContacts = contacts.filter(c => {
+            if (c.completed) return false;
+            if (!c.followUpDate) return false;
+            return c.followUpDate <= today;
+        }).sort((a,b) => (a.followUpDate||'').localeCompare(b.followUpDate||''));
+
+        // ── 4. RECENT WIN (last completed exec log item) ──
+        const lastWin = execLog.filter(e => e.completed)
+            .sort((a,b) => new Date(b.modified||b.created) - new Date(a.modified||a.created))[0] || null;
+
+        // Nothing to surface
+        const hasAnything = todayRule || topLeverage || dueContacts.length > 0 || lastWin;
+        if (!hasAnything) return '';
+
+        let html = `
+        <div style="margin-top:28px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);">
+                        ◈ Intelligence Brief
+                    </div>
+                    ${activeDomain ? `<div style="font-size:9px;padding:2px 8px;background:${this.getDomainColor(activeDomain)}22;
+                        border:1px solid ${this.getDomainColor(activeDomain)}55;border-radius:10px;
+                        color:${this.getDomainColor(activeDomain)};font-weight:700;text-transform:uppercase;letter-spacing:1px;">
+                        ⬡ ${esc(activeDomain)}
+                    </div>` : ''}
+                </div>
+                <button onclick="App.tab=4;App.sub.vaultMain='earn';App.sub.vault='strat';App.render()"
+                    style="font-size:10px;color:var(--dim);background:none;border:none;cursor:pointer;padding:0;">
+                    Open Vault →
+                </button>
+            </div>`;
+
+        // TODAY'S OPERATING RULE
+        if (todayRule) {
+            const domainColor = todayRule.linkedDomain ? this.getDomainColor(todayRule.linkedDomain) : 'var(--accent)';
+            html += `
+            <div style="background:linear-gradient(135deg,#1a1a00,#1c1c1e);border:1px solid ${domainColor}44;
+                        border-left:3px solid ${domainColor};border-radius:10px;padding:14px 14px 12px;margin-bottom:10px;">
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:${domainColor};
+                            font-weight:700;margin-bottom:6px;">📊 Today's Rule</div>
+                <div style="font-size:13px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:6px;">
+                    ${esc(todayRule.title)}
+                </div>
+                ${todayRule.content ? `<div style="font-size:12px;color:var(--dim);line-height:1.5;
+                    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                    ${esc(todayRule.content)}</div>` : ''}
+                <div style="display:flex;gap:8px;margin-top:10px;">
+                    <button onclick="App.pinStrategyToday('${todayRule.id}')"
+                        style="font-size:10px;padding:4px 10px;background:${todayRule.pinnedToday?domainColor:'var(--sub)'};
+                               color:${todayRule.pinnedToday?'var(--void)':'var(--dim)'};border:1px solid ${domainColor}44;
+                               border-radius:6px;cursor:pointer;font-weight:600;">
+                        ${todayRule.pinnedToday ? '📌 Pinned' : 'Pin Today'}
+                    </button>
+                    <button onclick="App.tab=4;App.sub.vaultMain='earn';App.sub.vault='strat';App.render()"
+                        style="font-size:10px;padding:4px 10px;background:var(--sub);color:var(--dim);
+                               border:1px solid var(--border);border-radius:6px;cursor:pointer;">
+                        All Strategy →
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        // LEVERAGE SPOTLIGHT
+        if (topLeverage) {
+            const lColor = this.getDomainColor(topLeverage.linkedDomain || 'leverage');
+            html += `
+            <div style="background:var(--card);border:1px solid var(--border);border-left:3px solid ${lColor};
+                        border-radius:10px;padding:14px;margin-bottom:10px;">
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:${lColor};
+                            font-weight:700;margin-bottom:6px;">🔗 Leverage Opportunity</div>
+                <div style="font-size:13px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:4px;">
+                    ${esc(topLeverage.title)}
+                </div>
+                ${topLeverage.content ? `<div style="font-size:12px;color:var(--dim);line-height:1.4;
+                    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                    ${esc(topLeverage.content)}</div>` : ''}
+                <div style="margin-top:8px;">
+                    <button onclick="App.markLeveragePursued('${topLeverage.id}')"
+                        style="font-size:10px;padding:4px 12px;background:${lColor};color:var(--void);
+                               border:none;border-radius:6px;cursor:pointer;font-weight:700;">
+                        Pursuing ✓
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        // CONTACTS DUE
+        if (dueContacts.length > 0) {
+            html += `
+            <div style="background:var(--card);border:1px solid var(--border);border-left:3px solid var(--blue);
+                        border-radius:10px;padding:14px;margin-bottom:10px;">
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--blue);
+                            font-weight:700;margin-bottom:8px;">👤 Follow Up Today</div>`;
+            dueContacts.slice(0, 3).forEach(c => {
+                const isOverdue = c.followUpDate < today;
+                html += `
+                <div style="display:flex;justify-content:space-between;align-items:center;
+                            padding:8px 0;border-bottom:1px solid var(--border);">
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:13px;font-weight:600;">${esc(c.title)}</div>
+                        ${c.content ? `<div style="font-size:11px;color:var(--dim);margin-top:2px;
+                            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(c.content)}</div>` : ''}
+                    </div>
+                    <div style="display:flex;gap:6px;align-items:center;margin-left:8px;">
+                        ${isOverdue ? `<span style="font-size:10px;color:#ff453a;font-weight:700;">OVERDUE</span>` : 
+                                      `<span style="font-size:10px;color:var(--blue);">TODAY</span>`}
+                        <button onclick="App.markContactDone('${c.id}')"
+                            style="font-size:11px;padding:4px 10px;background:var(--blue);color:#fff;
+                                   border:none;border-radius:6px;cursor:pointer;font-weight:600;">✓</button>
+                    </div>
+                </div>`;
+            });
+            if (dueContacts.length > 3) {
+                html += `<div style="font-size:11px;color:var(--dim);margin-top:8px;text-align:center;">
+                    +${dueContacts.length - 3} more in Vault</div>`;
+            }
+            html += `</div>`;
+        }
+
+        // RECENT WIN
+        if (lastWin) {
+            html += `
+            <div style="background:var(--sub);border:1px solid var(--border);border-left:3px solid var(--success);
+                        border-radius:10px;padding:12px 14px;margin-bottom:10px;">
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--success);
+                            font-weight:700;margin-bottom:4px;">⚙️ Last Win Logged</div>
+                <div style="font-size:12px;color:var(--dim);font-style:italic;">${esc(lastWin.title)}</div>
+            </div>`;
+        }
+
+        html += `</div>`;
+        return html;
+    },
+
+    // Pin/unpin a strategy item to today's brief
+    pinStrategyToday(id) {
+        const strat = this.data.vaultEarn?.strat || [];
+        strat.forEach(s => { s.pinnedToday = false; }); // unpin all first
+        const item = strat.find(s => s.id === id);
+        if (item) {
+            item.pinnedToday = true;
+            item.modified = new Date().toISOString();
+            this.save(); this.render();
+            this.toast('📌 Strategy pinned to today');
+        }
+    },
+
+    // Mark leverage as being pursued (completes it from brief)
+    markLeveragePursued(id) {
+        const item = this.data.vaultEarn?.leverage?.find(l => l.id === id);
+        if (item) {
+            item.completed = true;
+            item.modified = new Date().toISOString();
+            this.save(); this.render();
+            this.celebrate('🔗', 'Leverage Activated!', item.title);
+        }
+    },
+
+    // Mark contact follow-up done from brief
+    markContactDone(id) {
+        const item = this.data.vaultEarn?.contacts?.find(c => c.id === id);
+        if (item) {
+            // Clear follow-up date or mark done — here we bump to +7 days
+            const next = new Date();
+            next.setDate(next.getDate() + 7);
+            item.followUpDate = next.toISOString().split('T')[0];
+            item.lastContactDate = new Date().toISOString().split('T')[0];
+            item.modified = new Date().toISOString();
+            this.save(); this.render();
+            this.toast('✓ Follow-up done · Next in 7 days');
+        }
+    },
+
+    // ── INTEGRATION: Auto-create delegated tasks from due contacts ──
+    syncContactsToTasks() {
+        const contacts = this.data.vaultEarn?.contacts || [];
+        const today = new Date().toISOString().split('T')[0];
+        if (!this.data.tasks) this.data.tasks = { quick: [], scheduled: [], delegated: [] };
+        if (!this.data.tasks.delegated) this.data.tasks.delegated = [];
+
+        contacts.forEach(c => {
+            if (c.completed || !c.followUpDate || c.followUpDate > today) return;
+            // Check if a delegated task already exists for this contact
+            const alreadyExists = this.data.tasks.delegated.some(t => t._contactId === c.id);
+            if (!alreadyExists) {
+                this.data.tasks.delegated.push({
+                    id: 'ct_' + c.id,
+                    _contactId: c.id,
+                    title: `Follow up: ${c.title}`,
+                    notes: c.content || '',
+                    done: false,
+                    created: new Date().toISOString()
+                });
+            }
+        });
+        // Remove delegated tasks whose contact was marked done (followUpDate moved to future)
+        this.data.tasks.delegated = this.data.tasks.delegated.filter(t => {
+            if (!t._contactId) return true; // keep non-contact tasks
+            const contact = contacts.find(c => c.id === t._contactId);
+            if (!contact) return false;
+            return contact.followUpDate <= today && !contact.completed;
+        });
+    },
+
     // VIEW: EXECUTE
     viewExecute() {
         const quotes = ["The obstacle is the path.", "One breath. One task. Full presence.", "Empty your cup to receive."];
@@ -3614,14 +3740,16 @@ const App = {
         
         let html = `<div class="zen-quote">"${quote}"</div>`;
         
-        // QUICK TASKS - Max 3 urgent items
-        if (!this.data.tasks) this.data.tasks = { quick: [] };
+        // ── SECTION 1: QUICK TASKS (max 3) ──────────────────────────────
+        if (!this.data.tasks) this.data.tasks = { quick: [], scheduled: [], delegated: [] };
         if (!this.data.tasks.quick) this.data.tasks.quick = [];
+        if (!this.data.tasks.scheduled) this.data.tasks.scheduled = [];
+        if (!this.data.tasks.delegated) this.data.tasks.delegated = [];
         const quickTasks = this.data.tasks.quick || [];
-        const canAddQuick = quickTasks.length < 3;
+        const canAddQuick = quickTasks.filter(t => !t.done).length < 3;
         
         html += `<div class="section-header">
-            <span>⚡ Quick Tasks (${quickTasks.length}/3)</span>
+            <span>⚡ Quick Tasks (${quickTasks.filter(t=>!t.done).length}/3)</span>
             ${canAddQuick ? `<button class="btn-sec" onclick="App.addQuickTask()">+ Add</button>` : ''}
         </div>`;
         
@@ -3637,41 +3765,38 @@ const App = {
                     </div>
                 </div>`;
             });
-        }
-        
-        if (!canAddQuick) {
-            html += `<div style="text-align:center;margin-top:8px;font-size:11px;color:var(--dim);">
-                Max 3 quick tasks. Complete or delete to add more.
+            if (!canAddQuick) {
+                html += `<div style="text-align:center;margin-top:8px;font-size:11px;color:var(--dim);">Max 3 quick tasks. Complete or delete to add more.</div>`;
+            }
+        } else {
+            // EMPTY CUP state
+            html += `<div style="margin-top:16px;text-align:center;padding:36px 20px;background:var(--sub);border-radius:12px;border:1px dashed var(--border);">
+                <div style="font-size:14px;color:var(--accent);margin-bottom:16px;letter-spacing:2px;text-transform:uppercase;font-weight:600;">Empty Cup</div>
+                <div style="font-size:72px;line-height:1;margin-bottom:14px;">🧘</div>
+                <div style="font-size:13px;color:var(--dim);max-width:260px;margin:0 auto;line-height:1.6;">
+                    Your mind is clear, ready to receive.<br>No quick tasks pending.
+                </div>
+                <button class="btn-sec" onclick="App.addQuickTask()" style="margin-top:16px;font-size:12px;">+ Add Quick Task</button>
             </div>`;
         }
+
+        // ── SECTION 2: PLANNED TASKS FROM 15-YEAR VISION ────────────────
+        html += `<div class="section-header" style="margin-top:28px;">
+            <span>🎯 Vision Plan Tasks</span>
+            <button class="btn-sec" onclick="App.addCycleTask()" style="font-size:11px;padding:4px 10px;">+ Add</button>
+        </div>`;
         
-        // MEDITATIVE FIGURE - Empty Cup (shown when no quick tasks)
-        if (quickTasks.length === 0) {
-            html += `<div style="margin-top:32px;text-align:center;padding:40px 20px;background:var(--sub);border-radius:12px;">
-                <div style="font-size:14px;color:var(--accent);margin-bottom:20px;letter-spacing:1px;text-transform:uppercase;">
-                    The Empty Cup
-                </div>
-                <div style="font-size:80px;line-height:1;margin-bottom:16px;">🧘</div>
-                <div style="font-size:13px;color:var(--dim);max-width:280px;margin:0 auto;line-height:1.6;">
-                    Your mind is clear, ready to receive.<br>
-                    Tasks will appear when needed.
-                </div>
-            </div>`;
-        }
-        
-        // ACTIVE CYCLE TASKS
         if (!this.data.currentCycle) {
-            html += `<div class="section-header" style="margin-top:24px;"><span>📋 Active Cycle</span></div>`;
-            html += `<div class="card" style="text-align:center;padding:40px 20px;">
-                <div style="font-size:48px;margin-bottom:20px;">🎯</div>
-                <div style="font-size:20px;font-weight:700;margin-bottom:12px;">No Blueprint Yet</div>
-                <p style="color:var(--dim);margin-bottom:24px;line-height:1.5;">
-                    Create your personalized 15-year blueprint with AI or import an existing one.
+            html += `<div class="card" style="text-align:center;padding:28px 20px;background:var(--sub);">
+                <div style="font-size:36px;margin-bottom:12px;">🗺️</div>
+                <div style="font-size:15px;font-weight:700;margin-bottom:8px;">No Blueprint Yet</div>
+                <p style="color:var(--dim);margin-bottom:18px;font-size:13px;line-height:1.5;">
+                    Link your daily execution to a 15-year vision plan.
                 </p>
-                <button class="btn" style="margin-bottom:12px;" onclick="App.tab=3;App.sub.system='custom';App.render()">
-                    🤖 Create Custom Blueprint
+                <button class="btn" style="margin-bottom:8px;font-size:13px;" onclick="App.tab=3;App.sub.system='custom';App.render()">
+                    🤖 Create Blueprint
                 </button>
-                <button class="btn-sec" onclick="App.tab=1;App.sub.build='stats';App.render()">
+                <button class="btn-sec" onclick="App.tab=1;App.sub.build='stats';App.render()" style="font-size:13px;">
                     📤 Import Blueprint
                 </button>
             </div>`;
@@ -3679,65 +3804,126 @@ const App = {
             const tasks = this.data.currentCycle.tasks || [];
             const week = this.getCurrentWeek();
             const weekTasks = tasks.filter(t => t.week === week && !t.done);
+            const allPending = tasks.filter(t => !t.done);
             
-            html += `<div class="section-header" style="margin-top:24px;">
-                <span>📅 This Week (Week ${week}/13)</span>
-                <span style="font-size:10px;color:var(--dim);font-weight:400;">${weekTasks.length} pending</span>
-            </div>`;
-            
-            if (weekTasks.length === 0) {
-                html += `<div class="card" style="text-align:center;padding:20px;background:var(--sub);">
-                    <div style="font-size:13px;color:var(--dim);">All tasks completed for this week! 🎉</div>
+            if (allPending.length === 0) {
+                html += `<div class="card" style="text-align:center;padding:16px;background:var(--sub);">
+                    <div style="font-size:13px;color:var(--dim);">All vision tasks completed! 🎉</div>
                 </div>`;
             } else {
-                // Show first 5 pending tasks
-                weekTasks.slice(0, 5).forEach(task => {
+                html += `<div style="font-size:11px;color:var(--dim);margin-bottom:8px;padding:0 2px;">
+                    Cycle ${this.data.currentCycle.number || '?'} · Week ${week}/13 · ${weekTasks.length} this week
+                </div>`;
+                const displayTasks = weekTasks.length > 0 ? weekTasks : allPending.slice(0, 5);
+                displayTasks.slice(0, 5).forEach(task => {
                     html += `<div class="task-row" onclick="App.startTask('${task.id}')">
                         <div style="flex:1;min-width:0;">
                             <div style="font-weight:600;">${esc(task.title)}</div>
                             <div class="task-meta">
                                 ${task.duration ? `⏱ ${task.duration}m` : ''}
+                                ${task.domain ? `<span style="color:var(--accent);">${esc(task.domain)}</span>` : ''}
                                 <span>Week ${task.week}</span>
                             </div>
                         </div>
                         <button class="btn-sec btn-success" onclick="event.stopPropagation();App.toggleTask('${task.id}')">✓</button>
                     </div>`;
                 });
-                
-                if (weekTasks.length > 5) {
-                    html += `<div style="text-align:center;margin-top:12px;">
+                if (allPending.length > 5) {
+                    html += `<div style="text-align:center;margin-top:10px;">
                         <button class="btn-sec" onclick="App.navigate(2)" style="font-size:12px;">
-                            View All ${weekTasks.length} Tasks →
+                            View All ${allPending.length} Tasks →
                         </button>
                     </div>`;
                 }
             }
         }
+
+        // ── VAULT INTELLIGENCE BRIEF ─────────────────────────────────────
+        html += this.vaultDailyBrief();
+
+        // ── SECTION 3: SCHEDULED TASKS (vertical timeline) ───────────────
+        const scheduledTasks = (this.data.tasks.scheduled || []).filter(t => !t.done);
+        html += `<div class="section-header" style="margin-top:28px;">
+            <span>📅 Scheduled Tasks</span>
+            <button class="btn-sec" onclick="App.addScheduledTask()" style="font-size:11px;padding:4px 10px;">+ Add</button>
+        </div>`;
         
-        // TODAY'S TIMEBLOCKS
-        const today = new Date().toISOString().split('T')[0];
-        const todayTimeblocks = (this.data.timeblocks || []).filter(tb => tb.date === today && !tb.completed);
-        
-        if (todayTimeblocks.length > 0) {
-            html += `<div class="section-header" style="margin-top:24px;">
-                <span>⏰ Today's Timeblocks</span>
-                <button class="btn-sec" onclick="App.viewTimeblocks()" style="font-size:11px;padding:4px 10px;">View All</button>
+        if (scheduledTasks.length === 0) {
+            html += `<div style="padding:16px;text-align:center;color:var(--dim);font-size:13px;background:var(--sub);border-radius:8px;">
+                No scheduled tasks. Capture via + button or Add above.
             </div>`;
-            
-            todayTimeblocks.slice(0, 3).forEach(tb => {
-                html += `<div class="card" style="border-left:4px solid var(--accent);">
-                    <div style="display:flex;justify-content:space-between;align-items:start;">
-                        <div style="flex:1;">
-                            <div style="font-weight:700;">${esc(tb.title)}</div>
-                            <div style="font-size:12px;color:var(--dim);margin-top:4px;">
-                                ${tb.time || 'Anytime'} • ${tb.duration || 60} min • ${tb.type || 'Focus'}
+        } else {
+            // Sort by scheduled date/time
+            const sorted = [...scheduledTasks].sort((a,b) => {
+                const da = a.scheduledDate || a.created || '';
+                const db = b.scheduledDate || b.created || '';
+                return da.localeCompare(db);
+            });
+            html += `<div style="position:relative;padding-left:20px;">
+                <div style="position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--border);border-radius:2px;"></div>`;
+            sorted.forEach((task, idx) => {
+                const isToday = task.scheduledDate === new Date().toISOString().split('T')[0];
+                html += `<div style="position:relative;margin-bottom:14px;">
+                    <div style="position:absolute;left:-17px;top:10px;width:10px;height:10px;border-radius:50%;
+                         background:${isToday ? 'var(--accent)' : 'var(--border)'};border:2px solid ${isToday ? 'var(--accent)' : 'var(--dim)'};">
+                    </div>
+                    <div class="task-row" style="margin-bottom:0;${isToday ? 'border-left:3px solid var(--accent);' : ''}">
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-weight:600;font-size:13px;">${esc(task.title)}</div>
+                            <div class="task-meta">
+                                ${task.scheduledDate ? `<span style="color:${isToday ? 'var(--accent)' : 'var(--dim)'};">${isToday ? 'Today' : task.scheduledDate}</span>` : ''}
+                                ${task.scheduledTime ? `<span>⏰ ${task.scheduledTime}</span>` : ''}
+                                ${task.notes ? `<span>${esc(task.notes)}</span>` : ''}
                             </div>
                         </div>
-                        <button class="btn-sec btn-success" onclick="App.toggleTimeblock('${tb.id}')" 
-                                style="font-size:12px;padding:6px 12px;">✓</button>
+                        <div style="display:flex;gap:6px;align-items:center;">
+                            <button class="btn-sec btn-success" onclick="App.completeScheduledTask('${task.id}')" style="font-size:12px;padding:6px 10px;">✓</button>
+                            <button class="btn-sec" onclick="App.deleteScheduledTask('${task.id}')" style="font-size:11px;padding:4px 8px;opacity:0.5;">✕</button>
+                        </div>
                     </div>
                 </div>`;
             });
+            html += `</div>`;
+            
+            // Also show completed scheduled tasks count
+            const completedSched = (this.data.tasks.scheduled || []).filter(t => t.done).length;
+            if (completedSched > 0) {
+                html += `<div style="font-size:11px;color:var(--dim);text-align:center;margin-top:6px;">
+                    ${completedSched} completed scheduled task${completedSched>1?'s':''} hidden
+                </div>`;
+            }
+        }
+
+        // ── SECTION 4: DELEGATED TASKS FOR FOLLOW-UP ────────────────────
+        const delegatedTasks = (this.data.tasks.delegated || []).filter(t => !t.done);
+        html += `<div class="section-header" style="margin-top:28px;">
+            <span>🤝 Delegated – Follow Up</span>
+            <button class="btn-sec" onclick="App.addDelegatedTask()" style="font-size:11px;padding:4px 10px;">+ Add</button>
+        </div>`;
+        
+        if (delegatedTasks.length === 0) {
+            html += `<div style="padding:16px;text-align:center;color:var(--dim);font-size:13px;background:var(--sub);border-radius:8px;margin-bottom:40px;">
+                No delegated tasks awaiting follow-up.
+            </div>`;
+        } else {
+            delegatedTasks.forEach(task => {
+                const isOverdue = task.followUpDate && task.followUpDate < new Date().toISOString().split('T')[0];
+                html += `<div class="task-row" style="${isOverdue ? 'border-left:3px solid #ff6b6b;' : 'border-left:3px solid var(--dim);'}">
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:600;font-size:13px;">${esc(task.title)}</div>
+                        <div class="task-meta">
+                            ${task.delegatedTo ? `<span>👤 ${esc(task.delegatedTo)}</span>` : ''}
+                            ${task.followUpDate ? `<span style="color:${isOverdue ? '#ff6b6b' : 'var(--dim)'};">${isOverdue ? '⚠️ Overdue · ' : '📅 '}${task.followUpDate}</span>` : ''}
+                            ${task.notes ? `<span>${esc(task.notes)}</span>` : ''}
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <button class="btn-sec btn-success" onclick="App.completeDelegatedTask('${task.id}')" style="font-size:12px;padding:6px 10px;">✓</button>
+                        <button class="btn-sec" onclick="App.deleteDelegatedTask('${task.id}')" style="font-size:11px;padding:4px 8px;opacity:0.5;">✕</button>
+                    </div>
+                </div>`;
+            });
+            html += `<div style="height:40px;"></div>`;
         }
         
         return html;
@@ -3929,6 +4115,30 @@ const App = {
                                         </div>
                                     ` : ''}
                                     
+                                    ${(() => {
+                                        // ── INTEGRATION: Surface linked Leverage items ──
+                                        const leverage = this.data.vaultEarn?.leverage || [];
+                                        const linked = leverage.filter(l =>
+                                            !l.completed && (
+                                                l.linkedGoal === goal.title ||
+                                                (goal.domain && l.linkedDomain === goal.domain)
+                                            )
+                                        );
+                                        if (linked.length === 0) return '';
+                                        const lColor = 'var(--accent)';
+                                        return `
+                                        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+                                            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${lColor};margin-bottom:8px;">🔗 Active Leverage (${linked.length})</div>
+                                            ${linked.slice(0,3).map(l => `
+                                                <div style="padding:8px 10px;background:var(--void);border-radius:8px;margin-bottom:6px;border-left:2px solid ${lColor};">
+                                                    <div style="font-size:12px;font-weight:600;">${esc(l.title)}</div>
+                                                    ${l.content ? `<div style="font-size:11px;color:var(--dim);margin-top:2px;">${esc(l.content.substring(0,80))}${l.content.length>80?'…':''}</div>` : ''}
+                                                </div>
+                                            `).join('')}
+                                            ${linked.length > 3 ? `<div style="font-size:11px;color:var(--dim);margin-top:4px;">+${linked.length-3} more in Vault → EARN → Leverage</div>` : ''}
+                                        </div>`;
+                                    })()}
+
                                     <div style="display:flex;gap:8px;margin-top:16px;">
                                         <button class="btn-sec" onclick="event.stopPropagation();App.editGoal('${goal.id}')">
                                             Edit
@@ -4054,6 +4264,9 @@ const App = {
             
             ${this.renderTaskFilters()}
         `;
+
+        // ── EARN STRATEGY CONTEXT PANEL ──────────────────────────────────
+        html += this.renderStrategyContext(c);
         
         if (weekPending.length === 0 && weekDone.length === 0) {
             html += `<div class="empty-state">
@@ -4144,96 +4357,30 @@ const App = {
     viewSystem() {
         if (!this.data.system) this.data.system = { habits: [], reflections: { morning: [], evening: [] }, journal: [], reviews: [] };
         
-        const sub = this.sub.system || 'habits';
-        let html = `<div class="segment">
-            <button class="segment-btn ${sub === 'habits' ? 'active' : ''}" onclick="App.sub.system='habits';App.render()">Habits</button>
-            <button class="segment-btn ${sub === 'reflections' ? 'active' : ''}" onclick="App.sub.system='reflections';App.render()">Reflect</button>
-            <button class="segment-btn ${sub === 'journal' ? 'active' : ''}" onclick="App.sub.system='journal';App.render()">Journal</button>
-            <button class="segment-btn ${sub === 'reviews' ? 'active' : ''}" onclick="App.sub.system='reviews';App.render()">Reviews</button>
-            <button class="segment-btn ${sub === 'custom' ? 'active' : ''}" onclick="App.sub.system='custom';App.render()">Custom Blueprint</button>
-            <button class="segment-btn ${sub === 'settings' ? 'active' : ''}" onclick="App.sub.system='settings';App.render()">⚙️ App</button>
+        const sub = this.sub.system || 'reflections';
+        const tabs = [
+            { key:'reflections', label:'Reflect' },
+            { key:'journal',     label:'Journal' },
+            { key:'reviews',     label:'Reviews' },
+            { key:'custom',      label:'Blueprint' },
+            { key:'settings',    label:'⚙️' },
+        ];
+        let html = `
+        <div style="display:flex;border-bottom:1px solid var(--zen-border);margin-bottom:0;">
+            ${tabs.map(t => `
+            <button onclick="App.sub.system='${t.key}';App.render()"
+                style="flex:1;padding:12px 4px;background:transparent;border:none;
+                       border-bottom:2px solid ${sub===t.key?'rgba(245,240,232,0.5)':'transparent'};
+                       margin-bottom:-1px;
+                       color:${sub===t.key?'rgba(245,240,232,0.9)':'var(--zen-stone)'};
+                       font-family:var(--font);font-size:9px;letter-spacing:2px;
+                       text-transform:uppercase;cursor:pointer;transition:all 0.25s;">
+                ${t.label}
+            </button>`).join('')}
         </div>`;
         
         if (sub === 'settings') {
             html += this.viewSystemSettings();
-        } else if (sub === 'habits') {
-            const habits = this.data.system.habits || [];
-            html += `<div class="section-header">
-                <span>📋 Daily Habits</span>
-                <div style="display:flex;gap:8px;">
-                    <button class="btn-sec" onclick="App.resetDailyHabits()" style="font-size:11px;padding:4px 10px;color:#ff6b6b;border-color:#ff6b6b;">🔄 Reset Today</button>
-                    <button class="btn-sec" onclick="App.addHabit()">+ Add</button>
-                </div>
-            </div>`;
-            
-            if (habits.length === 0) {
-                html += `<div class="empty-state"><div class="empty-state-icon">📋</div><p>Add your keystone habits</p></div>`;
-            } else {
-                const today = new Date().toISOString().split('T')[0];
-                habits.forEach(h => {
-                    const todayDone = h.completions?.some(c => c.date === today && c.done) || false;
-                    const streaks = this.calculateStreaks(h);
-                    const completedSteps = h.microSteps?.filter(s => s.status === 'done').length || 0;
-                    const totalSteps = h.microSteps?.length || 0;
-                    
-                    html += `<div class="habit-card" style="padding:12px;">
-                        <div class="habit-header" style="margin-bottom:8px;">
-                            <div class="habit-info">
-                                <div class="habit-title" style="font-size:14px;margin-bottom:2px;">${esc(h.title)}</div>
-                                <div class="habit-meta" style="font-size:10px;">
-                                    ${h.timeBlock ? `<span>${h.timeBlock}</span>` : ''}
-                                    ${totalSteps > 0 ? `<span style="margin-left:8px;color:var(--dim);">${completedSteps}/${totalSteps} steps</span>` : ''}
-                                </div>
-                            </div>
-                            <div class="habit-actions">
-                                <button class="habit-check-btn ${todayDone ? 'done' : ''}" onclick="App.toggleHabit('${h.id}')" style="width:28px;height:28px;">
-                                    ${todayDone ? '<svg width="14" height="14" fill="none" stroke="#000" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>' : ''}
-                                </button>
-                                <button class="habit-start-btn" onclick="App.startHabitTimer('${h.id}')" style="font-size:11px;padding:6px 10px;">START</button>
-                            </div>
-                        </div>
-                        
-                        <div style="display:flex;gap:12px;align-items:center;margin:8px 0;
-                             padding:8px;background:var(--sub);border-radius:6px;border:1px solid var(--border);">
-                            <div style="text-align:center;flex:1;">
-                                <div style="font-size:22px;font-weight:700;color:var(--success);line-height:1;">
-                                    ${streaks.current}
-                                </div>
-                                <div style="font-size:9px;color:var(--dim);text-transform:uppercase;
-                                     letter-spacing:0.5px;margin-top:2px;">
-                                    Current
-                                </div>
-                            </div>
-                            <div style="width:1px;height:30px;background:var(--border);"></div>
-                            <div style="text-align:center;flex:1;">
-                                <div style="font-size:22px;font-weight:700;color:var(--accent);line-height:1;">
-                                    ${streaks.longest}
-                                </div>
-                                <div style="font-size:9px;color:var(--dim);text-transform:uppercase;
-                                     letter-spacing:0.5px;margin-top:2px;">
-                                    Best
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="margin:8px 0;">
-                            ${this.renderHeatmap(h.completions || [])}
-                        </div>
-                        
-                        <div style="display:flex;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
-                            <button class="btn-sec" style="flex:1;font-size:10px;padding:5px 4px;" onclick="App.manageMicroSteps('${h.id}')">
-                                🎯
-                            </button>
-                            <button class="btn-sec" style="flex:1;font-size:10px;padding:5px 4px;" onclick="App.editHabit('${h.id}')">
-                                ✏️
-                            </button>
-                            <button class="btn-sec" style="flex:1;font-size:10px;padding:5px 4px;color:var(--danger);" onclick="App.deleteHabit('${h.id}')">
-                                🗑️
-                            </button>
-                        </div>
-                    </div>`;
-                });
-            }
         } else if (sub === 'reflections') {
             html += this.renderReflections();
         } else if (sub === 'journal') {
@@ -4696,25 +4843,40 @@ renderEarnSectionEnhanced(sub) {
         return html;
     }
 
-    const isExec = sub === 'exec';
+    const isExec     = sub === 'exec';
+    const isContacts = sub === 'contacts';
+    const isStrat    = sub === 'strat';
+    const today      = new Date().toISOString().split('T')[0];
 
     items.forEach((item, idx) => {
         const date = new Date(item.created).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         const importance = item.importance || 'low';
         const importanceClass = importance !== 'low' ? `vault-importance-${importance}` : '';
         const completedClass = item.completed ? 'completed-item' : '';
+        const domainColor = item.linkedDomain ? App.getDomainColor(item.linkedDomain) : null;
+        const isFollowUpDue = isContacts && item.followUpDate && item.followUpDate <= today && !item.completed;
+        const isOverdue     = isContacts && item.followUpDate && item.followUpDate < today && !item.completed;
+        const borderColor   = domainColor || (isOverdue ? '#ff453a' : isFollowUpDue ? 'var(--blue)' : 'transparent');
 
         html += `
-            <div class="vault-item-card ${importanceClass} ${completedClass}" style="animation-delay:${idx * 0.045}s;">
+            <div class="vault-item-card ${importanceClass} ${completedClass}"
+                 style="animation-delay:${idx * 0.045}s;${borderColor !== 'transparent' ? `border-left:3px solid ${borderColor};` : ''}">
+                ${item.pinnedToday ? `<div style="font-size:9px;color:var(--accent);font-weight:700;letter-spacing:1px;
+                    text-transform:uppercase;margin-bottom:6px;">📌 Pinned to Today</div>` : ''}
                 ${item.promotedFrom ? `<div class="vault-promoted-badge">distilled from ${esc(item.promotedFrom)}</div>` : ''}
                 <div class="vault-item-header">
                     <div class="vault-item-title">${esc(item.title)}</div>
                 </div>
                 <div class="vault-item-meta">
                     <span>${date}</span>
-                    ${item.starred ? `<span>starred</span>` : ''}
-                    ${isExec && item.completed ? `<span>fulfilled</span>` : ''}
-                    ${importance !== 'low' ? `<span>${importance}</span>` : ''}
+                    ${item.starred ? `<span>⭐</span>` : ''}
+                    ${importance !== 'low' ? `<span style="color:${importance==='high'?'#ff9f0a':'var(--dim)'};">${importance}</span>` : ''}
+                    ${item.linkedDomain ? `<span style="color:${domainColor};font-weight:600;">${esc(item.linkedDomain)}</span>` : ''}
+                    ${item.linkedGoal   ? `<span style="color:var(--dim);">🎯 ${esc(item.linkedGoal)}</span>` : ''}
+                    ${isContacts && item.followUpDate ? `<span style="color:${isOverdue?'#ff453a':isFollowUpDue?'var(--blue)':'var(--dim)'};">
+                        ${isOverdue ? '⚠️ OVERDUE' : isFollowUpDue ? '📅 TODAY' : `📅 ${item.followUpDate}`}</span>` : ''}
+                    ${isContacts && item.lastContactDate ? `<span style="color:var(--dim);">Last: ${item.lastContactDate}</span>` : ''}
+                    ${isExec && item.completed ? `<span style="color:var(--success);">✓ fulfilled</span>` : ''}
                 </div>
                 ${item.content ? `<div class="vault-item-content">${esc(item.content)}</div>` : ''}
                 ${item.tags && item.tags.length > 0 ? `
@@ -4722,12 +4884,13 @@ renderEarnSectionEnhanced(sub) {
                         ${item.tags.map(tag => `<span class="vault-tag">${esc(tag)}</span>`).join('')}
                     </div>` : ''}
                 <div class="vault-item-footer">
-                    <div class="vault-item-meta" style="margin:0;">
-                        ${item.starred ? `<span style="opacity:0.5;">✦ starred</span>` : ''}
-                    </div>
+                    <div></div>
                     <div class="vault-item-actions">
                         <button class="vault-action-btn" onclick="App.editEarnItem('${sub}', '${item.id}')">Edit</button>
                         <button class="vault-action-btn" onclick="App.toggleStar('earn', '${sub}', '${item.id}')">${item.starred ? 'Unstar' : 'Star'}</button>
+                        ${isStrat && !item.pinnedToday ? `<button class="vault-action-btn" onclick="App.pinStrategyToday('${item.id}')">📌 Pin Today</button>` : ''}
+                        ${isStrat && item.pinnedToday  ? `<button class="vault-action-btn" onclick="App.pinStrategyToday('${item.id}')">Unpin</button>` : ''}
+                        ${isContacts ? `<button class="vault-action-btn" onclick="App.markContactDone('${item.id}')">✓ Contacted</button>` : ''}
                         ${isExec && !item.completed ? `<button class="vault-action-btn" onclick="App.markExecComplete('${item.id}')">Fulfill</button>` : ''}
                         <button class="vault-action-btn danger" onclick="App.deleteEarnItem('${sub}', '${item.id}')">Release</button>
                     </div>
@@ -4805,61 +4968,98 @@ saveLearnItemEnhanced(type) {
 
 // ENHANCED ADD EARN ITEM
 addEarnItemEnhanced(type) {
+    const goals   = this.data.goals || [];
+    const domains = this.getAllDomains();
+    const goalOptions   = goals.map(g   => `<option value="${esc(g.title)}">${esc(g.title)}</option>`).join('');
+    const domainOptions = domains.map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
+    const labels = { strat:'Strategy', exec:'Execute', leverage:'Leverage', contacts:'Contact' };
+    const icons  = { strat:'📊', exec:'⚙️', leverage:'🔗', contacts:'👤' };
+    const label  = labels[type] || type;
+    const icon   = icons[type]  || '◈';
+
+    const today = new Date().toISOString().split('T')[0];
+    const nextWeek = (() => { const d=new Date(); d.setDate(d.getDate()+7); return d.toISOString().split('T')[0]; })();
+
     document.getElementById('modal-body').innerHTML = `
-        <h3 style="margin-bottom:12px;color:var(--success);">Add ${type.charAt(0).toUpperCase() + type.slice(1)}</h3>
-        <input id="earn-title" placeholder="Title..." style="margin-bottom:12px;">
-        <textarea id="earn-content" placeholder="Content..." rows="6" style="margin-bottom:12px;"></textarea>
-        
-        <input id="earn-tags" placeholder="Tags (comma-separated)..." style="margin-bottom:12px;">
-        
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+        <h3 style="margin-bottom:4px;color:var(--success);">${icon} Add ${label}</h3>
+        ${type === 'strat' ? `<div style="font-size:11px;color:var(--dim);margin-bottom:14px;">A rule, playbook, or system you operate by</div>` : ''}
+        ${type === 'exec'  ? `<div style="font-size:11px;color:var(--dim);margin-bottom:14px;">An action taken, win logged, or lesson from failure</div>` : ''}
+        ${type === 'leverage' ? `<div style="font-size:11px;color:var(--dim);margin-bottom:14px;">An opportunity or multiplier that could accelerate your vision</div>` : ''}
+        ${type === 'contacts' ? `<div style="font-size:11px;color:var(--dim);margin-bottom:14px;">A relationship to cultivate on your path to the vision</div>` : ''}
+        <input id="earn-title" placeholder="Title..." style="margin-bottom:10px;">
+        <textarea id="earn-content" placeholder="Details..." rows="4" style="margin-bottom:10px;"></textarea>
+        ${domains.length > 0 ? `
+        <select id="earn-domain" style="margin-bottom:10px;">
+            <option value="">Link to domain (optional)</option>
+            ${domainOptions}
+        </select>` : ''}
+        ${goals.length > 0 ? `
+        <select id="earn-goal" style="margin-bottom:10px;">
+            <option value="">Link to goal (optional)</option>
+            ${goalOptions}
+        </select>` : ''}
+        ${type === 'contacts' ? `
+        <input id="earn-followup" type="date" value="${nextWeek}"
+            style="margin-bottom:10px;" title="Follow-up date">` : ''}
+        ${type === 'strat' ? `
+        <div style="display:flex;align-items:center;gap:8px;background:var(--sub);padding:10px;
+                    border-radius:8px;border:1px solid var(--border);margin-bottom:10px;">
+            <input type="checkbox" id="earn-pin" style="margin:0;width:auto;">
+            <label for="earn-pin" style="margin:0;font-size:13px;">📌 Pin as Today's Rule</label>
+        </div>` : ''}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
             <select id="earn-importance" style="margin:0;">
-                <option value="low">Low Priority</option>
-                <option value="medium">Medium Priority</option>
-                <option value="high">High Priority</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High Impact</option>
             </select>
-            <div style="display:flex;align-items:center;gap:8px;background:var(--sub);padding:10px;border-radius:8px;border:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;background:var(--sub);padding:10px;
+                        border-radius:8px;border:1px solid var(--border);">
                 <input type="checkbox" id="earn-starred" style="margin:0;width:auto;">
-                <label for="earn-starred" style="margin:0;font-size:13px;">⭐ Star Item</label>
+                <label for="earn-starred" style="margin:0;font-size:13px;">⭐ Star</label>
             </div>
         </div>
-        
-        <input id="earn-source" placeholder="Source (optional)..." style="margin-bottom:12px;">
-        
-        <button class="btn" onclick="App.saveEarnItemEnhanced('${type}')">Save</button>`;
+        <button class="btn" onclick="App.saveEarnItemEnhanced('${type}')">Save to Earn</button>`;
     document.getElementById('modal').classList.add('open');
     setTimeout(() => document.getElementById('earn-title')?.focus(), 80);
 },
 
 saveEarnItemEnhanced(type) {
-    const title = document.getElementById('earn-title')?.value?.trim();
-    const content = document.getElementById('earn-content')?.value?.trim();
-    const tagsInput = document.getElementById('earn-tags')?.value?.trim();
-    const importance = document.getElementById('earn-importance')?.value || 'low';
-    const starred = document.getElementById('earn-starred')?.checked || false;
-    const source = document.getElementById('earn-source')?.value?.trim();
-    
-    if (!title || !content) { this.toast('⚠️ Fill title and content'); return; }
-    
-    const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [];
-    
+    const title       = document.getElementById('earn-title')?.value?.trim();
+    const content     = document.getElementById('earn-content')?.value?.trim();
+    const importance  = document.getElementById('earn-importance')?.value || 'low';
+    const starred     = document.getElementById('earn-starred')?.checked  || false;
+    const linkedDomain= document.getElementById('earn-domain')?.value     || '';
+    const linkedGoal  = document.getElementById('earn-goal')?.value       || '';
+    const followUpDate= document.getElementById('earn-followup')?.value   || '';
+    const pinnedToday = document.getElementById('earn-pin')?.checked      || false;
+    const tagsInput   = document.getElementById('earn-tags')?.value?.trim() || '';
+
+    if (!title) { this.toast('⚠️ Enter a title'); return; }
+
+    const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(Boolean) : [];
+
     if (!this.data.vaultEarn[type]) this.data.vaultEarn[type] = [];
     this.data.vaultEarn[type].push({
         id: this.genId(),
         title,
-        content,
+        content: content || '',
         tags,
         importance,
         starred,
-        source: source || '',
+        pinnedToday: pinnedToday || false,
+        linkedDomain: linkedDomain || '',
+        linkedGoal:   linkedGoal  || '',
+        followUpDate: followUpDate || '',
         completed: false,
+        promotedFrom: null,
         created: new Date().toISOString(),
         modified: null,
         linkedTo: []
     });
-    
+
     this.save(); this.closeModal(); this.render();
-    this.toast('✓ Added to EARN');
+    this.toast(`✓ Added to ${type.toUpperCase()}`);
 },
 
 // EDIT LEARN ITEM
@@ -5019,38 +5219,134 @@ toggleStar(section, type, itemId) {
     this.toast(item.starred ? '⭐ Item starred' : '☆ Star removed');
 },
 
-// ENHANCED PROMOTE TO EARN
+// ENHANCED PROMOTE TO EARN — smart chooser with goal/domain linking
 promoteToEarnEnhanced(fromType, itemId) {
     const item = this.data.vaultLearn[fromType]?.find(i => i.id === itemId);
     if (!item) return;
-    
-    const promotionMap = { ideas: 'strat', notes: 'exec', books: 'leverage', skills: 'contacts' };
-    const toType = promotionMap[fromType] || 'strat';
-    
-    if (!confirm(`Promote to ${toType.toUpperCase()}?`)) return;
-    
+
+    // Suggested default based on source type
+    const suggestionMap = { ideas: 'strat', notes: 'exec', books: 'leverage', skills: 'strat' };
+    const suggested = suggestionMap[fromType] || 'strat';
+
+    // Build goal options
+    const goals = this.data.goals || [];
+    const goalOptions = goals.map(g =>
+        `<option value="${esc(g.id)}">${esc(g.title)}</option>`
+    ).join('');
+
+    // Build domain options
+    const domains = this.getAllDomains();
+    const domainOptions = domains.map(d =>
+        `<option value="${esc(d)}">${esc(d)}</option>`
+    ).join('');
+
+    document.getElementById('modal-body').innerHTML = `
+        <h3 style="margin-bottom:4px;color:var(--accent);">→ Promote to Earn</h3>
+        <div style="font-size:12px;color:var(--dim);margin-bottom:16px;">
+            Moving: <strong style="color:var(--text);">${esc(item.title)}</strong>
+        </div>
+        <label style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">
+            Earn Bucket
+        </label>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;">
+            ${[
+                {key:'strat',    icon:'📊', label:'Strategy',  desc:'Playbooks & rules'},
+                {key:'exec',     icon:'⚙️', label:'Execute',   desc:'Action logs & wins'},
+                {key:'leverage', icon:'🔗', label:'Leverage',  desc:'Multipliers & opps'},
+                {key:'contacts', icon:'👤', label:'Contact',   desc:'Relationships'},
+            ].map(b => `
+                <label style="cursor:pointer;display:block;">
+                    <input type="radio" name="earn-bucket" value="${b.key}"
+                        ${b.key === suggested ? 'checked' : ''}
+                        style="display:none;">
+                    <div class="earn-bucket-btn" data-bucket="${b.key}"
+                        style="padding:12px;border-radius:10px;border:2px solid ${b.key===suggested?'var(--accent)':'var(--border)'};
+                               background:${b.key===suggested?'#1a1500':'var(--sub)'};text-align:center;
+                               cursor:pointer;transition:all 0.15s;"
+                        onclick="App.selectEarnBucket('${b.key}')">
+                        <div style="font-size:20px;margin-bottom:4px;">${b.icon}</div>
+                        <div style="font-size:12px;font-weight:700;">${b.label}</div>
+                        <div style="font-size:10px;color:var(--dim);margin-top:2px;">${b.desc}</div>
+                    </div>
+                </label>
+            `).join('')}
+        </div>
+        ${domains.length > 0 ? `
+        <label style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">
+            Link to Domain (optional)
+        </label>
+        <select id="promote-domain" style="margin-bottom:12px;">
+            <option value="">No domain link</option>
+            ${domainOptions}
+        </select>` : ''}
+        ${goals.length > 0 ? `
+        <label style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">
+            Link to Goal (optional)
+        </label>
+        <select id="promote-goal" style="margin-bottom:16px;">
+            <option value="">No goal link</option>
+            ${goalOptions}
+        </select>` : ''}
+        <button class="btn" onclick="App.executePromotion('${fromType}','${itemId}')">
+            Promote →
+        </button>`;
+    document.getElementById('modal').classList.add('open');
+},
+
+selectEarnBucket(bucket) {
+    // Visual feedback for bucket selection
+    document.querySelectorAll('.earn-bucket-btn').forEach(el => {
+        const isSelected = el.dataset.bucket === bucket;
+        el.style.borderColor = isSelected ? 'var(--accent)' : 'var(--border)';
+        el.style.background   = isSelected ? '#1a1500' : 'var(--sub)';
+    });
+    document.querySelector(`input[value="${bucket}"]`).checked = true;
+},
+
+executePromotion(fromType, itemId) {
+    const item = this.data.vaultLearn[fromType]?.find(i => i.id === itemId);
+    if (!item) return;
+
+    const bucketRadio = document.querySelector('input[name="earn-bucket"]:checked');
+    const toType = bucketRadio ? bucketRadio.value : 'strat';
+    const linkedDomain = document.getElementById('promote-domain')?.value || '';
+    const linkedGoalId = document.getElementById('promote-goal')?.value || '';
+
+    const linkedGoal = linkedGoalId
+        ? (this.data.goals || []).find(g => g.id === linkedGoalId)?.title || ''
+        : '';
+
     if (!this.data.vaultEarn[toType]) this.data.vaultEarn[toType] = [];
     this.data.vaultEarn[toType].push({
         ...item,
         id: this.genId(),
         promotedFrom: fromType,
+        linkedDomain: linkedDomain || '',
+        linkedGoal:   linkedGoal  || '',
         completed: false,
+        pinnedToday: false,
+        followUpDate: toType === 'contacts' ? (() => {
+            const d = new Date(); d.setDate(d.getDate()+7);
+            return d.toISOString().split('T')[0];
+        })() : '',
         created: new Date().toISOString(),
         modified: null
     });
-    
+
     // Remove from LEARN
     this.data.vaultLearn[fromType] = this.data.vaultLearn[fromType].filter(i => i.id !== itemId);
-    
+
     // Track promotion
     if (!this.data.vaultPromotions) this.data.vaultPromotions = [];
     this.data.vaultPromotions.push({
-        from: fromType,
-        to: toType,
+        from: fromType, to: toType,
+        linkedDomain, linkedGoal,
         created: new Date().toISOString()
     });
-    
-    this.save(); this.render();
+
+    this.save(); this.closeModal();
+    this.tab = 4; this.sub.vaultMain = 'earn'; this.sub.vault = toType;
+    this.render();
     this.toast(`✓ Promoted to ${toType.toUpperCase()}`);
 },
 
@@ -5124,8 +5420,28 @@ exportVaultItem(section, type, itemId) {
         item.completed = true;
         item.modified = new Date().toISOString();
         
+        // ── INTEGRATION: Auto-complete linked cycle task ──
+        let linkedTaskTitle = '';
+        if (item.linkedGoal && this.data.currentCycle?.tasks) {
+            const cycleTask = this.data.currentCycle.tasks.find(t =>
+                !t.done && (
+                    t.title.toLowerCase().includes(item.title.toLowerCase().substring(0,20)) ||
+                    (item.linkedGoal && t.title.toLowerCase().includes(item.linkedGoal.toLowerCase().substring(0,15)))
+                )
+            );
+            if (cycleTask) {
+                cycleTask.done = true;
+                cycleTask.doneDate = new Date().toISOString();
+                linkedTaskTitle = cycleTask.title;
+            }
+        }
+        
         this.save(); this.render();
-        this.celebrate('🎯', 'Executed!', 'Another win logged');
+        if (linkedTaskTitle) {
+            this.celebrate('🎯', 'Executed + Cycle Task Done!', `"${item.title}" — also closed: "${linkedTaskTitle.substring(0,40)}"`);
+        } else {
+            this.celebrate('🎯', 'Executed!', 'Another win logged');
+        }
     },
 
     
@@ -5964,6 +6280,37 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
         this.toast('✓ Data exported');
     },
 
+    importAllData() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                try {
+                    const imported = JSON.parse(evt.target.result);
+                    // Validate it's an SVK Blueprint export
+                    if (typeof imported !== 'object' || Array.isArray(imported)) {
+                        this.toast('⚠️ Invalid file — expected SVK Blueprint JSON export');
+                        return;
+                    }
+                    if (!confirm('⚠️ This will REPLACE all current data with the imported file. Continue?')) return;
+                    // Merge with SCHEMA defaults to fill any missing fields
+                    this.data = Object.assign({}, SCHEMA, imported);
+                    this.save();
+                    this.render();
+                    this.toast('✓ Data imported successfully');
+                } catch (err) {
+                    this.toast('⚠️ Failed to parse file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    },
+
     resetBlueprint() {
         if (!confirm('⚠️ Reset entire blueprint? This cannot be undone.')) return;
         localStorage.removeItem(DB_KEY);
@@ -5974,43 +6321,55 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
     // Provides 6 capture options: Quick Task, Note, Idea, Quote, Journal Entry, Reflection
     // This is the main capture function used throughout the app
     openCapture() {
-        // Quick Capture Menu - Streamlined to 10 essential capture types
-        // Focused on short-lived, high-frequency items that need immediate capture
+        // Quick Capture Menu - Ideas/Notes/Journal/Goals/Affirmations + all Vault categories
         document.getElementById('modal-body').innerHTML = `
-            <h3 style="margin-bottom:16px;color:var(--accent);">⚡ Quick Capture</h3>
-            <div style="max-height:60vh;overflow-y:auto;padding:2px;">
-                <div style="display:grid;gap:8px;grid-template-columns:repeat(2, 1fr);">
-                    <button class="btn" onclick="App.addIdea()" style="background:var(--success);padding:12px;">
-                        💡 Idea
-                    </button>
-                    <button class="btn" onclick="App.addQuickTask()" style="padding:12px;">
-                        ⚡ Quick Task
-                    </button>
-                    <button class="btn" onclick="App.addNote()" style="padding:12px;">
-                        📝 Note
-                    </button>
-                    <button class="btn" onclick="App.addCycleTask()" style="padding:12px;">
-                        ✓ Cycle Task
-                    </button>
-                    <button class="btn" onclick="App.addQuote()" style="padding:12px;">
-                        💬 Quote
-                    </button>
-                    <button class="btn" onclick="App.addTimeblock()" style="padding:12px;">
-                        📅 Timeblock
-                    </button>
-                    <button class="btn" onclick="App.addHabit()" style="padding:12px;">
-                        🔄 Habit
-                    </button>
-                    <button class="btn" onclick="App.addJournalEntry()" style="padding:12px;">
-                        📔 Journal
-                    </button>
-                    <button class="btn" onclick="App.addGoal()" style="padding:12px;">
-                        🎯 Goal
-                    </button>
-                    <button class="btn" onclick="App.addAffirmation()" style="padding:12px;">
-                        ✨ Affirmation
-                    </button>
-                </div>
+            <h3 style="margin-bottom:4px;color:var(--accent);">⚡ Quick Capture</h3>
+            <div style="max-height:70vh;overflow-y:auto;padding:2px;">
+            <div style="font-size:10px;color:var(--dim);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;">Daily</div>
+            <div style="display:grid;gap:8px;grid-template-columns:repeat(2, 1fr);margin-bottom:16px;">
+                <button class="btn" onclick="App.addIdea()" style="background:var(--success);padding:12px;">
+                    💡 Idea
+                </button>
+                <button class="btn" onclick="App.addNote()" style="padding:12px;">
+                    📝 Note
+                </button>
+                <button class="btn" onclick="App.addQuote()" style="padding:12px;">
+                    💬 Quote
+                </button>
+                <button class="btn" onclick="App.addJournalEntry()" style="padding:12px;">
+                    📔 Journal
+                </button>
+                <button class="btn" onclick="App.addGoal()" style="padding:12px;">
+                    🎯 Goal
+                </button>
+                <button class="btn" onclick="App.addAffirmation()" style="padding:12px;">
+                    ✨ Affirmation
+                </button>
+            </div>
+            <div style="font-size:10px;color:var(--dim);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Vault — Learn</div>
+            <div style="display:grid;gap:8px;grid-template-columns:repeat(2, 1fr);margin-bottom:16px;">
+                <button class="btn" onclick="App.addBookSummary()" style="padding:12px;">
+                    📖 Book
+                </button>
+                <button class="btn" onclick="App.addSkill()" style="padding:12px;">
+                    🛠 Skill
+                </button>
+            </div>
+            <div style="font-size:10px;color:var(--dim);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Vault — Earn</div>
+            <div style="display:grid;gap:8px;grid-template-columns:repeat(2, 1fr);">
+                <button class="btn" onclick="App.closeModal();App.addEarnItemEnhanced('strat')" style="padding:12px;">
+                    📊 Strategy
+                </button>
+                <button class="btn" onclick="App.closeModal();App.addEarnItemEnhanced('exec')" style="padding:12px;">
+                    ⚙️ Execute
+                </button>
+                <button class="btn" onclick="App.closeModal();App.addEarnItemEnhanced('leverage')" style="padding:12px;">
+                    🔗 Leverage
+                </button>
+                <button class="btn" onclick="App.addContact()" style="padding:12px;">
+                    👤 Contact
+                </button>
+            </div>
             </div>`;
         document.getElementById('modal').classList.add('open');
     },
@@ -8038,75 +8397,85 @@ Drink water
     renderReflections() {
         const refType = this.sub._refType || 'morning';
         const isMorning = refType === 'morning';
+        const accentColor = isMorning ? 'rgba(200,160,100,0.85)' : 'rgba(140,160,220,0.85)';
+        const accentBorder = isMorning ? 'rgba(200,160,100,0.2)' : 'rgba(140,160,220,0.2)';
 
         let html = `<div class="zen-container">`;
 
-        // Zen header
+        // ── HEADER: title + dawn/dusk toggle inline ──────────────────────
         html += `
-            <div class="zen-header">
-                <div class="zen-header-kanji">${isMorning ? '朝の思索 · Chō no shisaku' : '夜の思索 · Yoru no shisaku'}</div>
-                <div class="zen-header-title">${isMorning ? 'Morning Reflection' : 'Evening Reflection'}</div>
-                <div class="zen-header-subtitle">${isMorning ? 'Set the tone of your day with intention' : 'Let the day settle into understanding'}</div>
+        <div style="padding:24px 0 20px;text-align:center;position:relative;">
+            <div style="font-size:9px;letter-spacing:6px;color:var(--zen-stone);text-transform:uppercase;
+                        opacity:0.6;margin-bottom:10px;">
+                ${isMorning ? '朝の思索' : '夜の思索'}
             </div>
-        `;
+            <div style="font-size:24px;font-weight:300;color:rgba(245,240,232,0.9);
+                        font-style:italic;letter-spacing:1px;margin-bottom:4px;">
+                ${isMorning ? 'Morning Reflection' : 'Evening Reflection'}
+            </div>
+            <div style="font-size:12px;color:var(--zen-stone);font-style:italic;margin-bottom:18px;">
+                ${isMorning ? 'set the tone with intention' : 'let the day settle into understanding'}
+            </div>
+            <div style="display:inline-flex;background:var(--zen-mist);border:1px solid var(--zen-border);
+                        border-radius:3px;padding:3px;gap:3px;">
+                <button onclick="App.sub._refType='morning';App.render()"
+                    style="padding:7px 20px;background:${isMorning?'linear-gradient(135deg,rgba(120,90,60,0.5),rgba(80,60,40,0.5))':'transparent'};
+                           border:${isMorning?'1px solid rgba(200,160,100,0.25)':'1px solid transparent'};
+                           border-radius:2px;color:${isMorning?'rgba(220,190,140,0.9)':'var(--zen-stone)'};
+                           font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;
+                           font-family:var(--font);transition:all 0.3s;">Dawn</button>
+                <button onclick="App.sub._refType='evening';App.render()"
+                    style="padding:7px 20px;background:${!isMorning?'linear-gradient(135deg,rgba(40,50,80,0.5),rgba(30,35,60,0.5))':'transparent'};
+                           border:${!isMorning?'1px solid rgba(100,120,180,0.25)':'1px solid transparent'};
+                           border-radius:2px;color:${!isMorning?'rgba(160,180,220,0.9)':'var(--zen-stone)'};
+                           font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;
+                           font-family:var(--font);transition:all 0.3s;">Dusk</button>
+            </div>
+        </div>`;
 
-        // Morning / Evening switcher
+        // ── COMMAND BAR: single row, new entry dominant ───────────────────
         html += `
-            <div class="zen-segment">
-                <button class="zen-seg-btn morning ${isMorning ? 'active' : ''}" onclick="App.sub._refType='morning';App.render()">
-                    Dawn
-                </button>
-                <button class="zen-seg-btn evening ${!isMorning ? 'active' : ''}" onclick="App.sub._refType='evening';App.render()">
-                    Dusk
-                </button>
+        <div style="display:flex;gap:8px;align-items:stretch;margin-bottom:20px;">
+            <button onclick="App.addReflection('${refType}')"
+                style="flex:1;padding:12px 16px;background:transparent;
+                       border:1px solid ${accentBorder};border-radius:2px;
+                       color:${accentColor};font-size:13px;letter-spacing:1px;
+                       cursor:pointer;transition:all 0.3s;font-style:italic;
+                       font-family:var(--zen-font);">
+                ${isMorning ? '— begin the morning —' : '— close the evening —'}
+            </button>
+            <div style="display:flex;gap:4px;">
+                <button onclick="App.showSystemTemplates('reflections','${refType}')"
+                    style="padding:12px;background:transparent;border:1px solid var(--zen-border);
+                           border-radius:2px;color:var(--zen-stone);font-size:13px;
+                           cursor:pointer;transition:all 0.25s;" title="Templates">≡</button>
+                <button onclick="App.exportAllSystemItems('reflections','${refType}')"
+                    style="padding:12px;background:transparent;border:1px solid var(--zen-border);
+                           border-radius:2px;color:var(--zen-stone);font-size:11px;letter-spacing:1px;
+                           cursor:pointer;transition:all 0.25s;" title="Export">↑</button>
             </div>
-        `;
+        </div>`;
 
-        // Primary action
+        // ── SEARCH (minimal, only border, no label clutter) ───────────────
         html += `
-            <div class="zen-action-row">
-                <button class="zen-primary-btn" onclick="App.addReflection('${refType}')">
-                    ${isMorning ? '— begin the morning —' : '— close the evening —'}
-                </button>
-                <button class="zen-icon-btn" title="Templates" onclick="App.showSystemTemplates('reflections', '${refType}')">≡</button>
-            </div>
-        `;
+        <div style="position:relative;margin-bottom:20px;">
+            <input type="text" placeholder="search reflections…"
+                   value="${esc(this.reflectionSearch)}"
+                   oninput="App.reflectionSearch=this.value;App.render();"
+                   style="width:100%;padding:10px 36px 10px 14px;background:transparent;
+                          border:1px solid var(--zen-border);border-radius:2px;
+                          color:rgba(245,240,232,0.8);font-size:13px;font-style:italic;
+                          font-family:var(--zen-font);box-sizing:border-box;transition:border-color 0.3s;"
+                   onfocus="this.style.borderColor='rgba(245,240,232,0.2)'"
+                   onblur="this.style.borderColor='var(--zen-border)'">
+            ${this.reflectionSearch
+                ? `<button onclick="App.reflectionSearch='';App.render()"
+                     style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+                            background:none;border:none;color:var(--zen-stone);font-size:16px;cursor:pointer;">×</button>`
+                : ''}
+        </div>`;
 
-        // Utility row
-        html += `
-            <div class="zen-utility-row">
-                <button class="zen-util-btn" onclick="App.showReflectionAnalytics()">Insights</button>
-                <button class="zen-util-btn ${this.bulkMode.reflections ? 'active' : ''}" onclick="App.toggleSystemBulkMode('reflections')">
-                    ${this.bulkMode.reflections ? 'Select ✓' : 'Select'}
-                </button>
-                <button class="zen-util-btn" onclick="App.exportAllSystemItems('reflections', '${refType}')">Export</button>
-            </div>
-        `;
-
-        // Search
-        html += `
-            <div class="zen-search-wrap">
-                <input type="text" class="zen-search" placeholder="seek within your reflections…"
-                       value="${esc(this.reflectionSearch)}"
-                       oninput="App.reflectionSearch = this.value; App.render();">
-                ${this.reflectionSearch ? `<button class="zen-search-clear" onclick="App.reflectionSearch='';App.render()">×</button>` : ''}
-            </div>
-        `;
-
-        // Sort
-        html += `
-            <div class="zen-sort-row">
-                <span class="zen-sort-label">Order</span>
-                <select class="zen-sort-select" onchange="App.setSystemSort('reflections', this.value)">
-                    <option value="date-desc" ${this.systemSort.reflections === 'date-desc' ? 'selected' : ''}>Newest first</option>
-                    <option value="date-asc" ${this.systemSort.reflections === 'date-asc' ? 'selected' : ''}>Oldest first</option>
-                    <option value="modified-desc" ${this.systemSort.reflections === 'modified-desc' ? 'selected' : ''}>Recently touched</option>
-                    <option value="length-desc" ${this.systemSort.reflections === 'length-desc' ? 'selected' : ''}>Deepest first</option>
-                    <option value="tags" ${this.systemSort.reflections === 'tags' ? 'selected' : ''}>Most woven</option>
-                </select>
-            </div>
-        `;
-
+        // ── SORT + COUNT (one compact line, no label noise) ───────────────
         let refs = this.data.system.reflections[refType] || [];
         if (this.reflectionSearch) {
             const s = this.reflectionSearch.toLowerCase();
@@ -8117,6 +8486,22 @@ Drink water
             );
         }
         refs = this.sortSystemItems(refs, this.systemSort.reflections);
+
+        if (refs.length > 0) {
+            html += `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <span style="font-size:10px;color:var(--zen-stone);letter-spacing:2px;text-transform:uppercase;opacity:0.7;">
+                    ${refs.length} entr${refs.length===1?'y':'ies'}
+                </span>
+                <select onchange="App.setSystemSort('reflections',this.value)"
+                    style="background:transparent;border:none;color:var(--zen-stone);font-size:10px;
+                           letter-spacing:1px;cursor:pointer;text-transform:uppercase;">
+                    <option value="date-desc"  ${this.systemSort.reflections==='date-desc'?'selected':''}>Newest</option>
+                    <option value="date-asc"   ${this.systemSort.reflections==='date-asc'?'selected':''}>Oldest</option>
+                    <option value="length-desc" ${this.systemSort.reflections==='length-desc'?'selected':''}>Deepest</option>
+                </select>
+            </div>`;}
+
 
         if (refs.length === 0) {
             html += `
@@ -8174,59 +8559,57 @@ Drink water
     renderJournal() {
         let html = `<div class="zen-container">`;
 
-        // Zen header
+        // ── HEADER ────────────────────────────────────────────────────────
         html += `
-            <div class="zen-header">
-                <div class="zen-header-kanji">日記 · Nikki</div>
-                <div class="zen-header-title">The Journal</div>
-                <div class="zen-header-subtitle">where the unnamed becomes word</div>
+        <div style="padding:24px 0 20px;text-align:center;">
+            <div style="font-size:9px;letter-spacing:6px;color:var(--zen-stone);text-transform:uppercase;
+                        opacity:0.6;margin-bottom:10px;">日記 · Nikki</div>
+            <div style="font-size:24px;font-weight:300;color:rgba(245,240,232,0.9);
+                        font-style:italic;letter-spacing:1px;margin-bottom:4px;">The Journal</div>
+            <div style="font-size:12px;color:var(--zen-stone);font-style:italic;">
+                where the unnamed becomes word
             </div>
-        `;
+        </div>`;
 
-        // Primary action
+        // ── COMMAND BAR ───────────────────────────────────────────────────
         html += `
-            <div class="zen-action-row">
-                <button class="zen-primary-btn" onclick="App.addJournalEntry()">
-                    — open a new page —
-                </button>
-                <button class="zen-icon-btn" title="Templates" onclick="App.showSystemTemplates('journal', '')">≡</button>
-            </div>
-        `;
+        <div style="display:flex;gap:8px;align-items:stretch;margin-bottom:20px;">
+            <button onclick="App.addJournalEntry()"
+                style="flex:1;padding:12px 16px;background:transparent;
+                       border:1px solid var(--zen-border);border-radius:2px;
+                       color:rgba(245,240,232,0.7);font-size:13px;letter-spacing:1px;
+                       cursor:pointer;transition:all 0.3s;font-style:italic;
+                       font-family:var(--zen-font);">
+                — open a new page —
+            </button>
+            <button onclick="App.showSystemTemplates('journal','')"
+                style="padding:12px;background:transparent;border:1px solid var(--zen-border);
+                       border-radius:2px;color:var(--zen-stone);font-size:13px;
+                       cursor:pointer;" title="Templates">≡</button>
+            <button onclick="App.exportAllSystemItems('journal','')"
+                style="padding:12px;background:transparent;border:1px solid var(--zen-border);
+                       border-radius:2px;color:var(--zen-stone);font-size:11px;
+                       cursor:pointer;" title="Export">↑</button>
+        </div>`;
 
-        // Utility row
+        // ── SEARCH ────────────────────────────────────────────────────────
         html += `
-            <div class="zen-utility-row">
-                <button class="zen-util-btn" onclick="App.showJournalAnalytics()">Insights</button>
-                <button class="zen-util-btn ${this.bulkMode.journal ? 'active' : ''}" onclick="App.toggleSystemBulkMode('journal')">
-                    ${this.bulkMode.journal ? 'Select ✓' : 'Select'}
-                </button>
-                <button class="zen-util-btn" onclick="App.exportAllSystemItems('journal', '')">Export</button>
-            </div>
-        `;
-
-        // Search
-        html += `
-            <div class="zen-search-wrap">
-                <input type="text" class="zen-search" placeholder="wander through your pages…"
-                       value="${esc(this.journalSearch)}"
-                       oninput="App.journalSearch = this.value; App.render();">
-                ${this.journalSearch ? `<button class="zen-search-clear" onclick="App.journalSearch='';App.render()">×</button>` : ''}
-            </div>
-        `;
-
-        // Sort
-        html += `
-            <div class="zen-sort-row">
-                <span class="zen-sort-label">Order</span>
-                <select class="zen-sort-select" onchange="App.setSystemSort('journal', this.value)">
-                    <option value="date-desc" ${this.systemSort.journal === 'date-desc' ? 'selected' : ''}>Newest first</option>
-                    <option value="date-asc" ${this.systemSort.journal === 'date-asc' ? 'selected' : ''}>Oldest first</option>
-                    <option value="modified-desc" ${this.systemSort.journal === 'modified-desc' ? 'selected' : ''}>Recently touched</option>
-                    <option value="length-desc" ${this.systemSort.journal === 'length-desc' ? 'selected' : ''}>Deepest first</option>
-                    <option value="tags" ${this.systemSort.journal === 'tags' ? 'selected' : ''}>Most woven</option>
-                </select>
-            </div>
-        `;
+        <div style="position:relative;margin-bottom:20px;">
+            <input type="text" placeholder="wander through your pages…"
+                   value="${esc(this.journalSearch)}"
+                   oninput="App.journalSearch=this.value;App.render();"
+                   style="width:100%;padding:10px 36px 10px 14px;background:transparent;
+                          border:1px solid var(--zen-border);border-radius:2px;
+                          color:rgba(245,240,232,0.8);font-size:13px;font-style:italic;
+                          font-family:var(--zen-font);box-sizing:border-box;"
+                   onfocus="this.style.borderColor='rgba(245,240,232,0.2)'"
+                   onblur="this.style.borderColor='var(--zen-border)'">
+            ${this.journalSearch
+                ? `<button onclick="App.journalSearch='';App.render()"
+                     style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+                            background:none;border:none;color:var(--zen-stone);font-size:16px;cursor:pointer;">×</button>`
+                : ''}
+        </div>`;
 
         let entries = this.data.system.journal || [];
         if (this.journalSearch) {
@@ -8238,6 +8621,22 @@ Drink water
             );
         }
         entries = this.sortSystemItems(entries, this.systemSort.journal);
+
+        if (entries.length > 0) {
+            html += `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <span style="font-size:10px;color:var(--zen-stone);letter-spacing:2px;text-transform:uppercase;opacity:0.7;">
+                    ${entries.length} page${entries.length===1?'':'s'}
+                </span>
+                <select onchange="App.setSystemSort('journal',this.value)"
+                    style="background:transparent;border:none;color:var(--zen-stone);font-size:10px;
+                           letter-spacing:1px;cursor:pointer;text-transform:uppercase;">
+                    <option value="date-desc"  ${this.systemSort.journal==='date-desc'?'selected':''}>Newest</option>
+                    <option value="date-asc"   ${this.systemSort.journal==='date-asc'?'selected':''}>Oldest</option>
+                    <option value="length-desc" ${this.systemSort.journal==='length-desc'?'selected':''}>Deepest</option>
+                </select>
+            </div>`;}
+
 
         if (entries.length === 0) {
             html += `
@@ -8295,52 +8694,51 @@ Drink water
     renderReviews() {
         let html = `<div class="zen-container">`;
 
-        // Zen header
+        // ── HEADER ────────────────────────────────────────────────────────
         html += `
-            <div class="zen-header">
-                <div class="zen-header-kanji">週次省察 · Shūji Shōsatsu</div>
-                <div class="zen-header-title">Weekly Review</div>
-                <div class="zen-header-subtitle">harvest what was, sow what shall be</div>
+        <div style="padding:24px 0 20px;text-align:center;">
+            <div style="font-size:9px;letter-spacing:6px;color:var(--zen-stone);text-transform:uppercase;
+                        opacity:0.6;margin-bottom:10px;">週次省察</div>
+            <div style="font-size:24px;font-weight:300;color:rgba(245,240,232,0.9);
+                        font-style:italic;letter-spacing:1px;margin-bottom:4px;">Weekly Review</div>
+            <div style="font-size:12px;color:var(--zen-stone);font-style:italic;">
+                harvest what was, sow what shall be
             </div>
-        `;
+        </div>`;
 
-        // Primary action
+        // ── COMMAND BAR ───────────────────────────────────────────────────
         html += `
-            <div class="zen-action-row">
-                <button class="zen-primary-btn" onclick="App.addWeeklyReview()">
-                    — begin this week's review —
-                </button>
-                <button class="zen-icon-btn" title="Templates" onclick="App.showSystemTemplates('reviews', '')">≡</button>
-            </div>
-        `;
-
-        // Utility row
-        html += `
-            <div class="zen-utility-row">
-                <button class="zen-util-btn" onclick="App.showReviewAnalytics()">Insights</button>
-                <button class="zen-util-btn ${this.bulkMode.reviews ? 'active' : ''}" onclick="App.toggleSystemBulkMode('reviews')">
-                    ${this.bulkMode.reviews ? 'Select ✓' : 'Select'}
-                </button>
-                <button class="zen-util-btn" onclick="App.exportAllSystemItems('reviews', '')">Export</button>
-            </div>
-        `;
-
-        // Sort
-        html += `
-            <div class="zen-sort-row">
-                <span class="zen-sort-label">Order</span>
-                <select class="zen-sort-select" onchange="App.setSystemSort('reviews', this.value)">
-                    <option value="date-desc" ${this.systemSort.reviews === 'date-desc' ? 'selected' : ''}>Newest first</option>
-                    <option value="date-asc" ${this.systemSort.reviews === 'date-asc' ? 'selected' : ''}>Oldest first</option>
-                    <option value="modified-desc" ${this.systemSort.reviews === 'modified-desc' ? 'selected' : ''}>Recently touched</option>
-                    <option value="length-desc" ${this.systemSort.reviews === 'length-desc' ? 'selected' : ''}>Deepest first</option>
-                    <option value="tags" ${this.systemSort.reviews === 'tags' ? 'selected' : ''}>Most woven</option>
-                </select>
-            </div>
-        `;
+        <div style="display:flex;gap:8px;align-items:stretch;margin-bottom:20px;">
+            <button onclick="App.addWeeklyReview()"
+                style="flex:1;padding:12px 16px;background:transparent;
+                       border:1px solid var(--zen-border);border-radius:2px;
+                       color:rgba(245,240,232,0.7);font-size:13px;letter-spacing:1px;
+                       cursor:pointer;font-style:italic;font-family:var(--zen-font);">
+                — begin this week's review —
+            </button>
+            <button onclick="App.exportAllSystemItems('reviews','')"
+                style="padding:12px;background:transparent;border:1px solid var(--zen-border);
+                       border-radius:2px;color:var(--zen-stone);font-size:11px;cursor:pointer;" title="Export">↑</button>
+        </div>`;
 
         let reviews = this.data.system.reviews || [];
         reviews = this.sortSystemItems(reviews, this.systemSort.reviews);
+
+        if (reviews.length > 0) {
+            html += `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <span style="font-size:10px;color:var(--zen-stone);letter-spacing:2px;text-transform:uppercase;opacity:0.7;">
+                    ${reviews.length} review${reviews.length===1?'':'s'}
+                </span>
+                <select onchange="App.setSystemSort('reviews',this.value)"
+                    style="background:transparent;border:none;color:var(--zen-stone);font-size:10px;
+                           letter-spacing:1px;cursor:pointer;text-transform:uppercase;">
+                    <option value="date-desc"  ${this.systemSort.reviews==='date-desc'?'selected':''}>Newest</option>
+                    <option value="date-asc"   ${this.systemSort.reviews==='date-asc'?'selected':''}>Oldest</option>
+                    <option value="length-desc" ${this.systemSort.reviews==='length-desc'?'selected':''}>Deepest</option>
+                </select>
+            </div>`;}
+
 
         if (reviews.length === 0) {
             html += `
@@ -9622,6 +10020,63 @@ Drink water
     },
 
     // TASK FILTERING
+    // ── INTEGRATION: Render EARN Strategy context on Strategy tab ──
+    renderStrategyContext(cycle) {
+        const strat = this.data.vaultEarn?.strat || [];
+        if (strat.length === 0) return '';
+
+        const goalsF = cycle?.goals_focus || {};
+        const activeDomain = Object.entries(goalsF).sort((a,b) => b[1]-a[1]).map(e=>e[0])[0] || '';
+        const week = this.sub._viewedWeek || this.getCurrentWeek();
+
+        // Surface: pinned > domain-matched high importance > starred
+        const contextItems = [
+            ...strat.filter(s => s.pinnedToday),
+            ...(activeDomain ? strat.filter(s => !s.pinnedToday && s.linkedDomain === activeDomain && s.importance === 'high') : []),
+            ...(activeDomain ? strat.filter(s => !s.pinnedToday && s.linkedDomain === activeDomain && !s.pinnedToday && s.importance !== 'high').slice(0,1) : []),
+        ].filter((item, idx, arr) => arr.findIndex(i=>i.id===item.id)===idx).slice(0,3);
+
+        if (contextItems.length === 0) return '';
+
+        let html = `<div style="margin-top:20px;margin-bottom:4px;">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:8px;">
+                📊 Operating Rules ${activeDomain ? `· <span style="color:${this.getDomainColor(activeDomain)};">${esc(activeDomain)}</span>` : ''}
+            </div>`;
+
+        contextItems.forEach(s => {
+            const col = s.linkedDomain ? this.getDomainColor(s.linkedDomain) : 'var(--accent)';
+            html += `
+            <div style="background:linear-gradient(135deg,#1a1a00,#1c1c1e);border:1px solid ${col}33;
+                        border-left:2px solid ${col};border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+                <div style="font-size:12px;font-weight:600;color:var(--text);line-height:1.4;">${esc(s.title)}</div>
+                ${s.content ? `<div style="font-size:11px;color:var(--dim);margin-top:3px;line-height:1.4;
+                    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                    ${esc(s.content)}</div>` : ''}
+                <div style="display:flex;gap:6px;margin-top:8px;align-items:center;">
+                    ${s.pinnedToday ? `<span style="font-size:9px;color:${col};font-weight:700;">📌 PINNED</span>` : ''}
+                    ${s.linkedDomain ? `<span style="font-size:9px;color:${col};opacity:0.8;">${esc(s.linkedDomain)}</span>` : ''}
+                    <button onclick="App.pinStrategyToday('${s.id}')"
+                        style="font-size:9px;padding:2px 8px;background:var(--sub);color:var(--dim);
+                               border:1px solid ${col}33;border-radius:4px;cursor:pointer;margin-left:auto;">
+                        ${s.pinnedToday ? 'Unpin' : 'Pin Today'}
+                    </button>
+                </div>
+            </div>`;
+        });
+
+        if (strat.length > contextItems.length) {
+            html += `<div style="text-align:right;margin-bottom:12px;">
+                <button onclick="App.tab=4;App.sub.vaultMain='earn';App.sub.vault='strat';App.render()"
+                    style="font-size:10px;color:var(--dim);background:none;border:none;cursor:pointer;padding:0;">
+                    All ${strat.length} strategy items →
+                </button>
+            </div>`;
+        }
+
+        html += `</div>`;
+        return html;
+    },
+
     renderTaskFilters() {
         if (!this.data.currentCycle) return '';
         
@@ -9807,229 +10262,201 @@ Drink water
     openUserManual() {
         const modalBody = document.getElementById('modal-body');
         modalBody.innerHTML = `
-            <div style="max-height:70vh;overflow-y:auto;">
-                <h2 style="color:var(--accent);margin-bottom:20px;font-size:24px;">📖 SVK Blueprint User Manual</h2>
-                
-                <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);border-radius:8px;padding:16px;margin-bottom:24px;">
-                    <h3 style="color:var(--accent);margin-bottom:8px;font-size:16px;">🎯 Purpose</h3>
-                    <p style="line-height:1.6;color:var(--text-secondary);">
-                        SVK Blueprint transforms your 15-year vision into executable 90-day cycles. 
-                        <strong style="color:var(--text);">The system decides, you execute.</strong> 
-                        This creates frictionless execution—you always know what to do next, eliminating decision fatigue 
-                        and ensuring inevitable progress toward your chief aim.
+            <div style="max-height:70vh;overflow-y:auto;padding-bottom:8px;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                    <h2 style="color:var(--accent);font-size:22px;">📖 SVK Blueprint</h2>
+                    <span style="font-size:11px;color:var(--dim);padding:3px 8px;background:var(--sub);border-radius:8px;font-family:monospace;">v2.3.0</span>
+                </div>
+                <p style="color:var(--dim);font-size:12px;margin-bottom:20px;font-style:italic;">The System Decides. You Execute.</p>
+
+                <!-- PURPOSE -->
+                <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:16px;margin-bottom:20px;">
+                    <h3 style="color:var(--accent);margin-bottom:8px;font-size:14px;text-transform:uppercase;letter-spacing:1px;">🎯 What This Is</h3>
+                    <p style="line-height:1.6;color:var(--dim);font-size:13px;">
+                        SVK Blueprint converts your 15-year vision into executable 90-day cycles. Each cycle contains 13 weeks of pre-planned tasks across your life domains. You never decide what to work on — the system already decided. You execute.
                     </p>
                 </div>
 
-                <div style="margin-bottom:24px;">
-                    <h3 style="color:var(--accent);margin-bottom:12px;font-size:18px;">🚀 Quick Start</h3>
-                    <div style="background:var(--card);border-radius:8px;padding:16px;margin-bottom:12px;">
-                        <div style="font-weight:600;margin-bottom:8px;">1️⃣ Create Your Blueprint</div>
-                        <p style="font-size:13px;color:var(--dim);line-height:1.5;">
-                            Go to SYSTEM tab → Custom Blueprint. Answer 12 questions about your vision, copy the prompt, 
-                            paste into ChatGPT/Claude, then import the generated JSON. This creates your personalized 
-                            60-cycle roadmap.
-                        </p>
+                <!-- HEADER BAR -->
+                <h3 style="color:var(--accent);font-size:15px;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:6px;">🔝 Top Bar — Every Element Explained</h3>
+
+                <div style="background:var(--card);border-radius:10px;padding:14px;margin-bottom:8px;border-left:3px solid var(--accent);">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-family:monospace;font-weight:900;font-size:18px;color:var(--accent);">SVK</span>
+                        <span style="font-size:12px;color:var(--dim);">— Logo</span>
                     </div>
-                    <div style="background:var(--card);border-radius:8px;padding:16px;margin-bottom:12px;">
-                        <div style="font-weight:600;margin-bottom:8px;">2️⃣ Start Your First Cycle</div>
-                        <p style="font-size:13px;color:var(--dim);line-height:1.5;">
-                            Navigate to STRATEGY tab → review your first cycle's goals and milestones → click "Activate This Cycle". 
-                            Tasks automatically populate into your 13-week execution plan.
-                        </p>
-                    </div>
-                    <div style="background:var(--card);border-radius:8px;padding:16px;">
-                        <div style="font-weight:600;margin-bottom:8px;">3️⃣ Execute Daily</div>
-                        <p style="font-size:13px;color:var(--dim);line-height:1.5;">
-                            Open EXECUTE tab each morning. See your Quick Tasks (max 3), today's habits, and week's focus. 
-                            Check off tasks as you complete them. Use Quick Capture (+ button) to capture ideas on the fly.
-                        </p>
-                    </div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;">Your identity anchor. Decorative — a reminder this system belongs to you.</p>
                 </div>
 
-                <div style="margin-bottom:24px;">
-                    <h3 style="color:var(--accent);margin-bottom:12px;font-size:18px;">📱 The 5 Tabs Explained</h3>
-                    
-                    <div style="background:var(--card);border-radius:8px;padding:16px;margin-bottom:12px;">
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                            <span style="font-size:20px;">⚡</span>
-                            <div style="font-weight:600;font-size:15px;">EXECUTE</div>
-                        </div>
-                        <p style="font-size:13px;color:var(--dim);line-height:1.5;margin-bottom:8px;">
-                            Your daily command center. See Quick Tasks (3 max for focus), current week number, 
-                            habit tracking heatmap, and Pomodoro timer. This is where you spend most of your time.
-                        </p>
-                        <div style="font-size:12px;color:var(--accent);">💡 Tip: Start each day here. Complete Quick Tasks first.</div>
+                <div style="background:var(--card);border-radius:10px;padding:14px;margin-bottom:8px;border-left:3px solid var(--blue);">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-size:16px;">ⓘ</span>
+                        <span style="font-size:13px;font-weight:600;">Info / Manual</span>
                     </div>
-
-                    <div style="background:var(--card);border-radius:8px;padding:16px;margin-bottom:12px;">
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                            <span style="font-size:20px;">🎯</span>
-                            <div style="font-weight:600;font-size:15px;">BUILD</div>
-                        </div>
-                        <p style="font-size:13px;color:var(--dim);line-height:1.5;margin-bottom:8px;">
-                            Set and track goals, view domain focus (life areas), manage affirmations, and access statistics. 
-                            Goals connect to your current cycle's objectives.
-                        </p>
-                        <div style="font-size:12px;color:var(--accent);">💡 Tip: Review weekly to ensure alignment with cycle goals.</div>
-                    </div>
-
-                    <div style="background:var(--card);border-radius:8px;padding:16px;margin-bottom:12px;">
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                            <span style="font-size:20px;">🗺️</span>
-                            <div style="font-weight:600;font-size:15px;">STRATEGY</div>
-                        </div>
-                        <p style="font-size:13px;color:var(--dim);line-height:1.5;margin-bottom:8px;">
-                            View your 60-cycle roadmap, activate cycles, see cycle tasks by week (13 weeks per cycle), 
-                            and plan your 15-year journey. Each cycle = 90 days of focused execution.
-                        </p>
-                        <div style="font-size:12px;color:var(--accent);">💡 Tip: Activate one cycle at a time. Complete before moving on.</div>
-                    </div>
-
-                    <div style="background:var(--card);border-radius:8px;padding:16px;margin-bottom:12px;">
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                            <span style="font-size:20px;">⚙️</span>
-                            <div style="font-weight:600;font-size:15px;">SYSTEM</div>
-                        </div>
-                        <p style="font-size:13px;color:var(--dim);line-height:1.5;margin-bottom:8px;">
-                            Daily habits, reflections (morning/evening), journal entries, and custom blueprint generator. 
-                            This is your personal development workspace.
-                        </p>
-                        <div style="font-size:12px;color:var(--accent);">💡 Tip: Morning reflection sets intention. Evening reflection reviews progress.</div>
-                    </div>
-
-                    <div style="background:var(--card);border-radius:8px;padding:16px;">
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                            <span style="font-size:20px;">📚</span>
-                            <div style="font-weight:600;font-size:15px;">VAULT</div>
-                        </div>
-                        <p style="font-size:13px;color:var(--dim);line-height:1.5;margin-bottom:8px;">
-                            Your knowledge management system. Store notes, quotes, ideas, book summaries, and contacts. 
-                            Organized into LEARN (knowledge) and EARN (resources). Full search, tagging, and importance levels.
-                        </p>
-                        <div style="font-size:12px;color:var(--accent);">💡 Tip: Capture ideas immediately. Review vault weekly for insights.</div>
-                    </div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;">Opens this manual. Always accessible from any tab.</p>
                 </div>
 
-                <div style="margin-bottom:24px;">
-                    <h3 style="color:var(--accent);margin-bottom:12px;font-size:18px;">⚡ 10 Quick Capture Types</h3>
-                    <p style="font-size:13px;color:var(--dim);margin-bottom:12px;">Click the + button (bottom-right) to capture on the fly:</p>
-                    
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;">
-                        <div style="background:var(--sub);padding:10px;border-radius:6px;">💡 <strong>Idea</strong> - Fleeting insights</div>
-                        <div style="background:var(--sub);padding:10px;border-radius:6px;">⚡ <strong>Quick Task</strong> - Do today (max 3)</div>
-                        <div style="background:var(--sub);padding:10px;border-radius:6px;">📝 <strong>Note</strong> - Quick info</div>
-                        <div style="background:var(--sub);padding:10px;border-radius:6px;">✓ <strong>Cycle Task</strong> - Week-specific</div>
-                        <div style="background:var(--sub);padding:10px;border-radius:6px;">💬 <strong>Quote</strong> - Wisdom</div>
-                        <div style="background:var(--sub);padding:10px;border-radius:6px;">📅 <strong>Timeblock</strong> - Schedule focus</div>
-                        <div style="background:var(--sub);padding:10px;border-radius:6px;">🔄 <strong>Habit</strong> - Daily practice</div>
-                        <div style="background:var(--sub);padding:10px;border-radius:6px;">📔 <strong>Journal</strong> - Reflections</div>
-                        <div style="background:var(--sub);padding:10px;border-radius:6px;">🎯 <strong>Goal</strong> - Objectives</div>
-                        <div style="background:var(--sub);padding:10px;border-radius:6px;">✨ <strong>Affirmation</strong> - Mindset</div>
+                <div style="background:var(--card);border-radius:10px;padding:14px;margin-bottom:8px;border-left:3px solid var(--blue);">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-size:16px;">🔍</span>
+                        <span style="font-size:13px;font-weight:600;">Universal Search</span>
                     </div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;">Real-time search across all data: tasks, goals, habits, notes, quotes, ideas, journal entries, reflections, timeblocks, affirmations, books, contacts, and EARN items. Tap any result to jump directly to it.</p>
                 </div>
 
-                <div style="margin-bottom:24px;">
-                    <h3 style="color:var(--accent);margin-bottom:12px;font-size:18px;">🔍 Universal Search</h3>
-                    <p style="font-size:13px;color:var(--dim);line-height:1.5;">
-                        Click the search icon (header) to search across ALL your data: tasks, goals, notes, quotes, ideas, 
-                        journal entries, habits, timeblocks, and more. Results are instant and clicking jumps to the item.
-                    </p>
+                <div style="background:var(--card);border-radius:10px;padding:14px;margin-bottom:8px;border-left:3px solid var(--success);">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-family:monospace;font-weight:700;font-size:12px;background:var(--success);color:var(--void);padding:4px 10px;border-radius:8px;">25:00</span>
+                        <span style="font-size:13px;font-weight:600;">Timer badge</span>
+                        <span style="font-size:11px;color:var(--dim);">(hidden until active)</span>
+                    </div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;">Appears in green when a Pomodoro session is running. Shows live countdown. Tap anytime to open full timer controls — pause, stop, or see your current focus intention. Pulses to confirm a session is active.</p>
+                    <div style="font-size:11px;color:var(--accent);margin-top:6px;">💡 Start a session: EXECUTE tab → tap any task → Start Focus</div>
                 </div>
 
-                <div style="margin-bottom:24px;">
-                    <h3 style="color:var(--accent);margin-bottom:12px;font-size:18px;">⏱️ Pomodoro Timer</h3>
-                    <p style="font-size:13px;color:var(--dim);line-height:1.5;margin-bottom:8px;">
-                        Click timer badge in header → set duration → add intention (what you'll work on) → start. 
-                        Timer counts down and alerts when complete. Custom durations supported.
-                    </p>
-                    <div style="font-size:12px;color:var(--accent);">💡 Recommended: 25-min focus blocks with 5-min breaks.</div>
+                <div style="background:var(--card);border-radius:10px;padding:14px;margin-bottom:20px;border-left:3px solid var(--accent);">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-family:monospace;font-weight:700;font-size:11px;background:var(--sub);color:var(--accent);padding:5px 10px;border-radius:10px;border:1px solid var(--border);">C4 · W07</span>
+                        <span style="font-size:13px;font-weight:600;">Cycle badge</span>
+                    </div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;">Shows your active cycle number and current week — e.g. C4 = Cycle 4 of 60, W07 = Week 7 of 13 in that cycle. Tap to jump to STRATEGY tab. Shows "NO CYCLE" until you activate your first cycle.</p>
+                    <div style="font-size:11px;color:var(--accent);margin-top:6px;">💡 Tap every Monday to review the week's tasks.</div>
                 </div>
 
-                <div style="margin-bottom:24px;">
-                    <h3 style="color:var(--accent);margin-bottom:12px;font-size:18px;">🔄 Workflow: System Decides, You Execute</h3>
-                    
-                    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;">
-                        <div style="font-weight:600;margin-bottom:8px;color:var(--accent);">Daily Routine (5 minutes)</div>
-                        <ol style="margin-left:20px;font-size:13px;color:var(--dim);line-height:1.8;">
-                            <li>Open EXECUTE tab</li>
-                            <li>Review your 3 Quick Tasks</li>
-                            <li>Check habit for today</li>
-                            <li>Start Pomodoro → Execute first task</li>
-                            <li>Capture ideas with + button as they arise</li>
-                        </ol>
-                    </div>
+                <!-- THE 5 TABS -->
+                <h3 style="color:var(--accent);font-size:15px;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:6px;">📱 The 5 Tabs</h3>
 
-                    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;">
-                        <div style="font-weight:600;margin-bottom:8px;color:var(--accent);">Weekly Review (15 minutes)</div>
-                        <ol style="margin-left:20px;font-size:13px;color:var(--dim);line-height:1.8;">
-                            <li>STRATEGY → Review current week's cycle tasks</li>
-                            <li>BUILD → Check domain focus alignment</li>
-                            <li>SYSTEM → Write weekly reflection</li>
-                            <li>VAULT → Process captured ideas into actionable items</li>
-                            <li>BUILD → Stats → Export backup JSON</li>
-                        </ol>
+                <div style="background:var(--card);border-radius:10px;padding:14px;margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-size:18px;">⚡</span><div style="font-weight:700;font-size:14px;">EXECUTE — Daily HQ</div>
                     </div>
-
-                    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;">
-                        <div style="font-weight:600;margin-bottom:8px;color:var(--accent);">Cycle Transition (90 days)</div>
-                        <ol style="margin-left:20px;font-size:13px;color:var(--dim);line-height:1.8;">
-                            <li>Complete week 13 of current cycle</li>
-                            <li>STRATEGY → Review cycle completion</li>
-                            <li>STRATEGY → Activate next cycle</li>
-                            <li>New tasks auto-populate for next 13 weeks</li>
-                            <li>Continue daily execution rhythm</li>
-                        </ol>
-                    </div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;margin-bottom:6px;">Quick Tasks (3 max), this week's Vision Plan Tasks, Scheduled Tasks, Delegated Tasks (auto-populated from Contacts), Time Blocks, and the Intelligence Brief — which surfaces your active Strategy rule, a Leverage spotlight, overdue Contacts, and your last logged win.</p>
+                    <div style="font-size:11px;color:var(--accent);">💡 Open here every morning. Quick Tasks first, always.</div>
                 </div>
 
-                <div style="margin-bottom:24px;">
-                    <h3 style="color:var(--accent);margin-bottom:12px;font-size:18px;">💡 Power Tips</h3>
-                    <div style="font-size:13px;color:var(--dim);line-height:1.8;">
-                        <div style="margin-bottom:8px;">🎯 <strong>Limit Quick Tasks to 3</strong> - Forces prioritization, maintains focus</div>
-                        <div style="margin-bottom:8px;">📊 <strong>Export weekly backups</strong> - BUILD → Stats → Export Blueprint</div>
-                        <div style="margin-bottom:8px;">🔍 <strong>Use Universal Search</strong> - Faster than navigating tabs</div>
-                        <div style="margin-bottom:8px;">⚡ <strong>Keyboard shortcuts</strong> - ESC closes modals, Ctrl+Z undo</div>
-                        <div style="margin-bottom:8px;">📱 <strong>Install as app</strong> - Add to home screen for offline access</div>
-                        <div style="margin-bottom:8px;">🎨 <strong>Tag everything</strong> - Makes vault searchable and organized</div>
-                        <div style="margin-bottom:8px;">⏰ <strong>Timeblock deep work</strong> - Schedule 2-3 focus blocks daily</div>
-                        <div style="margin-bottom:8px;">🌅 <strong>Morning reflection</strong> - Sets intention, reviews goals</div>
-                        <div>📝 <strong>Evening journal</strong> - Reviews progress, captures insights</div>
+                <div style="background:var(--card);border-radius:10px;padding:14px;margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-size:18px;">🎯</span><div style="font-weight:700;font-size:14px;">BUILD — Goals & Identity</div>
                     </div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;margin-bottom:6px;">Long-term goals with subgoals and stages. Domain focus chart (planned vs. actual %). Affirmations, bucket list, stats, data export. Expanding a goal now shows linked Leverage items from EARN Vault.</p>
+                    <div style="font-size:11px;color:var(--accent);">💡 Weekly review: check domain alignment and leverage panel per goal.</div>
                 </div>
 
-                <div style="margin-bottom:24px;">
-                    <h3 style="color:var(--accent);margin-bottom:12px;font-size:18px;">🎯 How It Achieves Your Chief Aim Faster</h3>
-                    <div style="background:rgba(48,209,88,0.1);border:1px solid rgba(48,209,88,0.3);border-radius:8px;padding:16px;">
-                        <p style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:12px;">
-                            <strong>1. Eliminates Decision Fatigue:</strong> Your blueprint pre-decides all tasks for 15 years. 
-                            You never wonder "what should I work on?"—the system tells you.
-                        </p>
-                        <p style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:12px;">
-                            <strong>2. Creates Compound Progress:</strong> 90-day cycles stack. Each cycle builds on the last, 
-                            creating exponential growth toward your vision.
-                        </p>
-                        <p style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:12px;">
-                            <strong>3. Captures Everything:</strong> Ideas, insights, and knowledge never get lost. 
-                            Quick Capture + Vault ensures every valuable thought is preserved and searchable.
-                        </p>
-                        <p style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:12px;">
-                            <strong>4. Maintains Focus:</strong> 3 Quick Task limit + weekly cycle focus prevents overwhelm. 
-                            You always know the most important next action.
-                        </p>
-                        <p style="font-size:13px;color:var(--text);line-height:1.7;">
-                            <strong>5. Builds Identity:</strong> Daily habits + affirmations + reflections reshape your identity 
-                            to match your vision. You become who you need to be to achieve your aim.
-                        </p>
+                <div style="background:var(--card);border-radius:10px;padding:14px;margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-size:18px;">🗺️</span><div style="font-weight:700;font-size:14px;">STRATEGY — 15-Year Roadmap</div>
                     </div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;margin-bottom:6px;">60-cycle overview, current cycle week navigator (1–13), cycle activation. Now also shows the Operating Rules panel — EARN Strategy items filtered by your cycle's dominant focus domain — directly above the week's tasks.</p>
+                    <div style="font-size:11px;color:var(--accent);">💡 Pin a strategy rule here to lock it as today's focus anchor.</div>
                 </div>
 
-                <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);border-radius:8px;padding:16px;text-align:center;">
-                    <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:8px;">
-                        The System Decides. You Execute.
+                <div style="background:var(--card);border-radius:10px;padding:14px;margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-size:18px;">⚙️</span><div style="font-weight:700;font-size:14px;">SYSTEM — Daily Practice</div>
                     </div>
-                    <div style="font-size:13px;color:var(--dim);">
-                        Frictionless execution leads to inevitable success.
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;margin-bottom:6px;">Habits with heatmaps and Zen Mode timer. Morning/evening reflections. Journal. Weekly reviews. Custom Blueprint Generator (12-field AI-assisted form to build your 60-cycle roadmap).</p>
+                    <div style="font-size:11px;color:var(--accent);">💡 Morning reflection before Execute. Evening journal after.</div>
+                </div>
+
+                <div style="background:var(--card);border-radius:10px;padding:14px;margin-bottom:20px;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-size:18px;">📚</span><div style="font-weight:700;font-size:14px;">VAULT — Knowledge & Resources</div>
                     </div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;margin-bottom:6px;"><strong style="color:var(--text);">LEARN:</strong> Notes, Quotes, Books, Ideas — knowledge you collect. <strong style="color:var(--text);">EARN:</strong> Strategy, Execute, Leverage, Contacts — resources you deploy. All 4 EARN buckets are now live-wired into Execute, Strategy, Build, and the Intelligence Brief.</p>
+                    <div style="font-size:11px;color:var(--accent);">💡 EARN is your strategic layer. Use it actively, not just as storage.</div>
+                </div>
+
+                <!-- EARN INTEGRATIONS -->
+                <h3 style="color:var(--accent);font-size:15px;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:6px;">🔗 EARN Vault Live Integrations (v2.3.0)</h3>
+
+                <div style="background:linear-gradient(135deg,#1a1a00,#1c1c1e);border:1px solid rgba(255,215,0,0.25);border-radius:10px;padding:14px;margin-bottom:8px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:6px;">📊 Strategy → STRATEGY tab</div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;">Appears as Operating Rules panel above cycle tasks. Items matching your cycle's dominant domain appear first. Pin any item to make it today's rule. Also surfaces in the Intelligence Brief on Execute.</p>
+                </div>
+
+                <div style="background:var(--sub);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:6px;">⚙️ Execute Log → Cycle Tasks</div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;">Hitting "Fulfill" on an Execute item auto-completes any matching cycle task in your blueprint (matched by title or linkedGoal). One action closes both. Last win appears in the Intelligence Brief.</p>
+                </div>
+
+                <div style="background:var(--sub);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:6px;">🔗 Leverage → BUILD Goals</div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;">Expanding any goal in BUILD → Goals shows linked Leverage items (matched by linkedGoal or domain). Up to 3 shown inline, remainder linked. Top item also in the domain-aware Intelligence Brief.</p>
+                </div>
+
+                <div style="background:var(--sub);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:20px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:6px;">👤 Contacts → EXECUTE Delegated Tasks</div>
+                    <p style="font-size:12px;color:var(--dim);line-height:1.5;">Any contact whose follow-up date is today or past automatically creates a Delegated Task on the Execute screen. No manual action needed. Marking it done bumps follow-up +7 days and removes the task. Overdue contacts appear in the Intelligence Brief.</p>
+                </div>
+
+                <!-- QUICK CAPTURE -->
+                <h3 style="color:var(--accent);font-size:15px;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:6px;">⚡ Quick Capture (+ button)</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;margin-bottom:20px;">
+                    <div style="background:var(--sub);padding:8px 10px;border-radius:6px;">💡 <strong>Idea</strong> → Vault Ideas</div>
+                    <div style="background:var(--sub);padding:8px 10px;border-radius:6px;">⚡ <strong>Quick Task</strong> → Execute (max 3)</div>
+                    <div style="background:var(--sub);padding:8px 10px;border-radius:6px;">📝 <strong>Note</strong> → Vault Notes</div>
+                    <div style="background:var(--sub);padding:8px 10px;border-radius:6px;">✓ <strong>Cycle Task</strong> → Current cycle week</div>
+                    <div style="background:var(--sub);padding:8px 10px;border-radius:6px;">💬 <strong>Quote</strong> → Vault Quotes</div>
+                    <div style="background:var(--sub);padding:8px 10px;border-radius:6px;">📅 <strong>Timeblock</strong> → Execute schedule</div>
+                    <div style="background:var(--sub);padding:8px 10px;border-radius:6px;">🔄 <strong>Habit</strong> → System Habits</div>
+                    <div style="background:var(--sub);padding:8px 10px;border-radius:6px;">📔 <strong>Journal</strong> → System Journal</div>
+                    <div style="background:var(--sub);padding:8px 10px;border-radius:6px;">🎯 <strong>Goal</strong> → Build Goals</div>
+                    <div style="background:var(--sub);padding:8px 10px;border-radius:6px;">✨ <strong>Affirmation</strong> → Build Affirmations</div>
+                </div>
+
+                <!-- WORKFLOWS -->
+                <h3 style="color:var(--accent);font-size:15px;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:6px;">📅 Workflows</h3>
+
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;">
+                    <div style="font-weight:600;margin-bottom:8px;color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:1px;">Daily (5 min)</div>
+                    <ol style="margin-left:18px;font-size:12px;color:var(--dim);line-height:1.8;">
+                        <li>SYSTEM → Morning Reflection</li>
+                        <li>EXECUTE → check Intelligence Brief (today's strategy rule)</li>
+                        <li>EXECUTE → review Delegated Tasks (auto-synced from Contacts)</li>
+                        <li>Pick one Vision Task → Start Focus (Pomodoro)</li>
+                        <li>Capture anything with + button as it arises</li>
+                    </ol>
+                </div>
+
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;">
+                    <div style="font-weight:600;margin-bottom:8px;color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:1px;">Weekly (15 min)</div>
+                    <ol style="margin-left:18px;font-size:12px;color:var(--dim);line-height:1.8;">
+                        <li>STRATEGY → review Operating Rules panel</li>
+                        <li>STRATEGY → navigate weeks, close straggler tasks</li>
+                        <li>BUILD → Goals → expand each, review Leverage panel</li>
+                        <li>VAULT → EARN → add new rules or opportunities from the week</li>
+                        <li>SYSTEM → Weekly Review</li>
+                        <li>BUILD → Stats → Export JSON backup</li>
+                    </ol>
+                </div>
+
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:20px;">
+                    <div style="font-weight:600;margin-bottom:8px;color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:1px;">Cycle Transition (every 90 days)</div>
+                    <ol style="margin-left:18px;font-size:12px;color:var(--dim);line-height:1.8;">
+                        <li>STRATEGY → complete week 13, review cycle</li>
+                        <li>STRATEGY → Activate Next Cycle</li>
+                        <li>VAULT → EARN → update Strategy rules for new dominant domain</li>
+                        <li>BUILD → Goals → align goals with next cycle's objectives</li>
+                    </ol>
+                </div>
+
+                <!-- TIPS -->
+                <h3 style="color:var(--accent);font-size:15px;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:6px;">💡 Power Tips</h3>
+                <div style="font-size:12px;color:var(--dim);line-height:2;">
+                    <div>🎯 <strong>Max 3 Quick Tasks</strong> — forced prioritization, zero decision fatigue</div>
+                    <div>📌 <strong>Pin a Strategy rule</strong> — locks it as today's Operating Rule on Execute + Strategy tabs</div>
+                    <div>🔗 <strong>Link EARN items to domains/goals</strong> — activates domain-aware Intelligence Brief</div>
+                    <div>👤 <strong>Set follow-up dates on Contacts</strong> — auto-creates Delegated Tasks on Execute</div>
+                    <div>⚡ <strong>Fulfill on Execute items</strong> — auto-closes linked cycle tasks simultaneously</div>
+                    <div>📊 <strong>Export weekly</strong> — BUILD → Stats → Export Blueprint (JSON backup)</div>
+                    <div>🔍 <strong>Universal Search</strong> — faster than browsing tabs</div>
+                    <div>⌨️ <strong>ESC</strong> closes any modal, <strong>Ctrl+Z</strong> undoes last action</div>
+                    <div>📱 <strong>Install as PWA</strong> — Add to Home Screen for offline access</div>
+                </div>
+
+                <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:16px;text-align:center;margin-top:20px;">
+                    <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px;">The System Decides. You Execute.</div>
+                    <div style="font-size:12px;color:var(--dim);">Frictionless execution leads to inevitable success.</div>
                 </div>
             </div>
         `;
@@ -10367,6 +10794,113 @@ Drink water
     deleteQuickTask(id) {
         if (!this.data.tasks.quick) return;
         this.data.tasks.quick = this.data.tasks.quick.filter(t => t.id !== id);
+        this.save(); this.render();
+    },
+
+    // SCHEDULED TASK - Add a task with date/time to the timeline
+    addScheduledTask() {
+        if (!this.data.tasks) this.data.tasks = {};
+        if (!this.data.tasks.scheduled) this.data.tasks.scheduled = [];
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('modal-body').innerHTML = `
+            <h3 style="margin-bottom:12px;color:var(--accent);">📅 Scheduled Task</h3>
+            <input id="st-title" placeholder="Task title..." style="margin-bottom:10px;">
+            <input id="st-date" type="date" value="${today}" style="margin-bottom:10px;">
+            <input id="st-time" type="time" placeholder="Time (optional)" style="margin-bottom:10px;">
+            <input id="st-notes" placeholder="Notes (optional)..." style="margin-bottom:14px;">
+            <button class="btn" onclick="App.saveScheduledTask()">Schedule Task</button>`;
+        document.getElementById('modal').classList.add('open');
+        setTimeout(() => document.getElementById('st-title')?.focus(), 80);
+    },
+
+    saveScheduledTask() {
+        const title = document.getElementById('st-title')?.value?.trim();
+        const date = document.getElementById('st-date')?.value;
+        const time = document.getElementById('st-time')?.value;
+        const notes = document.getElementById('st-notes')?.value?.trim();
+        if (!title) { this.toast('⚠️ Enter task title'); return; }
+        if (!this.data.tasks) this.data.tasks = {};
+        if (!this.data.tasks.scheduled) this.data.tasks.scheduled = [];
+        this.data.tasks.scheduled.push({
+            id: this.genId(),
+            title,
+            scheduledDate: date || '',
+            scheduledTime: time || '',
+            notes: notes || '',
+            done: false,
+            created: new Date().toISOString()
+        });
+        this.save(); this.closeModal(); this.render();
+        this.toast('✓ Task scheduled');
+    },
+
+    completeScheduledTask(id) {
+        const task = this.data.tasks.scheduled?.find(t => t.id === id);
+        if (task) {
+            task.done = true;
+            task.completedAt = new Date().toISOString();
+            this.save(); this.render();
+            this.celebrate('✅', 'Scheduled Task Done!', task.title);
+        }
+    },
+
+    deleteScheduledTask(id) {
+        if (!this.data.tasks.scheduled) return;
+        this.data.tasks.scheduled = this.data.tasks.scheduled.filter(t => t.id !== id);
+        this.save(); this.render();
+    },
+
+    // DELEGATED TASK - Track tasks given to others for follow-up
+    addDelegatedTask() {
+        if (!this.data.tasks) this.data.tasks = {};
+        if (!this.data.tasks.delegated) this.data.tasks.delegated = [];
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('modal-body').innerHTML = `
+            <h3 style="margin-bottom:12px;color:var(--accent);">🤝 Delegated Task</h3>
+            <input id="dt-title" placeholder="Task description..." style="margin-bottom:10px;">
+            <input id="dt-to" placeholder="Delegated to (name)..." style="margin-bottom:10px;">
+            <label style="font-size:12px;color:var(--dim);display:block;margin-bottom:4px;">Follow-up date</label>
+            <input id="dt-date" type="date" value="${today}" style="margin-bottom:10px;">
+            <input id="dt-notes" placeholder="Notes (optional)..." style="margin-bottom:14px;">
+            <button class="btn" onclick="App.saveDelegatedTask()">Add Delegated Task</button>`;
+        document.getElementById('modal').classList.add('open');
+        setTimeout(() => document.getElementById('dt-title')?.focus(), 80);
+    },
+
+    saveDelegatedTask() {
+        const title = document.getElementById('dt-title')?.value?.trim();
+        const delegatedTo = document.getElementById('dt-to')?.value?.trim();
+        const followUpDate = document.getElementById('dt-date')?.value;
+        const notes = document.getElementById('dt-notes')?.value?.trim();
+        if (!title) { this.toast('⚠️ Enter task description'); return; }
+        if (!this.data.tasks) this.data.tasks = {};
+        if (!this.data.tasks.delegated) this.data.tasks.delegated = [];
+        this.data.tasks.delegated.push({
+            id: this.genId(),
+            title,
+            delegatedTo: delegatedTo || '',
+            followUpDate: followUpDate || '',
+            notes: notes || '',
+            done: false,
+            created: new Date().toISOString()
+        });
+        this.save(); this.closeModal(); this.render();
+        this.toast('✓ Delegated task tracked');
+    },
+
+    completeDelegatedTask(id) {
+        const task = this.data.tasks.delegated?.find(t => t.id === id);
+        if (task) {
+            task.done = true;
+            task.completedAt = new Date().toISOString();
+            this.save(); this.render();
+            this.celebrate('🎯', 'Delegated Task Closed!', task.title);
+        }
+    },
+
+    deleteDelegatedTask(id) {
+        if (!this.data.tasks.delegated) return;
+        this.data.tasks.delegated = this.data.tasks.delegated.filter(t => t.id !== id);
         this.save(); this.render();
     },
 
@@ -11041,26 +11575,11 @@ window.addEventListener('pageshow', (event) => {
     }
 });
 
-// Online/offline handlers
-window.addEventListener('online', () => {
-    console.log('App is online');
-    if (App.toast) {
-        App.toast('✓ Back online');
-    }
-});
-
-window.addEventListener('offline', () => {
-    console.log('App is offline');
-    if (App.toast) {
-        App.toast('⚠️ You are offline - changes saved locally');
-    }
-});
-
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     try {
         App.init();
-        console.log('%c✨ SVK Blueprint v2.2.2 PRODUCTION', 'background: #ffd700; color: #000; font-weight: bold; padding: 8px 16px; border-radius: 4px;');
+        console.log('%c✨ SVK Blueprint v2.3.0 PRODUCTION', 'background: #ffd700; color: #000; font-weight: bold; padding: 8px 16px; border-radius: 4px;');
         console.log('%cℹ️ Frictionless Execution System Loaded', 'color: #888; font-size: 11px;');
         console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #333;');
     } catch (initError) {
