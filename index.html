@@ -181,14 +181,47 @@ FIRST-TIME SETUP:
 
         /* HEADER */
         .header {
-            padding: max(env(safe-area-inset-top), 16px) 20px 14px;
+            padding: max(env(safe-area-inset-top), 16px) 14px 14px;
             background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
             position: fixed; top: 0; width: 100%; z-index: 50;
             border-bottom: 0.5px solid var(--border);
             display: flex; justify-content: space-between; align-items: center;
+            gap: 8px;
         }
+        /* Profile avatar button — replaces static SVK logo */
+        .profile-avatar-btn {
+            min-width: 36px; width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent) 0%, #ff9f0a 100%);
+            border: 2px solid rgba(255,215,0,0.25);
+            cursor: pointer; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 10px rgba(255,215,0,0.3);
+            transition: all 0.2s;
+        }
+        .profile-avatar-btn:hover { transform: scale(1.08); box-shadow: 0 0 18px rgba(255,215,0,0.5); }
+        .profile-avatar-btn:active { transform: scale(0.93); }
+        #profile-avatar-display {
+            font-family: monospace; font-weight: 900; font-size: 12px;
+            color: #000; line-height: 1; max-width: 32px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center;
+        }
+        .header-center {
+            flex: 1; min-width: 0; overflow: hidden;
+        }
+        .header-user-name {
+            font-family: monospace; font-weight: 700; font-size: 12px;
+            color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;
+        }
+        .header-user-name.empty { display: none; }
+        .header-user-tagline {
+            font-size: 9px; color: var(--dim); letter-spacing: 0.5px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            line-height: 1.2; margin-top: 1px;
+        }
+        .header-user-tagline:empty { display: none; }
         .logo-svk { font-family: monospace; font-weight: 700; font-size: 26px; letter-spacing: 4px; color: var(--accent); text-shadow: 0 0 20px rgba(255,215,0,0.3); }
-        .header-right { display: flex; gap: 12px; align-items: center; }
+        .header-right { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
         .header-icon-btn {
             width: 32px; height: 32px; background: var(--sub); border: 1px solid var(--border);
             border-radius: 8px; display: flex; align-items: center; justify-content: center;
@@ -196,13 +229,13 @@ FIRST-TIME SETUP:
         }
         .header-icon-btn:active { opacity: 0.7; transform: scale(0.95); }
         .header-text-btn {
-            height: 30px; background: var(--sub); border: 1px solid var(--border);
-            border-radius: 8px; padding: 0 9px;
+            height: 28px; background: var(--sub); border: 1px solid var(--border);
+            border-radius: 7px; padding: 0 8px;
             color: var(--accent); cursor: pointer; transition: all 0.2s;
-            font-family: monospace; font-size: 9px; font-weight: 800;
+            font-family: monospace; font-size: 8px; font-weight: 800;
             letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
         }
-        .header-text-btn:hover { background: rgba(255,215,0,0.12); border-color: rgba(255,215,0,0.4); }
+        .header-text-btn:hover { background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.35); }
         .header-text-btn:active { opacity: 0.7; transform: scale(0.95); }
         .cycle-badge {
             font-family: monospace; font-size: 11px; font-weight: 700;
@@ -2067,41 +2100,94 @@ FIRST-TIME SETUP:
 </head>
 <body>
 
-<!-- WELCOME MODAL - Shows on first load -->
+<!-- WELCOME MODAL - Shows on first load (2-step: Profile → Blueprint) -->
 <div id="welcome-overlay" class="welcome-overlay" style="display: none;">
     <div class="welcome-modal">
-        <div class="welcome-logo">SVK</div>
-        <div class="welcome-version">Blueprint v2.3.0</div>
-        <h1 class="welcome-title">Welcome to Your 15-Year Vision System</h1>
-        <p class="welcome-subtitle">Transform your long-term goals into executable 90-day cycles with zero-friction execution. Let's get started!</p>
-        
-        <div class="welcome-options">
-            <div class="welcome-option-btn primary" onclick="App.chooseCreateCustom()">
-                <span class="welcome-option-icon">✨</span>
-                <div class="welcome-option-title">Create Your Custom Blueprint</div>
-                <div class="welcome-option-desc">Answer 12 questions and let AI generate your personalized 15-year plan with 60 cycles. Includes 10 streamlined capture types for daily use.</div>
-                <span class="welcome-option-badge">RECOMMENDED</span>
+
+        <!-- ── STEP 1: Profile Setup ── -->
+        <div id="welcome-step-1">
+            <div class="welcome-logo" id="welcome-avatar-preview">SVK</div>
+            <div class="welcome-version">SVK Blueprint v2.3.0</div>
+            <h1 class="welcome-title">Let's personalize your system</h1>
+            <p class="welcome-subtitle">This system is built around <em>you</em>. Start by telling us your name and your 15-year vision — the north star that every task, habit, and cycle will serve.</p>
+
+            <!-- Name -->
+            <div style="text-align:left;margin-bottom:12px;">
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);display:block;margin-bottom:6px;">Your Name *</label>
+                <input type="text" id="welcome-name" placeholder="e.g. Sathvik, Alex, Maya…"
+                    style="font-size:16px;"
+                    oninput="App._welcomePreviewAvatar()"
+                    maxlength="40">
             </div>
+
+            <!-- Tagline -->
+            <div style="text-align:left;margin-bottom:12px;">
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);display:block;margin-bottom:6px;">One-Line Identity <span style="font-weight:400;opacity:0.5;">(optional)</span></label>
+                <input type="text" id="welcome-tagline" placeholder="e.g. Builder · Father · Lifelong Learner"
+                    style="font-size:14px;"
+                    maxlength="80">
+            </div>
+
+            <!-- Vision -->
+            <div style="text-align:left;margin-bottom:20px;">
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);display:block;margin-bottom:6px;">Your 15-Year Vision *</label>
+                <div style="font-size:11px;color:var(--dim);margin-bottom:8px;line-height:1.5;">
+                    Your definite chief aim. The life you are building. Be ambitious, be specific.
+                </div>
+                <textarea id="welcome-vision" rows="4" maxlength="2000"
+                    placeholder="In 15 years, I will have built…&#10;&#10;I will achieve this by…&#10;&#10;My legacy will be…"
+                    style="font-size:13px;line-height:1.6;resize:vertical;min-height:100px;"></textarea>
+            </div>
+
+            <button class="btn" onclick="App._welcomeStep1Next()" style="margin-bottom:12px;font-size:15px;">
+                Continue → Choose Your Blueprint
+            </button>
+            <button onclick="App._welcomeSkipProfile()" 
+                style="background:none;border:none;color:var(--dim);font-size:12px;cursor:pointer;width:100%;">
+                Skip for now (you can set this up later from the header)
+            </button>
+        </div>
+
+        <!-- ── STEP 2: Blueprint Choice ── -->
+        <div id="welcome-step-2" style="display:none;">
+            <div class="welcome-logo" id="welcome-step2-avatar" style="font-size:28px;">SVK</div>
+            <div class="welcome-version">SVK Blueprint v2.3.0</div>
+            <h1 class="welcome-title" id="welcome-step2-title">Welcome! Now set up your blueprint</h1>
+            <p class="welcome-subtitle">Your profile is saved. Now link it to a 15-year execution blueprint — the engine that turns your vision into daily action.</p>
             
-            <div class="welcome-option-btn" onclick="App.chooseImport()">
-                <span class="welcome-option-icon">📥</span>
-                <div class="welcome-option-title">Import Existing Blueprint</div>
-                <div class="welcome-option-desc">Already have a blueprint JSON file? Import it to start immediately with enhanced universal search.</div>
+            <div class="welcome-options">
+                <div class="welcome-option-btn primary" onclick="App.chooseCreateCustom()">
+                    <span class="welcome-option-icon">✨</span>
+                    <div class="welcome-option-title">Create Your Custom Blueprint</div>
+                    <div class="welcome-option-desc">Answer 12 questions and let AI generate your personalized 15-year plan with 60 cycles. Includes 10 streamlined capture types for daily use.</div>
+                    <span class="welcome-option-badge">RECOMMENDED</span>
+                </div>
+                
+                <div class="welcome-option-btn" onclick="App.chooseImport()">
+                    <span class="welcome-option-icon">📥</span>
+                    <div class="welcome-option-title">Import Existing Blueprint</div>
+                    <div class="welcome-option-desc">Already have a blueprint JSON file? Import it to start immediately with enhanced universal search.</div>
+                </div>
+
+                <div class="welcome-option-btn" onclick="App._welcomeSkipBlueprint()">
+                    <span class="welcome-option-icon">⚡</span>
+                    <div class="welcome-option-title">Start Without a Blueprint</div>
+                    <div class="welcome-option-desc">Explore the app and add quick tasks, habits, notes, and vault items now. Set up the blueprint later from the SYSTEM tab.</div>
+                </div>
             </div>
         </div>
-        
-        <div style="margin-top: 24px; padding: 16px; background: rgba(139, 92, 246, 0.1); border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.2);">
-            <div style="font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">✨ What's New in v2.2.1</div>
-            <div style="font-size: 13px; color: var(--dim); line-height: 1.6;">
-                <strong style="color: var(--text);">10 Streamlined Quick Capture Types</strong> - Focused on short-lived, high-frequency items: Ideas, Quick Tasks, Notes, Cycle Tasks, Quotes, Timeblocks, Habits, Journal, Goals & Affirmations.<br>
-                <strong style="color: var(--text);">Enhanced Universal Search</strong> - Search across all 15+ data types with instant results and navigation.
-            </div>
-        </div>
+
     </div>
 </div>
 
 <header class="header">
-    <div class="logo-svk">SVK</div>
+    <button class="profile-avatar-btn" id="profile-avatar-btn" onclick="App.openEditProfile()" title="Edit your profile">
+        <span id="profile-avatar-display">SVK</span>
+    </button>
+    <div class="header-center">
+        <div class="header-user-name" id="header-user-name"></div>
+        <div class="header-user-tagline" id="header-user-tagline"></div>
+    </div>
     <div class="header-right">
         <button class="header-text-btn" onclick="App.openReadme()" title="README — What this app is &amp; version history">README</button>
         <button class="header-text-btn" onclick="App.openUserManual()" title="User Flow — How to use this app">USER FLOW</button>
@@ -2212,7 +2298,8 @@ const SCHEMA = {
     plan: { affirmations: [], bucketList: [] },
     goals: [],
     timeblocks: [],
-    completed: []
+    completed: [],
+    userProfile: { name: '', vision: '', avatar: '', tagline: '', timezone: '' }
 };
 
 const esc = s => {
@@ -2538,6 +2625,19 @@ const App = {
         if (!this.data.plan) this.data.plan = { affirmations: [], bucketList: [] };
         if (!this.data.goals) this.data.goals = [];
         if (!this.data.timeblocks) this.data.timeblocks = [];
+        if (!this.data.userProfile) this.data.userProfile = { name: '', vision: '', avatar: '', tagline: '', timezone: '' };
+        if (!this.data.userProfile.name)     this.data.userProfile.name     = '';
+        if (!this.data.userProfile.vision)   this.data.userProfile.vision   = '';
+        if (!this.data.userProfile.avatar)   this.data.userProfile.avatar   = '';
+        if (!this.data.userProfile.tagline)  this.data.userProfile.tagline  = '';
+        if (!this.data.userProfile.timezone) this.data.userProfile.timezone = '';
+        // Migrate: if blueprintMeta exists but userProfile is empty, seed profile from blueprint
+        if (this.data.blueprintMeta && !this.data.userProfile.name && this.data.blueprintMeta.name) {
+            this.data.userProfile.name = this.data.blueprintMeta.name;
+        }
+        if (this.data.blueprintMeta && !this.data.userProfile.vision && this.data.blueprintMeta.vision) {
+            this.data.userProfile.vision = this.data.blueprintMeta.vision;
+        }
         
         // PRODUCTION: Validate data integrity
         this.validateAndFixData();
@@ -2558,6 +2658,7 @@ const App = {
         }
         
         this.updateCycleIndicator();
+        this.updateHeaderProfile();
         this.navigate(0);
         
         // Add keyboard shortcuts
@@ -3077,9 +3178,11 @@ self.addEventListener('message', (e) => {
     },
 
     getEmptyCustomBlueprintData() {
+        // FIX: Pre-fill name and vision from userProfile if available
+        const profile = this.data?.userProfile || {};
         return {
-            name: '',
-            vision: '',
+            name: profile.name || '',
+            vision: profile.vision || '',
             years: '15',
             domain1: '',
             domain2: '',
@@ -3743,7 +3846,60 @@ self.addEventListener('message', (e) => {
         const quotes = ["The obstacle is the path.", "One breath. One task. Full presence.", "Empty your cup to receive."];
         const quote = quotes[Math.floor(Math.random() * quotes.length)];
         
-        let html = `<div class="zen-quote">"${quote}"</div>`;
+        // ── Personalized greeting ─────────────────────────────────────────
+        const profile = this.data.userProfile || {};
+        const userName = profile.name ? profile.name.split(' ')[0] : '';
+        const userVision = profile.vision || '';
+        const hour = new Date().getHours();
+        const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+        
+        let html = '';
+        if (userName) {
+            html += `
+            <div style="padding:18px 0 4px;border-bottom:1px solid var(--border);margin-bottom:14px;">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                    <div>
+                        <div style="font-size:20px;font-weight:700;color:var(--text);line-height:1.2;">
+                            ${greeting}, <span style="color:var(--accent);">${esc(userName)}</span> 👋
+                        </div>
+                        ${profile.tagline ? `<div style="font-size:12px;color:var(--dim);margin-top:3px;letter-spacing:0.5px;">${esc(profile.tagline)}</div>` : ''}
+                    </div>
+                </div>
+                ${userVision ? `
+                <div onclick="App.openEditProfile()"
+                    style="background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:10px;
+                           padding:12px 14px;cursor:pointer;transition:all 0.2s;"
+                    onmouseover="this.style.borderColor='rgba(255,215,0,0.35)'"
+                    onmouseout="this.style.borderColor='rgba(255,215,0,0.15)'">
+                    <div style="font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:2px;font-weight:700;margin-bottom:5px;">
+                        🎯 Your 15-Year Vision
+                    </div>
+                    <div style="font-size:12px;color:var(--zen);line-height:1.6;font-style:italic;
+                                display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
+                        "${esc(userVision)}"
+                    </div>
+                    <div style="font-size:10px;color:var(--dim);margin-top:6px;opacity:0.6;">Tap to edit</div>
+                </div>` : `
+                <div onclick="App.openEditProfile()"
+                    style="background:rgba(255,215,0,0.04);border:1px dashed rgba(255,215,0,0.2);border-radius:10px;
+                           padding:12px 14px;cursor:pointer;text-align:center;">
+                    <div style="font-size:12px;color:var(--dim);">+ Add your 15-year vision →</div>
+                </div>`}
+            </div>`;
+        } else {
+            // No profile yet — show a prompt
+            html += `
+            <div style="background:rgba(255,215,0,0.05);border:1px dashed rgba(255,215,0,0.3);border-radius:12px;
+                        padding:16px;margin-bottom:14px;text-align:center;cursor:pointer;"
+                 onclick="App.openEditProfile()">
+                <div style="font-size:22px;margin-bottom:8px;">👤</div>
+                <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:4px;">Set Up Your Profile</div>
+                <div style="font-size:12px;color:var(--dim);line-height:1.5;">Add your name and 15-year vision to personalize this system</div>
+                <div style="margin-top:10px;font-size:12px;font-weight:600;color:var(--accent);">Tap here →</div>
+            </div>`;
+        }
+
+        html += `<div class="zen-quote">"${quote}"</div>`;
         
         // ── SECTION 1: QUICK TASKS (max 3) ──────────────────────────────
         if (!this.data.tasks) this.data.tasks = { quick: [], scheduled: [], delegated: [] };
@@ -5663,6 +5819,15 @@ Generate the complete JSON now.`;
                     domains: json.domains
                 };
                 
+                // ── PERSONALIZATION: Seed userProfile from blueprint if not set ──
+                if (!this.data.userProfile) this.data.userProfile = {};
+                if (!this.data.userProfile.name && json.name) {
+                    this.data.userProfile.name = json.name;
+                }
+                if (!this.data.userProfile.vision && json.vision) {
+                    this.data.userProfile.vision = json.vision;
+                }
+                
                 this.data.allCycles = json.cycles.map((c, idx) => ({
                     number: c.number || (idx + 1),
                     title: c.title,
@@ -5673,6 +5838,7 @@ Generate the complete JSON now.`;
                 }));
                 
                 this.save();
+                this.updateHeaderProfile();
                 this.toast('✓ Blueprint imported successfully');
                 this.render();
             } catch(err) {
@@ -6064,6 +6230,43 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
         if (el) el.textContent = this.data.currentCycle ? `CYCLE ${this.data.currentCycle.number}` : 'NO CYCLE';
     },
 
+    // ── PERSONALIZATION: Update header with user profile ──────────────────────
+    updateHeaderProfile() {
+        const p = this.data.userProfile || {};
+        const name = p.name ? p.name.trim() : '';
+        const tagline = p.tagline ? p.tagline.trim() : '';
+        const avatar = p.avatar ? p.avatar.trim() : '';
+
+        // Avatar display: emoji > initials > "SVK"
+        const avatarEl = document.getElementById('profile-avatar-display');
+        if (avatarEl) {
+            if (avatar) {
+                avatarEl.textContent = avatar;
+                avatarEl.style.fontSize = '20px';
+            } else if (name) {
+                const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 3);
+                avatarEl.textContent = initials;
+                avatarEl.style.fontSize = initials.length > 2 ? '10px' : '13px';
+            } else {
+                avatarEl.textContent = 'SVK';
+                avatarEl.style.fontSize = '11px';
+            }
+        }
+
+        // Name in header center
+        const nameEl = document.getElementById('header-user-name');
+        if (nameEl) {
+            nameEl.textContent = name || '';
+            nameEl.classList.toggle('empty', !name);
+        }
+
+        // Tagline in header center
+        const taglineEl = document.getElementById('header-user-tagline');
+        if (taglineEl) {
+            taglineEl.textContent = tagline || (name ? 'Tap avatar to edit profile' : '');
+        }
+    },
+
     changeWeek(dir) {
         const current = this.sub._viewedWeek || this.getCurrentWeek();
         const next = Math.max(1, Math.min(13, current + dir));
@@ -6392,6 +6595,9 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
             clearInterval(this.habitTimer.interval);
             this.habitTimer.interval = null;
         }
+
+        // FIX: Reset avatar temp state so stale emoji doesn't persist across modal opens
+        this._selectedAvatarTemp = null;
         
         document.getElementById('modal').classList.remove('open');
     },
@@ -10264,6 +10470,186 @@ Drink water
     },
 
     // USER MANUAL - Comprehensive guide to using SVK Blueprint
+    // ── PROFILE: Open the user profile edit modal ─────────────────────────────
+    openEditProfile() {
+        const p = this.data.userProfile || {};
+        const AVATAR_OPTIONS = ['','🧠','🚀','⚡','🎯','🦁','🐉','🌊','🔥','💎','🌙','⭐','🏔','🌿','🦅','🎭','💫','🛡','🌍','✨'];
+
+        // FIX: Reset stale temp state every time modal opens
+        this._selectedAvatarTemp = null;
+
+        document.getElementById('modal-body').innerHTML = `
+            <div style="max-height:80vh;overflow-y:auto;padding-bottom:4px;">
+
+                <!-- HEADER -->
+                <div style="text-align:center;padding:10px 0 18px;">
+                    <div id="profile-preview-avatar" style="
+                        width:72px;height:72px;border-radius:50%;
+                        background:linear-gradient(135deg,var(--accent),#ff9f0a);
+                        margin:0 auto 12px;display:flex;align-items:center;justify-content:center;
+                        font-size:28px;font-weight:900;color:#000;
+                        box-shadow:0 0 24px rgba(255,215,0,0.4);
+                        font-family:monospace;letter-spacing:0;
+                    ">${esc(p.avatar || this._getInitialsOrDefault(p.name))}</div>
+                    <div style="font-size:17px;font-weight:700;color:var(--accent);">Your Profile</div>
+                    <div style="font-size:12px;color:var(--dim);margin-top:2px;">Personalize your SVK Blueprint</div>
+                </div>
+
+                <!-- NAME -->
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);display:block;margin-bottom:6px;">Your Name *</label>
+                <input type="text" id="profile-name" placeholder="e.g. Sathvik, Alex, Maya…"
+                    value="${esc(p.name || '')}"
+                    oninput="App._livePreviewAvatar()"
+                    style="margin-bottom:16px;"
+                    maxlength="40">
+
+                <!-- TAGLINE -->
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);display:block;margin-bottom:6px;">One-Line Identity <span style="font-weight:400;opacity:0.6;">(optional)</span></label>
+                <input type="text" id="profile-tagline" placeholder="e.g. Builder · Father · Lifelong Learner"
+                    value="${esc(p.tagline || '')}"
+                    style="margin-bottom:16px;"
+                    maxlength="80">
+
+                <!-- AVATAR EMOJI -->
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);display:block;margin-bottom:8px;">Avatar Emoji <span style="font-weight:400;opacity:0.6;">(or leave blank for initials)</span></label>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+                    ${AVATAR_OPTIONS.map(em => `
+                        <button onclick="App._selectAvatar('${em}')" id="avatar-opt-${em || 'none'}"
+                            style="width:40px;height:40px;border-radius:10px;border:2px solid ${(p.avatar||'')===(em)?'var(--accent)':'var(--border)'};
+                                   background:${(p.avatar||'')===(em)?'rgba(255,215,0,0.15)':'var(--sub)'};
+                                   font-size:${em?'20px':'11px'};cursor:pointer;transition:all 0.15s;
+                                   color:${em?'inherit':'var(--dim)'};font-family:monospace;font-weight:700;">
+                            ${em || 'ABC'}
+                        </button>`).join('')}
+                </div>
+
+                <!-- 15-YEAR VISION -->
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);display:block;margin-bottom:6px;">Your 15-Year Vision *</label>
+                <div style="font-size:11px;color:var(--dim);margin-bottom:8px;line-height:1.5;">
+                    Write your definite chief aim — the life you are building. Be specific. Be ambitious. This will appear as your daily anchor on the Execute screen.
+                </div>
+                <textarea id="profile-vision" rows="5" placeholder="In 15 years, I will have built…&#10;&#10;I will achieve this by…&#10;&#10;My legacy will be…"
+                    style="margin-bottom:16px;resize:vertical;min-height:110px;font-size:14px;line-height:1.6;"
+                    maxlength="2000">${esc(p.vision || '')}</textarea>
+
+                <!-- SAVE -->
+                <button class="btn" onclick="App.saveProfile()" style="margin-bottom:10px;">
+                    ✓ Save Profile
+                </button>
+                ${p.name ? `
+                <button class="btn-sec" onclick="App.closeModal()" style="width:100%;padding:12px;font-size:13px;">
+                    Cancel
+                </button>` : ''}
+
+                <!-- TIP -->
+                <div style="margin-top:14px;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:10px;padding:12px;font-size:11px;color:var(--dim);line-height:1.6;">
+                    💡 <strong style="color:var(--accent);">Pro Tip:</strong> Your vision is your most important asset. Return here quarterly to refine it as you grow. It also auto-populates your Blueprint when you generate one.
+                </div>
+            </div>
+        `;
+        document.getElementById('modal').classList.add('open');
+        setTimeout(() => document.getElementById('profile-name')?.focus(), 80);
+    },
+
+    // Live-preview initials in the profile modal avatar
+    _livePreviewAvatar() {
+        const nameVal = document.getElementById('profile-name')?.value || '';
+        const avatarEl = document.getElementById('profile-preview-avatar');
+        if (!avatarEl) return;
+        // Only update if no emoji is selected
+        const currentEmoji = this._selectedAvatarTemp;
+        if (!currentEmoji) {
+            const initials = this._getInitialsOrDefault(nameVal);
+            avatarEl.textContent = initials;
+            avatarEl.style.fontSize = initials.length > 2 ? '12px' : (initials.length === 1 ? '30px' : '20px');
+        }
+    },
+
+    _selectedAvatarTemp: null,
+
+    _selectAvatar(em) {
+        this._selectedAvatarTemp = em;
+        // Update button styles
+        document.querySelectorAll('[id^="avatar-opt-"]').forEach(btn => {
+            btn.style.borderColor = 'var(--border)';
+            btn.style.background = 'var(--sub)';
+        });
+        const selected = document.getElementById(`avatar-opt-${em || 'none'}`);
+        if (selected) {
+            selected.style.borderColor = 'var(--accent)';
+            selected.style.background = 'rgba(255,215,0,0.15)';
+        }
+        // Live preview
+        const previewEl = document.getElementById('profile-preview-avatar');
+        if (previewEl) {
+            if (em) {
+                previewEl.textContent = em;
+                previewEl.style.fontSize = '28px';
+            } else {
+                const nameVal = document.getElementById('profile-name')?.value || '';
+                const initials = this._getInitialsOrDefault(nameVal);
+                previewEl.textContent = initials;
+                previewEl.style.fontSize = initials.length > 2 ? '12px' : '22px';
+            }
+        }
+    },
+
+    _getInitialsOrDefault(name) {
+        if (!name || !name.trim()) return 'SVK';
+        return name.trim().split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 3);
+    },
+
+    saveProfile() {
+        const name = document.getElementById('profile-name')?.value?.trim() || '';
+        const tagline = document.getElementById('profile-tagline')?.value?.trim() || '';
+        const vision = document.getElementById('profile-vision')?.value?.trim() || '';
+        const avatar = this._selectedAvatarTemp !== null
+            ? this._selectedAvatarTemp
+            : (this.data.userProfile?.avatar || '');
+
+        if (!name) {
+            this.toast('⚠️ Please enter your name');
+            document.getElementById('profile-name')?.focus();
+            return;
+        }
+        if (!vision) {
+            this.toast('⚠️ Please write your 15-year vision');
+            document.getElementById('profile-vision')?.focus();
+            return;
+        }
+
+        if (!this.data.userProfile) this.data.userProfile = {};
+
+        // Capture old values before overwriting (used for blueprintMeta sync check)
+        const oldName   = this.data.userProfile.name   || '';
+        const oldVision = this.data.userProfile.vision || '';
+
+        this.data.userProfile.name    = name;
+        this.data.userProfile.tagline = tagline;
+        this.data.userProfile.vision  = vision;
+        this.data.userProfile.avatar  = avatar;
+
+        // Sync blueprintMeta only if its name/vision still matches what the profile HAD
+        // (i.e. they were seeded from the blueprint and haven't diverged independently)
+        if (this.data.blueprintMeta) {
+            if (!this.data.blueprintMeta.name || this.data.blueprintMeta.name === oldName) {
+                this.data.blueprintMeta.name = name;
+            }
+            if (!this.data.blueprintMeta.vision || this.data.blueprintMeta.vision === oldVision) {
+                this.data.blueprintMeta.vision = vision;
+            }
+        }
+
+        // Reset temp avatar state
+        this._selectedAvatarTemp = null;
+
+        this.save();
+        this.updateHeaderProfile();
+        this.render();
+        this.closeModal();
+        this.toast(`✓ Profile saved — Welcome, ${name}!`);
+    },
+
     // README — System overview, changelog, first-time setup guide
     openReadme() {
         const modalBody = document.getElementById('modal-body');
@@ -11244,6 +11630,9 @@ Drink water
     // ========== WELCOME MODAL HANDLERS ==========
     
     chooseCreateCustom() {
+        // FIX: Save any profile data entered in Step 1 before navigating
+        this._welcomeSaveProfileData();
+        
         // Mark welcome as seen
         localStorage.setItem('svkWelcomeSeen', 'true');
         
@@ -11258,6 +11647,9 @@ Drink water
     },
 
     chooseImport() {
+        // FIX: Save any profile data entered in Step 1 before navigating
+        this._welcomeSaveProfileData();
+        
         // Mark welcome as seen
         localStorage.setItem('svkWelcomeSeen', 'true');
         
@@ -11272,6 +11664,74 @@ Drink water
         setTimeout(() => {
             this.toast('📥 Click "Import Blueprint" to upload your JSON file');
         }, 300);
+    },
+
+    // ── WELCOME FLOW HELPERS ────────────────────────────────────────────────────
+    _welcomePreviewAvatar() {
+        const name = document.getElementById('welcome-name')?.value || '';
+        const preview = document.getElementById('welcome-avatar-preview');
+        if (!preview) return;
+        const initials = this._getInitialsOrDefault(name);
+        preview.textContent = initials;
+        preview.style.fontSize = initials.length > 2 ? '20px' : '30px';
+    },
+
+    _welcomeSaveProfileData() {
+        const name = (document.getElementById('welcome-name')?.value || '').trim();
+        const tagline = (document.getElementById('welcome-tagline')?.value || '').trim();
+        const vision = (document.getElementById('welcome-vision')?.value || '').trim();
+        if (!this.data.userProfile) this.data.userProfile = {};
+        if (name) this.data.userProfile.name = name;
+        if (tagline) this.data.userProfile.tagline = tagline;
+        if (vision) this.data.userProfile.vision = vision;
+        this.save();
+        this.updateHeaderProfile();
+    },
+
+    _welcomeStep1Next() {
+        const name = (document.getElementById('welcome-name')?.value || '').trim();
+        const vision = (document.getElementById('welcome-vision')?.value || '').trim();
+        if (!name) {
+            const inp = document.getElementById('welcome-name');
+            inp.focus();
+            inp.style.borderColor = 'var(--danger)';
+            setTimeout(() => { inp.style.borderColor = ''; }, 1500);
+            return;
+        }
+        if (!vision) {
+            const inp = document.getElementById('welcome-vision');
+            inp.focus();
+            inp.style.borderColor = 'var(--danger)';
+            setTimeout(() => { inp.style.borderColor = ''; }, 1500);
+            return;
+        }
+        // Save profile and mark welcome seen so refresh goes past step 1
+        this._welcomeSaveProfileData();
+        localStorage.setItem('svkWelcomeSeen', 'true');
+        // Advance to step 2
+        document.getElementById('welcome-step-1').style.display = 'none';
+        document.getElementById('welcome-step-2').style.display = 'block';
+        // Update step 2 avatar + greeting
+        const firstName = name.split(' ')[0];
+        const avatarEl = document.getElementById('welcome-step2-avatar');
+        if (avatarEl) avatarEl.textContent = this._getInitialsOrDefault(name);
+        const titleEl = document.getElementById('welcome-step2-title');
+        if (titleEl) titleEl.textContent = `Welcome, ${firstName}! Now set up your blueprint.`;
+    },
+
+    _welcomeSkipProfile() {
+        // Mark welcome seen so step 2 is the entry point on refresh
+        localStorage.setItem('svkWelcomeSeen', 'true');
+        // Skip profile, go straight to blueprint step
+        document.getElementById('welcome-step-1').style.display = 'none';
+        document.getElementById('welcome-step-2').style.display = 'block';
+    },
+
+    _welcomeSkipBlueprint() {
+        localStorage.setItem('svkWelcomeSeen', 'true');
+        document.getElementById('welcome-overlay').style.display = 'none';
+        this.render();
+        this.toast('✓ Welcome! Set up your blueprint anytime from SYSTEM tab.');
     },
 
     // ============================================================================
