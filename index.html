@@ -195,6 +195,15 @@ FIRST-TIME SETUP:
             color: var(--text); cursor: pointer; transition: all 0.2s;
         }
         .header-icon-btn:active { opacity: 0.7; transform: scale(0.95); }
+        .header-text-btn {
+            height: 30px; background: var(--sub); border: 1px solid var(--border);
+            border-radius: 8px; padding: 0 9px;
+            color: var(--accent); cursor: pointer; transition: all 0.2s;
+            font-family: monospace; font-size: 9px; font-weight: 800;
+            letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
+        }
+        .header-text-btn:hover { background: rgba(255,215,0,0.12); border-color: rgba(255,215,0,0.4); }
+        .header-text-btn:active { opacity: 0.7; transform: scale(0.95); }
         .cycle-badge {
             font-family: monospace; font-size: 11px; font-weight: 700;
             padding: 6px 12px; background: var(--sub); border-radius: 12px;
@@ -2094,12 +2103,8 @@ FIRST-TIME SETUP:
 <header class="header">
     <div class="logo-svk">SVK</div>
     <div class="header-right">
-        <button class="header-icon-btn" onclick="App.openUserManual()" title="User Manual">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
-                <circle cx="9" cy="9" r="7"/>
-                <path d="M9 6v3m0 3h.01"/>
-            </svg>
-        </button>
+        <button class="header-text-btn" onclick="App.openReadme()" title="README — What this app is &amp; version history">README</button>
+        <button class="header-text-btn" onclick="App.openUserManual()" title="User Flow — How to use this app">USER FLOW</button>
         <button class="header-icon-btn" onclick="App.openUniversalSearch()" title="Universal Search">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
                 <circle cx="8" cy="8" r="6"/>
@@ -10259,6 +10264,168 @@ Drink water
     },
 
     // USER MANUAL - Comprehensive guide to using SVK Blueprint
+    // README — System overview, changelog, first-time setup guide
+    openReadme() {
+        const modalBody = document.getElementById('modal-body');
+        modalBody.innerHTML = `
+            <div style="max-height:72vh;overflow-y:auto;padding-bottom:8px;">
+                <!-- HEADER -->
+                <div style="text-align:center;padding:16px 0 20px;border-bottom:1px solid var(--border);margin-bottom:20px;">
+                    <div style="font-family:monospace;font-size:36px;font-weight:900;color:var(--accent);letter-spacing:6px;text-shadow:0 0 24px rgba(255,215,0,0.4);">SVK</div>
+                    <div style="font-size:12px;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-top:2px;">Blueprint System</div>
+                    <div style="display:inline-block;margin-top:10px;font-size:11px;font-family:monospace;font-weight:700;padding:4px 12px;background:var(--success);color:var(--void);border-radius:10px;">v2.3.0 · PRODUCTION</div>
+                    <div style="font-size:11px;color:var(--dim);margin-top:8px;">February 25, 2026</div>
+                </div>
+
+                <!-- WHAT IS THIS -->
+                <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.25);border-radius:12px;padding:16px;margin-bottom:20px;">
+                    <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:10px;">🎯 What Is This?</div>
+                    <p style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:10px;">
+                        <strong style="color:var(--text);">SVK Blueprint</strong> is a zero-dependency, offline-capable personal execution system that bridges your 15-year vision with today's tasks.
+                    </p>
+                    <p style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:10px;">
+                        Built on a <strong style="color:var(--text);">90-day cycle methodology</strong> (60 cycles × 13 weeks), the system pre-plans every task across your life domains — so you never decide <em>what</em> to work on. You only decide <em>when</em>.
+                    </p>
+                    <p style="font-size:13px;color:var(--dim);line-height:1.7;">
+                        <strong style="color:var(--accent);">"The System Decides. You Execute."</strong>
+                    </p>
+                </div>
+
+                <!-- CORE FEATURES -->
+                <div style="margin-bottom:20px;">
+                    <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border);">✅ Core Features</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;">
+                        ${[
+                          ['⚡','Execute','Daily HQ + Pomodoro focus'],
+                          ['🎯','Build','15-year goals + domain chart'],
+                          ['🗺️','Strategy','60-cycle roadmap view'],
+                          ['⚙️','System','Habits · Journal · Reflections'],
+                          ['📚','Vault LEARN','Notes · Quotes · Books · Ideas'],
+                          ['💰','Vault EARN','Strategy · Execute · Leverage · Contacts'],
+                          ['🔍','Universal Search','12+ data types, real-time'],
+                          ['⚡','Quick Capture','10 capture types, 1 tap'],
+                          ['⏱️','Pomodoro + Zen Mode','Focus timer with intention'],
+                          ['📊','CSV Export','8-sheet spreadsheet export'],
+                          ['↩️','Undo / Redo','20-step history'],
+                          ['📱','PWA','Installable, offline-capable']
+                        ].map(([icon,name,desc]) => `
+                          <div style="background:var(--sub);border:1px solid var(--border);border-radius:8px;padding:8px 10px;">
+                              <div style="font-weight:700;color:var(--text);margin-bottom:2px;">${icon} ${name}</div>
+                              <div style="color:var(--dim);font-size:11px;">${desc}</div>
+                          </div>`).join('')}
+                    </div>
+                </div>
+
+                <!-- FIRST-TIME SETUP -->
+                <div style="margin-bottom:20px;">
+                    <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border);">🚀 First-Time Setup</div>
+                    <div style="background:var(--card);border-radius:10px;padding:14px;margin-bottom:8px;border-left:3px solid var(--success);">
+                        <div style="font-size:11px;font-weight:700;color:var(--success);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Option A — AI-Generated Blueprint (Recommended)</div>
+                        <ol style="margin-left:16px;font-size:12px;color:var(--dim);line-height:2;">
+                            <li>SYSTEM tab → <strong style="color:var(--text);">Custom Blueprint</strong></li>
+                            <li>Fill in all 12 fields (name, vision, domains, goals…)</li>
+                            <li>Tap <strong style="color:var(--text);">Generate AI Prompt</strong> → copy the prompt</li>
+                            <li>Paste into ChatGPT or Claude → receive JSON output</li>
+                            <li>Paste the JSON back → tap <strong style="color:var(--text);">Import JSON</strong></li>
+                            <li>STRATEGY → <strong style="color:var(--text);">Activate First Cycle</strong></li>
+                            <li>EXECUTE → start your first task</li>
+                        </ol>
+                    </div>
+                    <div style="background:var(--card);border-radius:10px;padding:14px;border-left:3px solid var(--blue);">
+                        <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Option B — Import Existing Blueprint</div>
+                        <ol style="margin-left:16px;font-size:12px;color:var(--dim);line-height:2;">
+                            <li>BUILD tab → Stats → <strong style="color:var(--text);">Import Blueprint</strong></li>
+                            <li>Upload your <code style="background:var(--sub);padding:1px 5px;border-radius:4px;">.json</code> blueprint file</li>
+                            <li>STRATEGY → <strong style="color:var(--text);">Activate First Cycle</strong></li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- TECHNICAL -->
+                <div style="margin-bottom:20px;">
+                    <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border);">🔧 Technical</div>
+                    <div style="background:var(--sub);border-radius:10px;padding:14px;font-size:12px;color:var(--dim);line-height:1.9;">
+                        <div>📦 <strong style="color:var(--text);">Zero dependencies</strong> — pure HTML/CSS/JS, no frameworks</div>
+                        <div>💾 <strong style="color:var(--text);">LocalStorage persistence</strong> — data never leaves your device</div>
+                        <div>📱 <strong style="color:var(--text);">PWA</strong> — Add to Home Screen for offline use (no app store needed)</div>
+                        <div>🔒 <strong style="color:var(--text);">XSS-safe</strong> — all user input HTML-escaped</div>
+                        <div>✅ <strong style="color:var(--text);">Tested on</strong> Chrome 90+, Safari 14+, Firefox 88+</div>
+                        <div>📤 <strong style="color:var(--text);">Backup</strong> — Export JSON weekly from BUILD → Stats</div>
+                    </div>
+                </div>
+
+                <!-- CHANGELOG -->
+                <div style="margin-bottom:20px;">
+                    <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border);">📋 Changelog</div>
+
+                    <div style="border-left:2px solid var(--accent);padding-left:14px;margin-bottom:16px;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                            <span style="font-family:monospace;font-weight:700;font-size:12px;color:var(--accent);">v2.3.0</span>
+                            <span style="font-size:10px;background:var(--success);color:var(--void);padding:2px 8px;border-radius:8px;font-weight:700;">LATEST</span>
+                            <span style="font-size:11px;color:var(--dim);">Feb 25, 2026</span>
+                        </div>
+                        <div style="font-size:12px;color:var(--dim);line-height:1.8;">
+                            <div>🔗 <strong style="color:var(--text);">5 live EARN integrations</strong> wired across all tabs</div>
+                            <div>📊 Strategy items → STRATEGY tab Operating Rules panel</div>
+                            <div>✅ Execute Fulfill → auto-complete matching cycle task</div>
+                            <div>👤 Contacts → auto-create Delegated Tasks on due date</div>
+                            <div>🎯 Leverage → surfaces in BUILD goal expansion</div>
+                            <div>🧠 Domain-aware Intelligence Brief with dominant domain pill</div>
+                            <div>🐛 Fixed: double semicolons, --text-secondary → --dim, activeDomain logic</div>
+                        </div>
+                    </div>
+
+                    <div style="border-left:2px solid var(--border);padding-left:14px;margin-bottom:16px;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                            <span style="font-family:monospace;font-weight:700;font-size:12px;color:var(--dim);">v2.2.2</span>
+                            <span style="font-size:11px;color:var(--dim);">Feb 14, 2026</span>
+                        </div>
+                        <div style="font-size:12px;color:var(--dim);line-height:1.8;">
+                            <div>🔄 Daily Reset for habits + micro-steps</div>
+                            <div>📊 CSV Export (8 sheets — Excel/Google Sheets compatible)</div>
+                            <div>🛡️ Production error boundaries + data integrity validation</div>
+                            <div>🐛 Removed duplicate export buttons</div>
+                        </div>
+                    </div>
+
+                    <div style="border-left:2px solid var(--border);padding-left:14px;margin-bottom:16px;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                            <span style="font-family:monospace;font-weight:700;font-size:12px;color:var(--dim);">v2.2.0</span>
+                            <span style="font-size:11px;color:var(--dim);">Feb 10, 2026</span>
+                        </div>
+                        <div style="font-size:12px;color:var(--dim);line-height:1.8;">
+                            <div>🏆 World-class Vault with card-based layout + animations</div>
+                            <div>📊 Comprehensive vault analytics dashboard</div>
+                            <div>🔍 Real-time search + tag filtering in Vault</div>
+                            <div>⭐ Importance levels, source attribution, starred items</div>
+                            <div>🔁 LEARN → EARN promotion workflow</div>
+                        </div>
+                    </div>
+
+                    <div style="border-left:2px solid var(--border);padding-left:14px;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                            <span style="font-family:monospace;font-weight:700;font-size:12px;color:var(--dim);">v2.1.x</span>
+                            <span style="font-size:11px;color:var(--dim);">Jan 2026</span>
+                        </div>
+                        <div style="font-size:12px;color:var(--dim);line-height:1.8;">
+                            <div>⚙️ System tab overhaul + intelligent task assignment</div>
+                            <div>🔧 Critical domain fixes + blueprint validation</div>
+                            <div>🔍 Universal Search across 15+ data types</div>
+                            <div>⚡ 10-type Quick Capture system</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FOOTER -->
+                <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:14px;text-align:center;">
+                    <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:4px;">Tap USER FLOW for step-by-step usage guide</div>
+                    <div style="font-size:11px;color:var(--dim);">SVK Blueprint v2.3.0 · Pure JavaScript · Offline-First · Zero Dependencies</div>
+                </div>
+            </div>
+        `;
+        document.getElementById('modal').classList.add('open');
+    },
+
     openUserManual() {
         const modalBody = document.getElementById('modal-body');
         modalBody.innerHTML = `
