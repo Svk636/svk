@@ -1,55 +1,76 @@
-const CACHE_VERSION = 'svk-blueprint-v2.3.1';
-const CACHE_NAME = `${CACHE_VERSION}-static`;
+/* =============================================================================
+   SVK Blueprint — Service Worker v2.5.0
+   =============================================================================
+   DEPLOYMENT: Commit this file alongside index.html in your GitHub repository.
+   Both files must be at the same directory level.
 
-const STATIC_ASSETS = [
-    '/svk/',
-    '/svk/index.html',
-    '/svk/manifest.json',
-    '/svk/styles.css',
-    '/svk/app.js'
-];
+   HOW IT WORKS:
+   - index.html registers this file as the service worker (same-origin = all browsers)
+   - On version bump: update SW_VERSION below to match APP_VERSION in index.html
+   - The browser detects the byte change, installs the new worker
+   - The update banner in the app shows "Reload Now"
+   - User clicks Reload Now → skipWaiting → controllerchange → page reloads
+   ============================================================================= */
 
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(STATIC_ASSETS))
-            .then(() => self.skipWaiting())
+const SW_VERSION = '2.5.0';
+const CACHE_NAME = 'svk-blueprint-v' + SW_VERSION;
+
+// INSTALL: cache the app shell. Do NOT call skipWaiting here —
+// the page controls when the new SW activates so it can show the update banner.
+self.addEventListener('install', (e) => {
+    e.waitUntil(
+        caches.open(CACHE_NAME).then(cache =>
+            cache.addAll(['./index.html', './']).catch(() => {})
+        )
     );
+    // Intentionally NOT calling self.skipWaiting()
 });
 
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then(cacheNames =>
-            Promise.all(
-                cacheNames.map(cacheName => {
-                    if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName);
-                    }
-                })
+// ACTIVATE: delete old caches, claim all clients, then notify every open tab.
+self.addEventListener('activate', (e) => {
+    e.waitUntil(
+        caches.keys()
+            .then(keys =>
+                Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
             )
-        ).then(() => self.clients.claim())
+            .then(() => self.clients.claim())
+            .then(() => self.clients.matchAll({ type: 'window', includeUncontrolled: true }))
+            .then(clients =>
+                clients.forEach(c => c.postMessage({ type: 'SW_ACTIVATED', version: SW_VERSION }))
+            )
     );
 });
 
-self.addEventListener('fetch', (event) => {
-    const request = event.request;
+// FETCH: network-first for HTML navigation (always serve fresh app shell),
+// cache-first for all other assets (JS, CSS, images, fonts).
+self.addEventListener('fetch', (e) => {
+    if (e.request.method !== 'GET') return;
 
-    if (request.mode === 'navigate') {
-        event.respondWith(
-            caches.match('/svk/index.html')
+    // Navigation: always try network first so the user gets the latest index.html
+    if (e.request.mode === 'navigate') {
+        e.respondWith(
+            fetch(e.request).catch(() => caches.match('./index.html'))
         );
         return;
     }
 
-    event.respondWith(
-        caches.match(request)
-            .then(response => response || fetch(request)
-                .then(networkResponse => {
-                    const clone = networkResponse.clone();
-                    caches.open(CACHE_NAME)
-                        .then(cache => cache.put(request, clone));
-                    return networkResponse;
-                })
-            )
+    // Assets: serve from cache, update in background
+    e.respondWith(
+        caches.match(e.request).then(cached => {
+            if (cached) return cached;
+            return fetch(e.request).then(response => {
+                if (response && response.status === 200 && response.type === 'basic') {
+                    const clone = response.clone();
+                    caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+                }
+                return response;
+            }).catch(() => caches.match('./index.html'));
+        })
     );
+});
+
+// MESSAGE: the page sends { type: 'SKIP_WAITING' } when the user clicks "Reload Now".
+// skipWaiting → this SW becomes active → controllerchange fires on the page → reload.
+self.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
