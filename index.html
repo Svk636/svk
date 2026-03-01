@@ -3455,22 +3455,32 @@ const App = {
         const lastVersion      = localStorage.getItem('svk_app_version');
         const dismissedVersion = localStorage.getItem('svk_dismissed_update_version');
 
-        // First run — store current version and exit
+        // First run ever — store current version, nothing to show
         if (!lastVersion) {
             localStorage.setItem('svk_app_version', APP_VERSION);
             return;
         }
 
         if (this.compareVersions(APP_VERSION, lastVersion) > 0) {
-            // Update stored version first so repeated loads don't re-trigger
+            // Store new version FIRST so repeated loads don't re-trigger
             localStorage.setItem('svk_app_version', APP_VERSION);
 
-            // Don't show if user already dismissed this exact version
+            // Don't show if user already dismissed this exact version update
             if (dismissedVersion === APP_VERSION) return;
 
-            // Direct-file-open path: page already has new code, no reload needed.
-            // requiresReload=false, pass old version for display.
-            setTimeout(() => this.showUpdateBanner(false, lastVersion), 1500);
+            // Version has jumped (e.g. 2.3.0 → 2.5.0).
+            // We always need a reload here because:
+            //   - The HTML is new but the SW may still be serving old cached assets
+            //   - On GitHub Pages the SW intercepts all requests
+            // Show the "Reload Now" banner so the user gets a clean reload.
+            // The SW banner (notifyWaiting) may also fire moments later — that's fine,
+            // it will just reinforce the same message.
+            setTimeout(() => {
+                // Only show if SW hasn't already surfaced its own banner
+                if (!this._swWaitingWorker) {
+                    this.showUpdateBanner(true, lastVersion);
+                }
+            }, 1800);
         }
         // Same version — nothing to do
     },
@@ -3500,19 +3510,18 @@ const App = {
 
         if (requiresReload) {
             if (titleEl) titleEl.textContent = '🔄 Update ready!';
-            text.textContent = 'New version installed — reload to apply (your data is safe)';
-            if (reloadBtn) { reloadBtn.style.opacity = '1'; reloadBtn.textContent = 'Reload Now'; reloadBtn.disabled = false; }
+            const from = oldVersion ? ' v' + oldVersion + ' → v' + APP_VERSION : ' v' + APP_VERSION;
+            text.textContent = 'New version' + from + ' — reload to apply (your data is safe)';
+            if (reloadBtn) { reloadBtn.style.display = ''; reloadBtn.style.opacity = '1'; reloadBtn.textContent = 'Reload Now'; reloadBtn.disabled = false; }
         } else {
             const from = oldVersion ? ' from v' + oldVersion : '';
             if (titleEl) titleEl.textContent = '✅ Updated to v' + APP_VERSION + '!';
             text.textContent = 'Updated' + from + ' — you\'re on the latest version';
             if (reloadBtn) reloadBtn.style.display = 'none';
-            // Soft notification auto-dismisses after 8s
             setTimeout(() => { banner.style.display = 'none'; }, 8000);
         }
 
         banner.style.display = 'flex';
-        // Safety: auto-hide after 90s if not acted on
         setTimeout(() => { banner.style.display = 'none'; }, 90000);
     },
 
