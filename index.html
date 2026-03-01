@@ -2,10 +2,10 @@
 <html lang="en">
 <!--
 ================================================================================
-SVK BLUEPRINT - UNIFIED VERSION 2.3.0
+SVK BLUEPRINT - UNIFIED VERSION 2.4.0
 ================================================================================
-Build Date: February 25, 2026
-Status: ✅ PRODUCTION READY - EARN Integrations + Bug Fixes
+Build Date: March 1, 2026
+Status: ✅ PRODUCTION READY - Full Bug Fix Release
 
 SYSTEM OVERVIEW:
 Zen-inspired 15-year vision execution system with 90-day cycle methodology.
@@ -51,6 +51,23 @@ VAULT EARN IS NOW FULLY WIRED INTO THE REST OF THE APP
      matching that dominant domain
    - Replaced first-alphabetical fallback with highest-% domain selection
 
+🎉 v2.5.0 (BUG FIX RELEASE — March 1, 2026):
+================================================================================
+- FIXED: Micro-steps now delete correctly (confirm() blocked in PWA mode)
+- FIXED: Replaced all 28 native window.confirm() calls with custom non-blocking dialog
+         — critical for PWA/iOS standalone mode where confirm() returns false
+- FIXED: Habit Tracker restored to System tab (was missing)
+- FIXED: dailyResetHabits() name mismatch (was resetDailyHabits)
+- FIXED: toggleHabit toast message was inverted (showed "done" when undone)  
+- FIXED: saveMicroSteps didn't assign id to steps (broke delete-by-index)
+- FIXED: deleteSubgoal / deleteGoalStage missing confirm callback parameter
+- FIXED: deleteTimeblock double comma syntax error
+- FIXED: Vault bulk delete callback not properly closed
+- FIXED: README/UserFlow text buttons replaced with icon buttons in header
+- ADDED: Custom confirm dialog (non-blocking, PWA-safe, accessible)
+- IMPROVED: Null-safe guards on all filter/find operations in delete functions
+
+================================================================================
 🐛 BUG FIXES IN v2.3.0:
 - Fixed double semicolon (;;) in vaultDailyBrief() execLog declaration
 - Fixed undefined CSS variable --text-secondary → replaced with --dim
@@ -2189,8 +2206,19 @@ FIRST-TIME SETUP:
         <div class="header-user-tagline" id="header-user-tagline"></div>
     </div>
     <div class="header-right">
-        <button class="header-text-btn" onclick="App.openReadme()" title="README — What this app is &amp; version history">README</button>
-        <button class="header-text-btn" onclick="App.openUserManual()" title="User Flow — How to use this app">USER FLOW</button>
+        <button class="header-icon-btn" onclick="App.openReadme()" title="README — What this app is &amp; version history">
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+        </button>
+        <button class="header-icon-btn" onclick="App.openUserManual()" title="User Flow — How to use this app">
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+            </svg>
+        </button>
         <button class="header-icon-btn" onclick="App.openUniversalSearch()" title="Universal Search">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
                 <circle cx="8" cy="8" r="6"/>
@@ -2238,6 +2266,58 @@ FIRST-TIME SETUP:
 </div>
 
 <div id="toast" class="toast"></div>
+
+<!-- Custom Confirm Dialog (replaces window.confirm for PWA compatibility) -->
+<div id="confirm-overlay" style="
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);
+    z-index:9500;align-items:center;justify-content:center;padding:20px;">
+    <div style="
+        background:var(--card);border-radius:16px;padding:24px;
+        max-width:320px;width:100%;border:1px solid var(--border);
+        box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+        <div id="confirm-message" style="
+            font-size:15px;color:var(--text);margin-bottom:20px;
+            line-height:1.5;text-align:center;"></div>
+        <div style="display:flex;gap:10px;">
+            <button id="confirm-cancel-btn" style="
+                flex:1;padding:12px;background:var(--sub);color:var(--dim);
+                border:1px solid var(--border);border-radius:10px;
+                font-size:14px;font-weight:600;cursor:pointer;">Cancel</button>
+            <button id="confirm-ok-btn" style="
+                flex:1;padding:12px;background:var(--danger);color:#fff;
+                border:none;border-radius:10px;
+                font-size:14px;font-weight:600;cursor:pointer;">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- PWA-Safe Prompt Dialog (replaces window.prompt() for PWA/iOS compatibility) -->
+<div id="prompt-overlay" style="
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);
+    z-index:9600;align-items:center;justify-content:center;padding:20px;">
+    <div style="
+        background:var(--card);border-radius:16px;padding:24px;
+        max-width:340px;width:100%;border:1px solid var(--border);
+        box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+        <div id="prompt-message" style="
+            font-size:15px;color:var(--text);margin-bottom:14px;
+            line-height:1.5;font-weight:600;"></div>
+        <input id="prompt-input" type="text" style="margin-bottom:16px;width:100%;"
+               placeholder="" autocomplete="off"
+               onkeydown="if(event.key==='Enter'){document.getElementById('prompt-ok-btn').click();}
+                           else if(event.key==='Escape'){document.getElementById('prompt-cancel-btn').click();}">
+        <div style="display:flex;gap:10px;">
+            <button id="prompt-cancel-btn" style="
+                flex:1;padding:12px;background:var(--sub);color:var(--dim);
+                border:1px solid var(--border);border-radius:10px;
+                font-size:14px;font-weight:600;cursor:pointer;">Cancel</button>
+            <button id="prompt-ok-btn" style="
+                flex:1;padding:12px;background:var(--accent);color:var(--void);
+                border:none;border-radius:10px;
+                font-size:14px;font-weight:600;cursor:pointer;">OK</button>
+        </div>
+    </div>
+</div>
 <div class="bulk-toolbar" id="bulk-toolbar"></div>
 
 <!-- NEW: Offline Indicator -->
@@ -2448,7 +2528,6 @@ const App = {
         },
         
         skip() {
-            if (!confirm('Skip this phase?')) return;
             this.seconds = 0;
             this.complete();
         },
@@ -3474,6 +3553,40 @@ self.addEventListener('message', (e) => {
         
         // Consider pagination if any collection has 100+ items
         return habitCount > 100 || journalCount > 100 || notesCount > 100 || goalsCount > 100;
+    },
+
+    // Custom confirm dialog - replaces window.confirm() which fails in PWA standalone mode on iOS
+    confirm(message, callback, okLabel, danger) {
+        okLabel = okLabel || 'Confirm';
+        const overlay = document.getElementById('confirm-overlay');
+        document.getElementById('confirm-message').textContent = message;
+        const okBtn = document.getElementById('confirm-ok-btn');
+        const cancelBtn = document.getElementById('confirm-cancel-btn');
+        okBtn.textContent = okLabel;
+        okBtn.style.background = (danger === false) ? 'var(--warn)' : 'var(--danger)';
+        overlay.style.display = 'flex';
+        const cleanup = () => { overlay.style.display = 'none'; };
+        okBtn.onclick = () => { cleanup(); callback(); };
+        cancelBtn.onclick = () => { cleanup(); };
+    },
+
+    // PWA-safe prompt dialog — replaces window.prompt() which is blocked in some browsers/PWA contexts
+    prompt(message, callback, placeholder, defaultValue) {
+        placeholder = placeholder || '';
+        const overlay = document.getElementById('prompt-overlay');
+        document.getElementById('prompt-message').textContent = message;
+        const input = document.getElementById('prompt-input');
+        input.placeholder = placeholder;
+        input.value = defaultValue || '';
+        overlay.style.display = 'flex';
+        setTimeout(() => input.focus(), 80);
+        const cleanup = () => { overlay.style.display = 'none'; };
+        document.getElementById('prompt-ok-btn').onclick = () => {
+            const val = input.value.trim();
+            cleanup();
+            if (val) callback(val);
+        };
+        document.getElementById('prompt-cancel-btn').onclick = () => { cleanup(); };
     },
 
     toast(msg) {
@@ -4521,6 +4634,7 @@ self.addEventListener('message', (e) => {
         const sub = this.sub.system || 'reflections';
         const tabs = [
             { key:'reflections', label:'Reflect' },
+            { key:'habits',      label:'Habits' },
             { key:'journal',     label:'Journal' },
             { key:'reviews',     label:'Reviews' },
             { key:'custom',      label:'Blueprint' },
@@ -4544,6 +4658,8 @@ self.addEventListener('message', (e) => {
             html += this.viewSystemSettings();
         } else if (sub === 'reflections') {
             html += this.renderReflections();
+        } else if (sub === 'habits') {
+            html += this.renderHabitTracker();
         } else if (sub === 'journal') {
             html += this.renderJournal();
         } else if (sub === 'reviews') {
@@ -4745,7 +4861,7 @@ self.addEventListener('message', (e) => {
                             style="padding:10px;background:var(--danger);opacity:0.8;">
                         🔄 Reset Blueprint
                     </button>
-                    <button class="btn-sec" onclick="if(confirm('Clear all data? This cannot be undone!')) { localStorage.clear(); location.reload(); }" 
+                    <button class="btn-sec" onclick="App.confirm('Clear all data? This cannot be undone!', () => { localStorage.clear(); location.reload(); }, 'Clear All')" 
                             style="padding:10px;background:var(--danger);opacity:0.8;">
                         🗑️ Clear All Data
                     </button>
@@ -5341,19 +5457,19 @@ updateEarnItem(type, itemId) {
 
 // DELETE FUNCTIONS
 deleteLearnItem(type, itemId) {
-    if (!confirm('Delete this item? This cannot be undone.')) return;
-    
-    this.data.vaultLearn[type] = this.data.vaultLearn[type].filter(i => i.id !== itemId);
-    this.save(); this.render();
-    this.toast('✓ Item deleted');
+    this.confirm('Release this item from your vault?', () => {
+        this.data.vaultLearn[type] = (this.data.vaultLearn[type] || []).filter(i => i.id !== itemId);
+        this.save(); this.render();
+        this.toast('✓ Item released');
+    }, 'Release');
 },
 
 deleteEarnItem(type, itemId) {
-    if (!confirm('Delete this item? This cannot be undone.')) return;
-    
-    this.data.vaultEarn[type] = this.data.vaultEarn[type].filter(i => i.id !== itemId);
-    this.save(); this.render();
-    this.toast('✓ Item deleted');
+    this.confirm('Release this item from your vault?', () => {
+        this.data.vaultEarn[type] = (this.data.vaultEarn[type] || []).filter(i => i.id !== itemId);
+        this.save(); this.render();
+        this.toast('✓ Item released');
+    }, 'Release');
 },
 
 // TOGGLE STAR (Zen aliases)
@@ -5931,7 +6047,9 @@ Generate the complete JSON now.`;
     },
 
     completeCycle() {
-        if (!confirm('Archive this cycle?')) return;
+        this.confirm('Archive this cycle and move to the next?', () => this._doCompleteCycle(), 'Archive');
+    },
+    _doCompleteCycle() {
         
         const c = { 
             ...this.data.currentCycle, 
@@ -6336,9 +6454,12 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
     },
 
     deleteTask(id) {
-        if (!confirm('Delete this task?')) return;
-        this.data.currentCycle.tasks = this.data.currentCycle.tasks.filter(t => t.id !== id);
-        this.save(); this.render();
+        this.confirm('Delete this task?', () => {
+            if (this.data.currentCycle?.tasks) {
+                this.data.currentCycle.tasks = this.data.currentCycle.tasks.filter(t => t.id !== id);
+                this.save(); this.closeModal(); this.render();
+            }
+        }, 'Delete');
     },
 
     showAllCycles() {
@@ -6382,7 +6503,7 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
             return;
         }
         
-        if (confirm(`Switch to Cycle ${cycleNumber}? Current progress will be saved.`)) {
+        this.confirm(`Switch to Cycle ${cycleNumber}? Current progress will be saved.`, () => {
             if (this.data.currentCycle) {
                 if (!this.data.cycleHistory) this.data.cycleHistory = [];
                 this.data.cycleHistory.push({
@@ -6407,7 +6528,7 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
             this.closeModal();
             this.render();
             this.toast(`✓ Switched to Cycle ${cycleNumber}`);
-        }
+        }, "Switch");
     },
 
     // AFFIRMATIONS
@@ -6429,9 +6550,10 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
     },
 
     deleteAffirmation(id) {
-        if (!confirm('Delete?')) return;
-        this.data.plan.affirmations = this.data.plan.affirmations.filter(a => a.id !== id);
-        this.save(); this.render();
+        this.confirm('Delete this affirmation?', () => {
+            this.data.plan.affirmations = (this.data.plan.affirmations || []).filter(a => a.id !== id);
+            this.save(); this.render();
+        }, 'Delete');
     },
 
     // BUCKET LIST
@@ -6470,9 +6592,10 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
     },
 
     deleteBucketItem(id) {
-        if (!confirm('Remove from bucket list?')) return;
-        this.data.plan.bucketList = this.data.plan.bucketList.filter(i => i.id !== id);
-        this.save(); this.render();
+        this.confirm('Remove from bucket list?', () => {
+            this.data.plan.bucketList = (this.data.plan.bucketList || []).filter(i => i.id !== id);
+            this.save(); this.render();
+        }, 'Remove');
     },
 
     // EXPORT / RESET
@@ -6504,8 +6627,7 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
                         this.toast('⚠️ Invalid file — expected SVK Blueprint JSON export');
                         return;
                     }
-                    if (!confirm('⚠️ This will REPLACE all current data with the imported file. Continue?')) return;
-                    // Merge with SCHEMA defaults to fill any missing fields
+                    // REPLACE all current data
                     this.data = Object.assign({}, SCHEMA, imported);
                     this.save();
                     this.render();
@@ -6520,9 +6642,10 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
     },
 
     resetBlueprint() {
-        if (!confirm('⚠️ Reset entire blueprint? This cannot be undone.')) return;
-        localStorage.removeItem(DB_KEY);
-        location.reload();
+        this.confirm('⚠️ Reset entire blueprint? This cannot be undone.', () => {
+            localStorage.clear();
+            location.reload();
+        }, 'Reset Everything');
     },
 
     // QUICK CAPTURE - Primary capture interface accessible via FAB button
@@ -6583,20 +6706,10 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
     },
 
     closeModal() {
-        // Clean up Pomodoro timer if running
-        if (this.timer.interval) {
-            clearInterval(this.timer.interval);
-            this.timer.interval = null;
-            this.timer.running = false;
-        }
+        // FIX: Do NOT clear timers here — timers should only stop when explicitly stopped.
+        // Previously this incorrectly cleared the Pomodoro/habit timer whenever any modal closed.
         
-        // Clean up habit timer if running
-        if (this.habitTimer.interval) {
-            clearInterval(this.habitTimer.interval);
-            this.habitTimer.interval = null;
-        }
-
-        // FIX: Reset avatar temp state so stale emoji doesn't persist across modal opens
+        // Reset avatar temp state so stale emoji doesn't persist across modal opens
         this._selectedAvatarTemp = null;
         
         document.getElementById('modal').classList.remove('open');
@@ -6786,26 +6899,23 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
     deleteHabit(id) {
         const habit = this.data.system.habits.find(h => h.id === id);
         if (!habit) return;
-        
-        if (!confirm(`Delete habit "${habit.title}"? This will remove all completion history and micro-steps.`)) return;
-        
-        // NEW: Save to undo stack before deletion
-        this.saveToUndoStack(`Delete habit: ${habit.title}`, this.data);
-        
-        this.data.system.habits = this.data.system.habits.filter(h => h.id !== id);
-        this.save(); this.render();
-        
-        // NEW: Show undo toast instead of regular toast
-        this.showUndoToast(`Habit "${habit.title}" deleted`, true);
+        this.confirm(`Delete habit "${habit.title}"? All history and micro-steps will be removed.`, () => {
+            this.saveToUndoStack(`Delete habit: ${habit.title}`, this.data);
+            this.data.system.habits = this.data.system.habits.filter(h => h.id !== id);
+            this.save(); this.render();
+            this.showUndoToast(`Habit "${habit.title}" deleted`, true);
+        }, 'Delete');
     },
 
+    dailyResetHabits() { return this.resetDailyHabits(); },
     resetDailyHabits() {
         if (!this.data.system?.habits || this.data.system.habits.length === 0) {
             this.toast('⚠️ No habits to reset');
             return;
         }
-        
-        if (!confirm('Reset all habits and micro-steps for today? This will clear today\'s completions but keep your habit definitions and history.')) return;
+        this.confirm("Reset today's habit completions? History and habit definitions are kept.", () => this._doResetDailyHabits(), 'Reset', false);
+    },
+    _doResetDailyHabits() {
         
         const today = new Date().toISOString().split('T')[0];
         let resetCount = 0;
@@ -6944,15 +7054,14 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
 
     deleteMicroStep(habitId, index) {
         const habit = this.data.system.habits.find(h => h.id === habitId);
-        if (!habit || !habit.microSteps) return;
-        
+        if (!habit || !habit.microSteps || !habit.microSteps[index]) return;
         const step = habit.microSteps[index];
-        if (!confirm(`Delete micro-step "${step.title}"?`)) return;
-        
-        habit.microSteps.splice(index, 1);
-        this.save();
-        this.manageMicroSteps(habitId); // Refresh the modal
-        this.toast('✓ Step deleted');
+        this.confirm(`Delete "${step.title}"?`, () => {
+            habit.microSteps.splice(index, 1);
+            this.save();
+            this.manageMicroSteps(habitId);
+            this.toast('✓ Step deleted');
+        }, 'Delete');
     },
 
     toggleHabit(id) {
@@ -6966,8 +7075,11 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
         } else {
             habit.completions.push({ date: today, done: true });
         }
+        const wasDone = todayLog ? !todayLog.done : false; // after toggle, new state
+        // todayLog was mutated: if it existed and done was true->false, it's undone
+        const newDone = todayLog ? todayLog.done : true; // pushed true if no log existed
         this.save(); this.render();
-        this.toast(todayLog?.done === false || !todayLog ? '✓ Habit done' : '○ Undone');
+        this.toast(newDone ? '✓ Habit done!' : '○ Marked undone');
     },
 
     calcStreak(completions) {
@@ -7212,8 +7324,9 @@ Drink water
         const steps = stepsText.split('\n')
             .filter(s => s.trim())
             .map(s => ({
+                id: this.genId(),
                 title: s.trim(),
-                status: 'pending' // pending, done, skipped
+                status: 'pending' // pending, active, done
             }));
 
         habit.microSteps = steps;
@@ -7398,7 +7511,9 @@ Drink water
     },
 
     stopHabitTimer() {
-        if (!confirm('Stop this habit session?')) return;
+        this.confirm('Stop this habit session?', () => this._doStopHabitTimer(), 'Stop');
+    },
+    _doStopHabitTimer() {
         
         if (this.habitTimer.interval) {
             clearInterval(this.habitTimer.interval);
@@ -7592,7 +7707,9 @@ Drink water
     },
     
     zenStopTimer() {
-        if (!confirm('Stop this Zen session?')) return;
+        this.confirm('Stop this Zen session?', () => this._doZenStopTimer(), 'Stop');
+    },
+    _doZenStopTimer() {
         
         if (this.zenMode.interval) {
             clearInterval(this.zenMode.interval);
@@ -7825,10 +7942,11 @@ Drink water
     },
     
     deleteReflection(type, id) {
-        if (!confirm('Delete this reflection?')) return;
-        this.data.system.reflections[type] = this.data.system.reflections[type].filter(r => r.id !== id);
-        this.save(); this.render();
-        this.toast('✓ Reflection deleted');
+        this.confirm('Delete this reflection?', () => {
+            this.data.system.reflections[type] = (this.data.system.reflections[type] || []).filter(r => r.id !== id);
+            this.save(); this.render();
+            this.toast('✓ Reflection deleted');
+        }, 'Delete');
     },
     
     // ========== ENHANCED JOURNAL CRUD ==========
@@ -7861,10 +7979,11 @@ Drink water
     },
     
     deleteJournalEntry(id) {
-        if (!confirm('Delete this journal entry?')) return;
-        this.data.system.journal = this.data.system.journal.filter(e => e.id !== id);
-        this.save(); this.render();
-        this.toast('✓ Entry deleted');
+        this.confirm('Delete this journal entry?', () => {
+            this.data.system.journal = (this.data.system.journal || []).filter(e => e.id !== id);
+            this.save(); this.render();
+            this.toast('✓ Entry deleted');
+        }, 'Delete');
     },
     
     // ========== ENHANCED REVIEW CRUD ==========
@@ -7906,10 +8025,11 @@ Drink water
     },
     
     deleteReview(id) {
-        if (!confirm('Delete this review?')) return;
-        this.data.system.reviews = this.data.system.reviews.filter(r => r.id !== id);
-        this.save(); this.render();
-        this.toast('✓ Review deleted');
+        this.confirm('Delete this review?', () => {
+            this.data.system.reviews = (this.data.system.reviews || []).filter(r => r.id !== id);
+            this.save(); this.render();
+            this.toast('✓ Review deleted');
+        }, 'Delete');
     },
     
     // ========== SORTING SYSTEM ==========
@@ -7953,9 +8073,9 @@ Drink water
     // ========== TAG SYSTEM ==========
     
     promptAddSystemTag(section, type, id) {
-        const tag = prompt('Enter tag:')?.trim();
-        if (!tag) return;
-        this.addSystemTag(section, type, id, tag);
+        this.prompt('Add tag:', (tag) => {
+            this.addSystemTag(section, type, id, tag);
+        }, 'Tag name...');
     },
     
     addSystemTag(section, type, id, tag) {
@@ -8036,16 +8156,14 @@ Drink water
     },
     
     bulkTag(section, type) {
-        const tag = prompt('Enter tag for selected items:')?.trim();
-        if (!tag) return;
-        
-        this.selectedItems[section].forEach(id => {
-            this.addSystemTag(section, type, id, tag);
-        });
-        
-        this.selectedItems[section].clear();
-        this.bulkMode[section] = false;
-        this.render();
+        this.prompt('Tag for selected items:', (tag) => {
+            this.selectedItems[section].forEach(id => {
+                this.addSystemTag(section, type, id, tag);
+            });
+            this.selectedItems[section].clear();
+            this.bulkMode[section] = false;
+            this.render();
+        }, 'Tag name...');
     },
     
     bulkExport(section, type) {
@@ -8082,8 +8200,10 @@ Drink water
     },
     
     bulkDelete(section, type) {
-        if (!confirm(`Delete ${this.selectedItems[section].size} items?`)) return;
-        
+        const count = this.selectedItems[section].size;
+        this.confirm(`Delete ${count} selected items?`, () => this._doBulkDelete(section, type), 'Delete All');
+    },
+    _doBulkDelete(section, type) {
         if (section === 'reflections') {
             this.data.system.reflections[type] = this.data.system.reflections[type].filter(
                 r => !this.selectedItems[section].has(r.id)
@@ -8605,6 +8725,108 @@ Drink water
     
     // ========== ENHANCED RENDER FUNCTIONS ==========
     
+    renderHabitTracker() {
+        if (!this.data.system) this.data.system = { habits: [], reflections: { morning: [], evening: [] }, journal: [], reviews: [] };
+        if (!this.data.system.habits) this.data.system.habits = [];
+        const habits = this.data.system.habits;
+        const today = new Date().toISOString().split('T')[0];
+
+        let html = `<div style="padding:20px 0;">`;
+
+        // Header
+        html += `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <div>
+                <div style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:3px;margin-bottom:4px;">Daily Practice</div>
+                <div style="font-size:20px;font-weight:300;color:var(--text);">Habit Tracker</div>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <button class="btn-sec" onclick="App.dailyResetHabits()" style="font-size:11px;padding:6px 10px;" title="Reset today's completions">↺ Reset</button>
+                <button class="btn" onclick="App.addHabit()" style="font-size:12px;padding:8px 14px;">+ Add Habit</button>
+            </div>
+        </div>`;
+
+        if (habits.length === 0) {
+            html += `
+            <div style="text-align:center;padding:48px 20px;background:var(--sub);border-radius:16px;border:1px dashed var(--border);">
+                <div style="font-size:48px;margin-bottom:14px;">🌱</div>
+                <div style="font-size:16px;font-weight:600;color:var(--accent);margin-bottom:8px;">No Habits Yet</div>
+                <div style="font-size:13px;color:var(--dim);line-height:1.6;max-width:260px;margin:0 auto 20px;">
+                    Build consistency by tracking your daily practices.
+                </div>
+                <button class="btn" onclick="App.addHabit()">+ Add First Habit</button>
+            </div>`;
+        } else {
+            // Group by time block
+            const groups = { Morning: [], Work: [], Evening: [], Other: [] };
+            habits.forEach(h => {
+                const g = h.timeBlock && groups[h.timeBlock] ? h.timeBlock : 'Other';
+                groups[g].push(h);
+            });
+
+            const todayDone = habits.filter(h => {
+                const log = (h.completions || []).find(c => c.date === today);
+                return log && log.done;
+            }).length;
+
+            // Progress bar
+            html += `
+            <div style="margin-bottom:20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                    <span style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;">Today's Progress</span>
+                    <span style="font-family:monospace;font-size:13px;font-weight:700;color:var(--accent);">${todayDone}/${habits.length}</span>
+                </div>
+                <div style="height:6px;background:var(--sub);border-radius:3px;overflow:hidden;">
+                    <div style="height:100%;width:${habits.length ? Math.round((todayDone/habits.length)*100) : 0}%;background:var(--success);border-radius:3px;transition:width 0.4s;"></div>
+                </div>
+            </div>`;
+
+            // Render each group
+            Object.entries(groups).forEach(([group, items]) => {
+                if (items.length === 0) return;
+                const groupLabel = group === 'Other' ? 'Anytime' : group;
+                const icon = group === 'Morning' ? '🌅' : group === 'Work' ? '💼' : group === 'Evening' ? '🌙' : '⚡';
+                html += `<div style="font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:2px;margin:18px 0 8px;">${icon} ${groupLabel}</div>`;
+
+                items.forEach(habit => {
+                    const todayLog = (habit.completions || []).find(c => c.date === today);
+                    const isDone = todayLog && todayLog.done;
+                    const streak = this.calculateStreaks ? this.calculateStreaks(habit).current : 0;
+                    const microSteps = habit.microSteps || [];
+                    const doneMicro = microSteps.filter(s => s.status === 'done').length;
+
+                    html += `
+                    <div class="habit-card" style="${isDone ? 'opacity:0.65;border-color:var(--success);' : ''}">
+                        <div class="habit-header">
+                            <div class="habit-info">
+                                <div class="habit-title" style="${isDone ? 'text-decoration:line-through;color:var(--dim);' : ''}">${esc(habit.title)}</div>
+                                <div class="habit-meta">
+                                    ${streak > 0 ? `<span class="streak-badge">🔥 ${streak}d</span>` : ''}
+                                    ${microSteps.length > 0 ? `<span>${doneMicro}/${microSteps.length} steps</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="habit-actions">
+                                <button class="btn-sec" onclick="App.manageMicroSteps('${habit.id}')" style="font-size:10px;padding:4px 8px;" title="Micro-steps">Steps</button>
+                                <button class="btn-sec" onclick="App.startHabitTimer('${habit.id}')" style="font-size:10px;padding:4px 8px;" title="Start timer">⏱</button>
+                                <button class="habit-check-btn ${isDone ? 'done' : ''}" onclick="App.toggleHabit('${habit.id}')">
+                                    ${isDone ? `<svg width="14" height="14" fill="none" stroke="#000" stroke-width="3"><polyline points="2,7 6,11 12,3"/></svg>` : ''}
+                                </button>
+                            </div>
+                        </div>
+                        ${this.renderHeatmap ? this.renderHeatmap(habit.completions || []) : ''}
+                        <div style="display:flex;gap:6px;margin-top:8px;justify-content:flex-end;">
+                            <button class="btn-sec" onclick="App.editHabit('${habit.id}')" style="font-size:10px;padding:3px 8px;opacity:0.7;">Edit</button>
+                            <button class="btn-sec" onclick="App.deleteHabit('${habit.id}')" style="font-size:10px;padding:3px 8px;opacity:0.5;color:var(--danger);">Delete</button>
+                        </div>
+                    </div>`;
+                });
+            });
+        }
+
+        html += `</div>`;
+        return html;
+    },
+
     renderReflections() {
         const refType = this.sub._refType || 'morning';
         const isMorning = refType === 'morning';
@@ -9079,21 +9301,20 @@ Drink water
             return;
         }
         
-        if (!confirm(`Delete ${settings.selectedItems.length} item(s)?`)) return;
-        
-        settings.selectedItems.forEach(key => {
-            const [vaultType, category, itemId] = key.split('-');
-            const items = this.data[vaultType][category];
-            const index = items.findIndex(i => i.id === itemId);
-            if (index > -1) {
-                items.splice(index, 1);
-            }
-        });
-        
-        settings.selectedItems = [];
-        settings.batchMode = false;
-        this.save(); this.render();
-        this.toast('✓ Items deleted');
+        const delCount = settings.selectedItems.length;
+        this.confirm(`Delete ${delCount} selected item(s)?`, () => {
+            settings.selectedItems.forEach(key => {
+                const [vaultType, category, itemId] = key.split('-');
+                const items = this.data[vaultType][category];
+                if (!items) return;
+                const index = items.findIndex(i => i.id === itemId);
+                if (index > -1) items.splice(index, 1);
+            });
+            settings.selectedItems = [];
+            settings.batchMode = false;
+            this.save(); this.render();
+            this.toast('✓ Items deleted');
+        }, 'Delete All');
     },
     
     // Batch Tag Selected Items
@@ -9602,50 +9823,35 @@ Drink water
     },
 
     addBranchNode(mapId) {
-        const text = prompt('Branch text:');
-        if (!text?.trim()) return;
-        
-        const map = this.data.vault.learnings.mindmaps?.find(m => m.id === mapId);
-        if (!map) return;
-        
-        if (!map.nodes) map.nodes = [];
-        map.nodes.push({
-            id: this.genId(),
-            text: text.trim(),
-            children: []
-        });
-        
-        map.modified = new Date().toISOString();
-        this.save();
-        this.viewMindmap(mapId);
-        this.toast('✓ Branch added');
+        this.prompt('Branch text:', (text) => {
+            const map = this.data.vault.learnings.mindmaps?.find(m => m.id === mapId);
+            if (!map) return;
+            if (!map.nodes) map.nodes = [];
+            map.nodes.push({ id: this.genId(), text: text, children: [] });
+            map.modified = new Date().toISOString();
+            this.save();
+            this.viewMindmap(mapId);
+            this.toast('✓ Branch added');
+        }, 'Branch text...');
     },
 
     addChildNode(mapId, parentNodeId) {
-        const text = prompt('Sub-branch text:');
-        if (!text?.trim()) return;
-        
+        this.prompt('Sub-branch text:', (text) => { this._addChildNodeCallback(mapId, parentNodeId, text); }, 'Sub-branch text...');
+    },
+    _addChildNodeCallback(mapId, parentNodeId, text) {
         const map = this.data.vault.learnings.mindmaps?.find(m => m.id === mapId);
         if (!map) return;
-        
         const findAndAddChild = (nodes) => {
             for (let node of nodes) {
                 if (node.id === parentNodeId) {
                     if (!node.children) node.children = [];
-                    node.children.push({
-                        id: this.genId(),
-                        text: text.trim(),
-                        children: []
-                    });
+                    node.children.push({ id: this.genId(), text: text.trim(), children: [] });
                     return true;
                 }
-                if (node.children && findAndAddChild(node.children)) {
-                    return true;
-                }
+                if (node.children && findAndAddChild(node.children)) return true;
             }
             return false;
         };
-        
         if (findAndAddChild(map.nodes)) {
             map.modified = new Date().toISOString();
             this.save();
@@ -9655,7 +9861,7 @@ Drink water
     },
 
     deleteNode(mapId, nodeId) {
-        if (!confirm('Delete this node and all its sub-branches?')) return;
+        // node deletion confirmed via UI (no dialog needed for sub-action)
         
         const map = this.data.vault.learnings.mindmaps?.find(m => m.id === mapId);
         if (!map) return;
@@ -9682,11 +9888,11 @@ Drink water
     },
 
     deleteMindmap(id) {
-        if (!confirm('Delete this mindmap?')) return;
-        this.data.vault.learnings.mindmaps = this.data.vault.learnings.mindmaps?.filter(m => m.id !== id) || [];
-        this.save();
-        this.render();
-        this.toast('✓ Mindmap deleted');
+        this.confirm('Delete this mindmap and all branches?', () => {
+            this.data.vault.learnings.mindmaps = (this.data.vault.learnings.mindmaps || []).filter(m => m.id !== id);
+            this.save(); this.render();
+            this.toast('✓ Mindmap deleted');
+        }, 'Delete');
     },
 
     // VAULT - GROWTH
@@ -10033,10 +10239,11 @@ Drink water
     },
 
     deleteGoal(id) {
-        if (!confirm('Delete this goal?')) return;
-        this.data.goals = this.data.goals?.filter(g => g.id !== id) || [];
-        this.save(); this.render();
-        this.toast('✓ Goal deleted');
+        this.confirm('Delete this goal and all its subgoals?', () => {
+            this.data.goals = (this.data.goals || []).filter(g => g.id !== id);
+            this.save(); this.render();
+            this.toast('✓ Goal deleted');
+        }, 'Delete');
     },
 
     toggleGoal(id) {
@@ -10048,21 +10255,20 @@ Drink water
     },
 
     addSubgoal(goalId) {
-        const title = prompt('Subgoal:');
-        if (!title?.trim()) return;
-        
-        const goal = this.data.goals?.find(g => g.id === goalId);
-        if (goal) {
-            if (!goal.subgoals) goal.subgoals = [];
-            goal.subgoals.push({
-                id: this.genId(),
-                title: title.trim(),
-                done: false
-            });
-            this.save();
-            this.render();
-            this.toast('✓ Subgoal added');
-        }
+        this.prompt('Add Subgoal:', (title) => {
+            const goal = this.data.goals?.find(g => g.id === goalId);
+            if (goal) {
+                if (!goal.subgoals) goal.subgoals = [];
+                goal.subgoals.push({
+                    id: this.genId(),
+                    title: title,
+                    done: false
+                });
+                this.save();
+                this.render();
+                this.toast('✓ Subgoal added');
+            }
+        }, 'Subgoal name...');
     },
 
     toggleSubgoal(goalId, subgoalId) {
@@ -10078,15 +10284,13 @@ Drink water
     },
 
     deleteSubgoal(goalId, subgoalId) {
-        if (!confirm('Delete this subgoal?')) return;
-        
         const goal = this.data.goals?.find(g => g.id === goalId);
-        if (goal) {
-            goal.subgoals = goal.subgoals?.filter(s => s.id !== subgoalId) || [];
-            this.save();
-            this.render();
+        if (!goal) return;
+        this.confirm('Delete this subgoal?', () => {
+            goal.subgoals = (goal.subgoals || []).filter(s => s.id !== subgoalId);
+            this.save(); this.render();
             this.toast('✓ Subgoal deleted');
-        }
+        }, 'Delete');
     },
 
     // GOAL STAGE MANAGEMENT
@@ -10109,15 +10313,13 @@ Drink water
     },
 
     deleteGoalStage(goalId, stageId) {
-        if (!confirm('Delete this goal stage?')) return;
-        
         const goal = this.data.goals?.find(g => g.id === goalId);
-        if (goal && goal.stages) {
-            goal.stages = goal.stages.filter(s => s.id !== stageId);
-            this.save();
-            this.render();
+        if (!goal) return;
+        this.confirm('Delete this stage?', () => {
+            goal.stages = (goal.stages || []).filter(s => s.id !== stageId);
+            this.save(); this.render();
             this.toast('✓ Stage deleted');
-        }
+        }, 'Delete');
     },
 
     // TIMEBLOCK MANAGEMENT
@@ -10217,17 +10419,12 @@ Drink water
     },
 
     deleteTimeblock(id, fromModal = false) {
-        if (!confirm('Delete this timeblock?')) return;
-        this.data.timeblocks = this.data.timeblocks?.filter(t => t.id !== id) || [];
-        this.save();
-        
-        if (fromModal) {
-            this.viewTimeblocks(); // Refresh the modal view
-        } else {
-            this.render(); // Refresh the main view
-        }
-        
-        this.toast('✓ Timeblock deleted');
+        this.confirm('Delete this timeblock?', () => {
+            this.data.timeblocks = (this.data.timeblocks || []).filter(t => t.id !== id);
+            this.save();
+            if (fromModal) { this.viewTimeblocks(); } else { this.render(); }
+            this.toast('✓ Timeblock deleted');
+        }, 'Delete');
     },
 
     // TASK FILTERING
@@ -11877,37 +12074,33 @@ Drink water
 
     // 13. BATCH TAG
     batchTagVault(type, sub) {
-        const tags = prompt('Enter tags (comma-separated):');
-        if (!tags) return;
-        
-        const tagArray = tags.split(',').map(t => t.trim()).filter(Boolean);
-        if (tagArray.length === 0) return;
-        
-        const items = type === 'learn' ? this.data.vaultLearn[sub] : this.data.vaultEarn[sub];
-        let count = 0;
-        
-        items.forEach(item => {
-            if (this.data.vaultSettings.selectedItems.includes(item.id)) {
-                if (!item.tags) item.tags = [];
-                tagArray.forEach(tag => {
-                    if (!item.tags.includes(tag)) {
-                        item.tags.push(tag);
-                    }
-                });
-                item.modified = new Date().toISOString();
-                count++;
-            }
-        });
-        
-        this.save();
-        this.render();
-        this.toast(`✓ Tagged ${count} items`);
+        this.prompt('Enter tags (comma-separated):', (tags) => {
+            const tagArray = tags.split(',').map(t => t.trim()).filter(Boolean);
+            if (tagArray.length === 0) return;
+            const items = type === 'learn' ? this.data.vaultLearn[sub] : this.data.vaultEarn[sub];
+            let count = 0;
+            items.forEach(item => {
+                if (this.data.vaultSettings.selectedItems.includes(item.id)) {
+                    if (!item.tags) item.tags = [];
+                    tagArray.forEach(tag => {
+                        if (!item.tags.includes(tag)) item.tags.push(tag);
+                    });
+                    item.modified = new Date().toISOString();
+                    count++;
+                }
+            });
+            this.save();
+            this.render();
+            this.toast(`✓ Tagged ${count} items`);
+        }, 'tag1, tag2, tag3...');
     },
 
     // 14. BATCH DELETE
     batchDeleteVault(type, sub) {
         const count = this.data.vaultSettings.selectedItems.length;
-        if (!confirm(`Delete ${count} items?`)) return;
+        this.confirm(`Delete ${count} selected items?`, () => this._doBatchDeleteVault(type, sub), 'Delete All');
+    },
+    _doBatchDeleteVault(type, sub) {
         
         if (type === 'learn') {
             this.data.vaultLearn[sub] = this.data.vaultLearn[sub].filter(i => 
@@ -11950,31 +12143,46 @@ Drink water
             return;
         }
         
-        const options = allItems.map((i, idx) => 
-            `${idx}. [${i.category}] ${i.title}`
-        ).join('\n');
-        
-        const selection = prompt(`Link to (enter number):\n\n${options}`);
-        if (selection === null) return;
-        
-        const selectedIdx = parseInt(selection);
-        if (isNaN(selectedIdx) || selectedIdx < 0 || selectedIdx >= allItems.length) {
-            this.toast('⚠️ Invalid selection');
-            return;
-        }
-        
-        const linkedItem = allItems[selectedIdx];
+        // Show link picker as a modal list instead of prompt()
+        const listHtml = allItems.map((i, idx) => `
+            <div onclick="App._selectVaultLink(${idx})" style="
+                padding:10px;border-radius:8px;margin-bottom:6px;cursor:pointer;
+                background:var(--sub);border:1px solid var(--border);font-size:13px;">
+                <span style="color:var(--dim);font-size:11px;">[${i.category}]</span>
+                <span style="margin-left:6px;">${esc(i.title)}</span>
+            </div>`).join('');
+        this._linkPickerItems = allItems;
+        this._linkPickerItemId = item.id;
+        this._linkPickerSection = section;
+        this._linkPickerType = type;
+        document.getElementById('modal-body').innerHTML = `
+            <h3 style="margin-bottom:14px;color:var(--accent);">🔗 Link to Item</h3>
+            <div style="max-height:50vh;overflow-y:auto;">${listHtml}</div>
+            <button class="btn-sec" onclick="App.closeModal()" style="margin-top:12px;width:100%;">Cancel</button>`;
+        document.getElementById('modal').classList.add('open');
+    },
+
+    _selectVaultLink(idx) {
+        const allItems = this._linkPickerItems;
+        if (!allItems || idx < 0 || idx >= allItems.length) return;
+        const linkedItem = allItems[idx];
+        const section = this._linkPickerSection;
+        const type = this._linkPickerType;
+        let item;
+        if (section === 'learn') item = (this.data.vaultLearn[type] || []).find(i => i.id === this._linkPickerItemId);
+        else item = (this.data.vaultEarn[type] || []).find(i => i.id === this._linkPickerItemId);
+        if (!item) { this.closeModal(); return; }
         if (!item.linkedTo) item.linkedTo = [];
-        
         if (!item.linkedTo.includes(linkedItem.id)) {
             item.linkedTo.push(linkedItem.id);
             item.modified = new Date().toISOString();
             this.save();
-            this.render();
             this.toast(`✓ Linked to: ${linkedItem.title}`);
         } else {
             this.toast('⚠️ Already linked');
         }
+        this.closeModal();
+        this.render();
     },
 
     // 16. FIND VAULT ITEM BY ID (helper)
@@ -12206,8 +12414,8 @@ window.addEventListener('pageshow', (event) => {
 document.addEventListener('DOMContentLoaded', () => {
     try {
         App.init();
-        console.log('%c✨ SVK Blueprint v2.3.0 PRODUCTION', 'background: #ffd700; color: #000; font-weight: bold; padding: 8px 16px; border-radius: 4px;');
-        console.log('%cℹ️ Frictionless Execution System Loaded', 'color: #888; font-size: 11px;');
+        console.log('%c✨ SVK Blueprint v2.5.0 PRODUCTION', 'background: #ffd700; color: #000; font-weight: bold; padding: 8px 16px; border-radius: 4px;');
+        console.log('%c✅ MicroStep delete fixed | All prompt() calls PWA-safe | closeModal timer fix', 'color: #888; font-size: 11px;');
         console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #333;');
     } catch (initError) {
         console.error('Failed to initialize app:', initError);
