@@ -1,27 +1,28 @@
 {
-  "name": "SVK Blueprint - 15 Year Vision Execution System",
-  "short_name": "SVK Blueprint",
-  "description": "Zen-inspired 15-year vision execution system with 90-day cycle methodology.",
-  
-  "start_url": "/svk/",
-  "scope": "/svk/",
-  
+  "name": "SVK Blueprint",
+  "short_name": "SVK",
+  "description": "Zen-inspired 15-year vision execution system",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#ffd700",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "orientation": "portrait-primary",
-
+  "categories": [
+    "productivity",
+    "lifestyle"
+  ],
   "icons": [
     {
-      "src": "/svk/icons/icon-192.png",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23000'/%3E%3Ctext x='96' y='118' font-family='system-ui' font-size='72' font-weight='900' fill='%23ffd700' text-anchor='middle'%3ESVK%3C/text%3E%3C/svg%3E",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "/svk/icons/icon-512.png",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23000'/%3E%3Ctext x='256' y='310' font-family='system-ui' font-size='192' font-weight='900' fill='%23ffd700' text-anchor='middle'%3ESVK%3C/text%3E%3C/svg%3E",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ]
