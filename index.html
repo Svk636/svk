@@ -51,7 +51,7 @@ VAULT EARN IS NOW FULLY WIRED INTO THE REST OF THE APP
      matching that dominant domain
    - Replaced first-alphabetical fallback with highest-% domain selection
 
-🎉 v2.5.0 (BUG FIX RELEASE — March 1, 2026):
+🎉 v2.4.0 (BUG FIX RELEASE — March 1, 2026):
 ================================================================================
 - FIXED: Micro-steps now delete correctly (confirm() blocked in PWA mode)
 - FIXED: Replaced all 28 native window.confirm() calls with custom non-blocking dialog
@@ -2269,8 +2269,8 @@ FIRST-TIME SETUP:
 
 <!-- Custom Confirm Dialog (replaces window.confirm for PWA compatibility) -->
 <div id="confirm-overlay" style="
-    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);
-    z-index:9500;align-items:center;justify-content:center;padding:20px;">
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);
+    z-index:200;align-items:center;justify-content:center;padding:20px;">
     <div style="
         background:var(--card);border-radius:16px;padding:24px;
         max-width:320px;width:100%;border:1px solid var(--border);
@@ -2287,34 +2287,6 @@ FIRST-TIME SETUP:
                 flex:1;padding:12px;background:var(--danger);color:#fff;
                 border:none;border-radius:10px;
                 font-size:14px;font-weight:600;cursor:pointer;">Delete</button>
-        </div>
-    </div>
-</div>
-
-<!-- PWA-Safe Prompt Dialog (replaces window.prompt() for PWA/iOS compatibility) -->
-<div id="prompt-overlay" style="
-    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);
-    z-index:9600;align-items:center;justify-content:center;padding:20px;">
-    <div style="
-        background:var(--card);border-radius:16px;padding:24px;
-        max-width:340px;width:100%;border:1px solid var(--border);
-        box-shadow:0 20px 60px rgba(0,0,0,0.5);">
-        <div id="prompt-message" style="
-            font-size:15px;color:var(--text);margin-bottom:14px;
-            line-height:1.5;font-weight:600;"></div>
-        <input id="prompt-input" type="text" style="margin-bottom:16px;width:100%;"
-               placeholder="" autocomplete="off"
-               onkeydown="if(event.key==='Enter'){document.getElementById('prompt-ok-btn').click();}
-                           else if(event.key==='Escape'){document.getElementById('prompt-cancel-btn').click();}">
-        <div style="display:flex;gap:10px;">
-            <button id="prompt-cancel-btn" style="
-                flex:1;padding:12px;background:var(--sub);color:var(--dim);
-                border:1px solid var(--border);border-radius:10px;
-                font-size:14px;font-weight:600;cursor:pointer;">Cancel</button>
-            <button id="prompt-ok-btn" style="
-                flex:1;padding:12px;background:var(--accent);color:var(--void);
-                border:none;border-radius:10px;
-                font-size:14px;font-weight:600;cursor:pointer;">OK</button>
         </div>
     </div>
 </div>
@@ -2344,10 +2316,11 @@ FIRST-TIME SETUP:
 <!-- NEW: Update Available Banner -->
 <div class="update-banner" id="update-banner" style="display:none;">
     <div style="flex:1;">
-        <strong>🎉 New version available!</strong>
+        <strong id="update-banner-title">🎉 New version available!</strong>
         <div style="font-size:11px;margin-top:4px;" id="update-banner-text">Update to get the latest features and improvements</div>
     </div>
-    <button onclick="App.showUpdateInstructions()" style="background:var(--accent);color:#000;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer;">Update</button>
+    <button id="update-reload-btn" onclick="App.applyUpdate()" style="background:var(--accent);color:#000;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer;display:none;">Reload Now</button>
+    <button onclick="App.showUpdateInstructions()" style="background:var(--sub);color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:6px;font-weight:600;font-size:12px;cursor:pointer;margin-left:6px;">Details</button>
     <button onclick="App.dismissUpdateBanner()" style="background:transparent;color:var(--text);border:none;padding:8px;cursor:pointer;opacity:0.6;">✕</button>
 </div>
 
@@ -2790,29 +2763,48 @@ const App = {
         }
         
         // PWA: Register inline service worker (no external file needed)
+        // IMPORTANT: APP_VERSION is embedded in the SW string so every version bump
+        // changes the SW bytes → browser detects a new worker → update flow triggers.
         if ('serviceWorker' in navigator) {
             const swCode = `
-const CACHE_NAME = 'svk-blueprint-v2-3-0';
+const SW_VERSION = '${APP_VERSION}';
+const CACHE_NAME = 'svk-blueprint-v' + SW_VERSION;
 const STATIC_ASSETS = ['/'];
 
+// INSTALL — cache assets but do NOT skipWaiting.
+// We let the page decide when to activate so it can show a banner first.
 self.addEventListener('install', (e) => {
     e.waitUntil(
-        caches.open(CACHE_NAME).then(cache => {
-            return cache.addAll(STATIC_ASSETS).catch(() => {});
-        }).then(() => self.skipWaiting())
+        caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS).catch(() => {}))
     );
+    // Do NOT call self.skipWaiting() here.
 });
 
+// ACTIVATE — delete old caches, claim all clients, then tell every open tab
+// that a new version is now live so it can reload.
 self.addEventListener('activate', (e) => {
     e.waitUntil(
-        caches.keys().then(keys =>
-            Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-        ).then(() => self.clients.claim())
+        caches.keys()
+            .then(keys => Promise.all(
+                keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
+            ))
+            .then(() => self.clients.claim())
+            .then(() => self.clients.matchAll({ type: 'window', includeUncontrolled: true }))
+            .then(clients => {
+                clients.forEach(c => c.postMessage({ type: 'SW_ACTIVATED', version: SW_VERSION }));
+            })
     );
 });
 
+// FETCH — network-first for HTML navigation (always fresh page), cache-first for assets.
 self.addEventListener('fetch', (e) => {
     if (e.request.method !== 'GET') return;
+    if (e.request.mode === 'navigate') {
+        e.respondWith(
+            fetch(e.request).catch(() => caches.match(e.request))
+        );
+        return;
+    }
     e.respondWith(
         caches.match(e.request).then(cached => {
             if (cached) return cached;
@@ -2822,33 +2814,67 @@ self.addEventListener('fetch', (e) => {
                     caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
                 }
                 return response;
-            }).catch(() => cached || new Response('Offline', {status: 503}));
+            }).catch(() => caches.match(e.request) || new Response('Offline', { status: 503 }));
         })
     );
 });
 
+// MESSAGE — page sends SKIP_WAITING to activate the new SW immediately.
+// After skipWaiting the page's controllerchange listener will reload.
 self.addEventListener('message', (e) => {
-    if (e.data === 'skipWaiting') self.skipWaiting();
+    if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 `;
-            const swBlob = new Blob([swCode], {type: 'application/javascript'});
-            const swUrl = URL.createObjectURL(swBlob);
-            
-            navigator.serviceWorker.register(swUrl, {scope: './'})
+            const swBlob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl  = URL.createObjectURL(swBlob);
+
+            navigator.serviceWorker.register(swUrl, { scope: './' })
                 .then(registration => {
-                    console.log('SVK: Service Worker registered');
+                    console.log('SVK SW registered — v' + APP_VERSION);
+                    App._swRegistration = registration;
+
+                    // Helper: show the banner for a specific waiting worker
+                    const notifyWaiting = (worker) => {
+                        App._swWaitingWorker = worker;
+                        App.showUpdateBanner(true); // true = reload required
+                    };
+
+                    // Case A: a new SW is already waiting when the page loads
+                    if (registration.waiting) {
+                        notifyWaiting(registration.waiting);
+                    }
+
+                    // Case B: a new SW is found while the page is open
                     registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        if (newWorker) {
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    this.showUpdateBanner();
-                                }
-                            });
-                        }
+                        const installing = registration.installing;
+                        if (!installing) return;
+                        installing.addEventListener('statechange', () => {
+                            if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+                                notifyWaiting(installing);
+                            }
+                        });
                     });
                 })
-                .catch(err => console.log('SW registration failed (normal in dev):', err));
+                .catch(err => console.warn('SVK SW registration failed:', err));
+
+            // When the controller changes (new SW took over), reload the page once.
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (App._swReloading) return;
+                App._swReloading = true;
+                window.location.reload();
+            });
+
+            // Message from SW after it activates (handles the "already open tab" case).
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'SW_ACTIVATED') {
+                    console.log('SVK SW activated — v' + event.data.version);
+                    // The reload already happened via controllerchange; this is a fallback.
+                    // If somehow the page is still alive, offer a soft refresh.
+                    if (!App._swReloading) {
+                        App.showUpdateBanner(false); // false = already live, soft notification
+                    }
+                }
+            });
         }
         
         // PWA: Install prompt handler
@@ -3378,32 +3404,27 @@ self.addEventListener('message', (e) => {
 
     // VERSION CHECKING: Check if new version available
     checkForUpdates() {
-        const lastVersion = localStorage.getItem('svk_app_version');
+        const lastVersion      = localStorage.getItem('svk_app_version');
         const dismissedVersion = localStorage.getItem('svk_dismissed_update_version');
-        
-        // If this is first run, just store version
+
+        // First run — store current version and exit
         if (!lastVersion) {
             localStorage.setItem('svk_app_version', APP_VERSION);
             return;
         }
-        
-        // Check if current version is newer than stored version
+
         if (this.compareVersions(APP_VERSION, lastVersion) > 0) {
-            // New version detected!
-            
-            // Don't show if user dismissed this version
-            if (dismissedVersion === APP_VERSION) {
-                return;
-            }
-            
-            // Show update banner
-            setTimeout(() => {
-                this.showUpdateBanner(lastVersion, APP_VERSION);
-            }, 2000); // Delay to let app load first
+            // Update stored version first so repeated loads don't re-trigger
+            localStorage.setItem('svk_app_version', APP_VERSION);
+
+            // Don't show if user already dismissed this exact version
+            if (dismissedVersion === APP_VERSION) return;
+
+            // Direct-file-open path: page already has new code, no reload needed.
+            // requiresReload=false, pass old version for display.
+            setTimeout(() => this.showUpdateBanner(false, lastVersion), 1500);
         }
-        
-        // Update stored version
-        localStorage.setItem('svk_app_version', APP_VERSION);
+        // Same version — nothing to do
     },
 
     // Compare version strings (e.g., "2.2.2" vs "2.2.1")
@@ -3420,20 +3441,43 @@ self.addEventListener('message', (e) => {
         return 0;
     },
 
-    // Show update banner
-    showUpdateBanner(oldVersion, newVersion) {
-        const banner = document.getElementById('update-banner');
-        const text = document.getElementById('update-banner-text');
-        
-        text.textContent = `v${oldVersion} → v${newVersion} - Click Update to learn what's new`;
+    // showUpdateBanner(requiresReload, oldVersion)
+    // requiresReload=true  → SW is waiting; banner shows "Reload Now" button
+    // requiresReload=false → file was already updated; soft notification, no reload needed
+    showUpdateBanner(requiresReload, oldVersion) {
+        const banner    = document.getElementById('update-banner');
+        const titleEl   = document.getElementById('update-banner-title');
+        const text      = document.getElementById('update-banner-text');
+        const reloadBtn = document.getElementById('update-reload-btn');
+
+        if (requiresReload) {
+            if (titleEl) titleEl.textContent = '🔄 Update ready!';
+            text.textContent = 'New version installed — reload to apply (your data is safe)';
+            if (reloadBtn) { reloadBtn.style.display = ''; reloadBtn.textContent = 'Reload Now'; }
+        } else {
+            const from = oldVersion ? ' from v' + oldVersion : '';
+            if (titleEl) titleEl.textContent = '✅ Updated to v' + APP_VERSION + '!';
+            text.textContent = 'Updated' + from + ' — you\'re on the latest version';
+            if (reloadBtn) reloadBtn.style.display = 'none';
+            // Soft notification auto-dismisses
+            setTimeout(() => { banner.style.display = 'none'; }, 9000);
+        }
+
         banner.style.display = 'flex';
-        
-        // Auto-hide after 30 seconds
-        setTimeout(() => {
-            if (banner.style.display === 'flex') {
-                banner.style.display = 'none';
-            }
-        }, 30000);
+        // Safety: always auto-hide after 60s
+        setTimeout(() => { banner.style.display = 'none'; }, 60000);
+    },
+
+    // Tell the waiting SW to activate; the controllerchange listener will reload the page.
+    applyUpdate() {
+        const btn = document.getElementById('update-reload-btn');
+        if (btn) { btn.textContent = 'Reloading…'; btn.disabled = true; }
+
+        if (this._swWaitingWorker) {
+            this._swWaitingWorker.postMessage({ type: 'SKIP_WAITING' });
+        } else {
+            window.location.reload(true);
+        }
     },
 
     // Dismiss update banner
@@ -3445,73 +3489,61 @@ self.addEventListener('message', (e) => {
         localStorage.setItem('svk_dismissed_update_version', APP_VERSION);
     },
 
-    // Show update instructions
+    // Show update details modal
     showUpdateInstructions() {
-        const banner = document.getElementById('update-banner');
-        banner.style.display = 'none';
-        
+        document.getElementById('update-banner').style.display = 'none';
+        const hasWaiting = !!this._swWaitingWorker;
+
         document.getElementById('modal-body').innerHTML = `
             <h3 style="margin-bottom:16px;color:var(--accent);">🎉 New Version Available: v${APP_VERSION}</h3>
-            
-            <div style="background:var(--sub);padding:16px;border-radius:12px;margin-bottom:16px;border-left:4px solid var(--accent);">
+
+            ${hasWaiting ? `
+            <div style="background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.4);
+                         border-radius:12px;padding:16px;margin-bottom:16px;text-align:center;">
+                <div style="font-size:15px;font-weight:700;margin-bottom:8px;">✅ Update is downloaded & ready</div>
+                <div style="font-size:13px;color:var(--dim);margin-bottom:14px;">
+                    Click below to reload — your data is safe, nothing is lost.
+                </div>
+                <button class="btn" onclick="App.applyUpdate()" style="font-size:15px;padding:12px 32px;">
+                    🔄 Reload Now
+                </button>
+            </div>
+            ` : `
+            <div style="background:var(--sub);padding:14px;border-radius:10px;margin-bottom:16px;
+                         border-left:4px solid var(--accent);font-size:13px;color:var(--dim);">
+                The new version is already loaded. Hard-refresh (Ctrl+Shift+R / Cmd+Shift+R)
+                if you still see old content.
+            </div>
+            `}
+
+            <div style="background:var(--sub);padding:14px;border-radius:12px;margin-bottom:16px;
+                         border-left:4px solid var(--accent);">
                 <div style="font-weight:700;margin-bottom:8px;color:var(--accent);">What's New in v${APP_VERSION}</div>
                 <ul style="margin:0;padding-left:20px;line-height:1.8;font-size:13px;color:var(--dim);">
-                    <li>🔄 Daily Reset - Clear today's habits with one button</li>
-                    <li>📊 CSV Export - Export all data to spreadsheets</li>
-                    <li>🔧 Bug Fixes - Improved stability and performance</li>
-                    <li>📱 Better PWA - Enhanced installation experience</li>
-                    <li>✅ Data Validation - Auto-repair on startup</li>
+                    <li>🔄 Micro-step delete fixed (confirm dialog z-index)</li>
+                    <li>📱 All dialogs now work in PWA/iOS standalone mode</li>
+                    <li>⏱️ Timer no longer stops when managing habits</li>
+                    <li>🔔 Service Worker update detection fully reliable</li>
+                    <li>🔧 One-click reload from update banner</li>
                 </ul>
             </div>
-            
-            <div style="background:rgba(255,215,0,0.1);padding:16px;border-radius:12px;margin-bottom:20px;border:1px solid rgba(255,215,0,0.3);">
-                <div style="font-weight:700;margin-bottom:12px;">📥 How to Update</div>
-                
-                <div style="margin-bottom:16px;">
-                    <div style="font-weight:600;margin-bottom:8px;font-size:14px;">Option 1: Replace File (Recommended)</div>
-                    <ol style="margin:0;padding-left:20px;line-height:1.8;font-size:13px;color:var(--dim);">
-                        <li>Download new <code>index.html</code> file</li>
-                        <li><strong>Before replacing:</strong> Export your data (backup)</li>
-                        <li>Replace old file with new file</li>
-                        <li>Open the new file - your data is preserved!</li>
-                    </ol>
-                </div>
-                
-                <div style="margin-bottom:16px;">
-                    <div style="font-weight:600;margin-bottom:8px;font-size:14px;">Option 2: Hard Refresh (Quick)</div>
-                    <ul style="margin:0;padding-left:20px;line-height:1.8;font-size:13px;color:var(--dim);">
-                        <li><strong>Windows/Linux:</strong> Ctrl + Shift + R</li>
-                        <li><strong>Mac:</strong> Cmd + Shift + R</li>
-                        <li><strong>Mobile:</strong> Close tab, clear cache, reopen</li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <div style="font-weight:600;margin-bottom:8px;font-size:14px;">Option 3: If Deployed (GitHub/Netlify)</div>
-                    <p style="margin:0;font-size:13px;color:var(--dim);line-height:1.6;">
-                        Push the new file to your repository. The update will deploy automatically.
-                    </p>
-                </div>
-            </div>
-            
-            <div style="background:rgba(255,100,100,0.1);padding:12px;border-radius:8px;margin-bottom:20px;border-left:3px solid #ff6464;">
-                <strong style="color:#ff6464;">⚠️ Important:</strong>
+
+            <div style="background:rgba(255,100,100,0.08);padding:12px;border-radius:8px;
+                         margin-bottom:16px;border-left:3px solid #ff6464;">
+                <strong style="color:#ff6464;">💾 Your data is safe</strong>
                 <div style="font-size:12px;margin-top:4px;line-height:1.6;color:var(--dim);">
-                    Your data is stored in browser localStorage and will persist through updates. 
-                    However, we recommend exporting a backup before updating (just to be safe).
+                    All data lives in localStorage and survives reloads and updates.
+                    Export a backup anytime from SYSTEM → Export.
                 </div>
             </div>
-            
+
             <div style="display:flex;gap:8px;">
-                <button class="btn" onclick="App.tab=1;App.sub.build='stats';App.render();App.closeModal();" style="flex:1;">
-                    📥 Export Backup First
-                </button>
-                <button class="btn-sec" onclick="App.closeModal()" style="flex:1;">
-                    Close
-                </button>
+                ${hasWaiting ? `
+                <button class="btn" onclick="App.applyUpdate()" style="flex:1;">🔄 Reload Now</button>
+                ` : ''}
+                <button class="btn-sec" onclick="App.closeModal()" style="flex:1;">Close</button>
             </div>
         `;
-        
         document.getElementById('modal').classList.add('open');
     },
 
@@ -3568,25 +3600,6 @@ self.addEventListener('message', (e) => {
         const cleanup = () => { overlay.style.display = 'none'; };
         okBtn.onclick = () => { cleanup(); callback(); };
         cancelBtn.onclick = () => { cleanup(); };
-    },
-
-    // PWA-safe prompt dialog — replaces window.prompt() which is blocked in some browsers/PWA contexts
-    prompt(message, callback, placeholder, defaultValue) {
-        placeholder = placeholder || '';
-        const overlay = document.getElementById('prompt-overlay');
-        document.getElementById('prompt-message').textContent = message;
-        const input = document.getElementById('prompt-input');
-        input.placeholder = placeholder;
-        input.value = defaultValue || '';
-        overlay.style.display = 'flex';
-        setTimeout(() => input.focus(), 80);
-        const cleanup = () => { overlay.style.display = 'none'; };
-        document.getElementById('prompt-ok-btn').onclick = () => {
-            const val = input.value.trim();
-            cleanup();
-            if (val) callback(val);
-        };
-        document.getElementById('prompt-cancel-btn').onclick = () => { cleanup(); };
     },
 
     toast(msg) {
@@ -6706,10 +6719,20 @@ Review and edit..." rows="6" style="margin-bottom:12px;"></textarea>
     },
 
     closeModal() {
-        // FIX: Do NOT clear timers here — timers should only stop when explicitly stopped.
-        // Previously this incorrectly cleared the Pomodoro/habit timer whenever any modal closed.
+        // Clean up Pomodoro timer if running
+        if (this.timer.interval) {
+            clearInterval(this.timer.interval);
+            this.timer.interval = null;
+            this.timer.running = false;
+        }
         
-        // Reset avatar temp state so stale emoji doesn't persist across modal opens
+        // Clean up habit timer if running
+        if (this.habitTimer.interval) {
+            clearInterval(this.habitTimer.interval);
+            this.habitTimer.interval = null;
+        }
+
+        // FIX: Reset avatar temp state so stale emoji doesn't persist across modal opens
         this._selectedAvatarTemp = null;
         
         document.getElementById('modal').classList.remove('open');
@@ -8073,9 +8096,9 @@ Drink water
     // ========== TAG SYSTEM ==========
     
     promptAddSystemTag(section, type, id) {
-        this.prompt('Add tag:', (tag) => {
-            this.addSystemTag(section, type, id, tag);
-        }, 'Tag name...');
+        const tag = prompt('Enter tag:')?.trim();
+        if (!tag) return;
+        this.addSystemTag(section, type, id, tag);
     },
     
     addSystemTag(section, type, id, tag) {
@@ -8156,14 +8179,16 @@ Drink water
     },
     
     bulkTag(section, type) {
-        this.prompt('Tag for selected items:', (tag) => {
-            this.selectedItems[section].forEach(id => {
-                this.addSystemTag(section, type, id, tag);
-            });
-            this.selectedItems[section].clear();
-            this.bulkMode[section] = false;
-            this.render();
-        }, 'Tag name...');
+        const tag = prompt('Enter tag for selected items:')?.trim();
+        if (!tag) return;
+        
+        this.selectedItems[section].forEach(id => {
+            this.addSystemTag(section, type, id, tag);
+        });
+        
+        this.selectedItems[section].clear();
+        this.bulkMode[section] = false;
+        this.render();
     },
     
     bulkExport(section, type) {
@@ -9823,35 +9848,50 @@ Drink water
     },
 
     addBranchNode(mapId) {
-        this.prompt('Branch text:', (text) => {
-            const map = this.data.vault.learnings.mindmaps?.find(m => m.id === mapId);
-            if (!map) return;
-            if (!map.nodes) map.nodes = [];
-            map.nodes.push({ id: this.genId(), text: text, children: [] });
-            map.modified = new Date().toISOString();
-            this.save();
-            this.viewMindmap(mapId);
-            this.toast('✓ Branch added');
-        }, 'Branch text...');
+        const text = prompt('Branch text:');
+        if (!text?.trim()) return;
+        
+        const map = this.data.vault.learnings.mindmaps?.find(m => m.id === mapId);
+        if (!map) return;
+        
+        if (!map.nodes) map.nodes = [];
+        map.nodes.push({
+            id: this.genId(),
+            text: text.trim(),
+            children: []
+        });
+        
+        map.modified = new Date().toISOString();
+        this.save();
+        this.viewMindmap(mapId);
+        this.toast('✓ Branch added');
     },
 
     addChildNode(mapId, parentNodeId) {
-        this.prompt('Sub-branch text:', (text) => { this._addChildNodeCallback(mapId, parentNodeId, text); }, 'Sub-branch text...');
-    },
-    _addChildNodeCallback(mapId, parentNodeId, text) {
+        const text = prompt('Sub-branch text:');
+        if (!text?.trim()) return;
+        
         const map = this.data.vault.learnings.mindmaps?.find(m => m.id === mapId);
         if (!map) return;
+        
         const findAndAddChild = (nodes) => {
             for (let node of nodes) {
                 if (node.id === parentNodeId) {
                     if (!node.children) node.children = [];
-                    node.children.push({ id: this.genId(), text: text.trim(), children: [] });
+                    node.children.push({
+                        id: this.genId(),
+                        text: text.trim(),
+                        children: []
+                    });
                     return true;
                 }
-                if (node.children && findAndAddChild(node.children)) return true;
+                if (node.children && findAndAddChild(node.children)) {
+                    return true;
+                }
             }
             return false;
         };
+        
         if (findAndAddChild(map.nodes)) {
             map.modified = new Date().toISOString();
             this.save();
@@ -10255,20 +10295,21 @@ Drink water
     },
 
     addSubgoal(goalId) {
-        this.prompt('Add Subgoal:', (title) => {
-            const goal = this.data.goals?.find(g => g.id === goalId);
-            if (goal) {
-                if (!goal.subgoals) goal.subgoals = [];
-                goal.subgoals.push({
-                    id: this.genId(),
-                    title: title,
-                    done: false
-                });
-                this.save();
-                this.render();
-                this.toast('✓ Subgoal added');
-            }
-        }, 'Subgoal name...');
+        const title = prompt('Subgoal:');
+        if (!title?.trim()) return;
+        
+        const goal = this.data.goals?.find(g => g.id === goalId);
+        if (goal) {
+            if (!goal.subgoals) goal.subgoals = [];
+            goal.subgoals.push({
+                id: this.genId(),
+                title: title.trim(),
+                done: false
+            });
+            this.save();
+            this.render();
+            this.toast('✓ Subgoal added');
+        }
     },
 
     toggleSubgoal(goalId, subgoalId) {
@@ -12074,25 +12115,31 @@ Drink water
 
     // 13. BATCH TAG
     batchTagVault(type, sub) {
-        this.prompt('Enter tags (comma-separated):', (tags) => {
-            const tagArray = tags.split(',').map(t => t.trim()).filter(Boolean);
-            if (tagArray.length === 0) return;
-            const items = type === 'learn' ? this.data.vaultLearn[sub] : this.data.vaultEarn[sub];
-            let count = 0;
-            items.forEach(item => {
-                if (this.data.vaultSettings.selectedItems.includes(item.id)) {
-                    if (!item.tags) item.tags = [];
-                    tagArray.forEach(tag => {
-                        if (!item.tags.includes(tag)) item.tags.push(tag);
-                    });
-                    item.modified = new Date().toISOString();
-                    count++;
-                }
-            });
-            this.save();
-            this.render();
-            this.toast(`✓ Tagged ${count} items`);
-        }, 'tag1, tag2, tag3...');
+        const tags = prompt('Enter tags (comma-separated):');
+        if (!tags) return;
+        
+        const tagArray = tags.split(',').map(t => t.trim()).filter(Boolean);
+        if (tagArray.length === 0) return;
+        
+        const items = type === 'learn' ? this.data.vaultLearn[sub] : this.data.vaultEarn[sub];
+        let count = 0;
+        
+        items.forEach(item => {
+            if (this.data.vaultSettings.selectedItems.includes(item.id)) {
+                if (!item.tags) item.tags = [];
+                tagArray.forEach(tag => {
+                    if (!item.tags.includes(tag)) {
+                        item.tags.push(tag);
+                    }
+                });
+                item.modified = new Date().toISOString();
+                count++;
+            }
+        });
+        
+        this.save();
+        this.render();
+        this.toast(`✓ Tagged ${count} items`);
     },
 
     // 14. BATCH DELETE
@@ -12143,46 +12190,31 @@ Drink water
             return;
         }
         
-        // Show link picker as a modal list instead of prompt()
-        const listHtml = allItems.map((i, idx) => `
-            <div onclick="App._selectVaultLink(${idx})" style="
-                padding:10px;border-radius:8px;margin-bottom:6px;cursor:pointer;
-                background:var(--sub);border:1px solid var(--border);font-size:13px;">
-                <span style="color:var(--dim);font-size:11px;">[${i.category}]</span>
-                <span style="margin-left:6px;">${esc(i.title)}</span>
-            </div>`).join('');
-        this._linkPickerItems = allItems;
-        this._linkPickerItemId = item.id;
-        this._linkPickerSection = section;
-        this._linkPickerType = type;
-        document.getElementById('modal-body').innerHTML = `
-            <h3 style="margin-bottom:14px;color:var(--accent);">🔗 Link to Item</h3>
-            <div style="max-height:50vh;overflow-y:auto;">${listHtml}</div>
-            <button class="btn-sec" onclick="App.closeModal()" style="margin-top:12px;width:100%;">Cancel</button>`;
-        document.getElementById('modal').classList.add('open');
-    },
-
-    _selectVaultLink(idx) {
-        const allItems = this._linkPickerItems;
-        if (!allItems || idx < 0 || idx >= allItems.length) return;
-        const linkedItem = allItems[idx];
-        const section = this._linkPickerSection;
-        const type = this._linkPickerType;
-        let item;
-        if (section === 'learn') item = (this.data.vaultLearn[type] || []).find(i => i.id === this._linkPickerItemId);
-        else item = (this.data.vaultEarn[type] || []).find(i => i.id === this._linkPickerItemId);
-        if (!item) { this.closeModal(); return; }
+        const options = allItems.map((i, idx) => 
+            `${idx}. [${i.category}] ${i.title}`
+        ).join('\n');
+        
+        const selection = prompt(`Link to (enter number):\n\n${options}`);
+        if (selection === null) return;
+        
+        const selectedIdx = parseInt(selection);
+        if (isNaN(selectedIdx) || selectedIdx < 0 || selectedIdx >= allItems.length) {
+            this.toast('⚠️ Invalid selection');
+            return;
+        }
+        
+        const linkedItem = allItems[selectedIdx];
         if (!item.linkedTo) item.linkedTo = [];
+        
         if (!item.linkedTo.includes(linkedItem.id)) {
             item.linkedTo.push(linkedItem.id);
             item.modified = new Date().toISOString();
             this.save();
+            this.render();
             this.toast(`✓ Linked to: ${linkedItem.title}`);
         } else {
             this.toast('⚠️ Already linked');
         }
-        this.closeModal();
-        this.render();
     },
 
     // 16. FIND VAULT ITEM BY ID (helper)
@@ -12414,8 +12446,8 @@ window.addEventListener('pageshow', (event) => {
 document.addEventListener('DOMContentLoaded', () => {
     try {
         App.init();
-        console.log('%c✨ SVK Blueprint v2.5.0 PRODUCTION', 'background: #ffd700; color: #000; font-weight: bold; padding: 8px 16px; border-radius: 4px;');
-        console.log('%c✅ MicroStep delete fixed | All prompt() calls PWA-safe | closeModal timer fix', 'color: #888; font-size: 11px;');
+        console.log('%c✨ SVK Blueprint v2.3.0 PRODUCTION', 'background: #ffd700; color: #000; font-weight: bold; padding: 8px 16px; border-radius: 4px;');
+        console.log('%cℹ️ Full Bug Fix Release — PWA Confirm, MicroSteps, Habits', 'color: #888; font-size: 11px;');
         console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #333;');
     } catch (initError) {
         console.error('Failed to initialize app:', initError);
